@@ -22,18 +22,23 @@ class NotificationListView(LoginRequiredMixin, View):
     """Full notification center page."""
 
     def get(self, request):
-        tab = request.GET.get("tab", "unread")
+        from django.core.paginator import Paginator
+        tab = request.GET.get("tab", "all")
         qs = request.user.notifications.select_related("ticket").order_by("-created_at")
 
         if tab == "unread":
-            notifications = qs.filter(is_read=False)
+            filtered = qs.filter(is_read=False)
         elif tab == "read":
-            notifications = qs.filter(is_read=True)[:50]
+            filtered = qs.filter(is_read=True)
         else:
-            notifications = qs[:50]
+            filtered = qs
+
+        paginator = Paginator(filtered, 20)
+        page_obj = paginator.get_page(request.GET.get("page", 1))
 
         return render(request, "notifications/list.html", {
-            "notifications": notifications,
+            "notifications": page_obj.object_list,
+            "page_obj": page_obj,
             "tab": tab,
             "unread_count": qs.filter(is_read=False).count(),
         })
