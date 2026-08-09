@@ -1,0 +1,40 @@
+{% load humanize %}
+{# HTMX search dropdown results #}
+{% if tickets %}
+<div class="bg-[var(--surface-primary)] border border-[var(--surface-border)] rounded-xl shadow-lg overflow-hidden"
+     id="search-dropdown">
+  {% for ticket in tickets %}
+  <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
+     class="flex items-start gap-3 px-4 py-3 hover:bg-[var(--color-neutral-50)] transition-colors border-b border-[var(--surface-border)] last:border-0">
+    <div class="w-8 h-8 rounded-lg bg-[var(--surface-secondary)] flex items-center justify-center flex-shrink-0 mt-0.5">
+      <svg class="w-4 h-4 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-mono text-[var(--text-tertiary)]">{{ ticket.ticket_number }}</span>
+        <span class="badge-status badge-status-{{ ticket.status|cut:'_' }} text-xs">{{ ticket.get_status_display }}</span>
+      </div>
+      <p class="text-sm font-500 text-[var(--text-primary)] truncate mt-0.5">{{ ticket.title }}</p>
+      {% if ticket.location or ticket.category %}
+      <p class="text-xs text-[var(--text-tertiary)] truncate">
+        {% if ticket.location %}📍 {{ ticket.location.name }}{% endif %}
+        {% if ticket.category %} · {{ ticket.category.name }}{% endif %}
+      </p>
+      {% endif %}
+    </div>
+    <span class="badge-priority badge-priority-{{ ticket.priority }} flex-shrink-0 self-start mt-0.5 text-xs">
+      {{ ticket.get_priority_display }}
+    </span>
+  </a>
+  {% endfor %}
+  <div class="px-4 py-2 bg-[var(--surface-secondary)] text-xs text-[var(--text-tertiary)]">
+    Showing {{ tickets|length }} result{{ tickets|length|pluralize }} for "{{ query }}"
+  </div>
+</div>
+{% elif query %}
+<div class="bg-[var(--surface-primary)] border border-[var(--surface-border)] rounded-xl shadow-lg px-4 py-6 text-center">
+  <p class="text-sm text-[var(--text-tertiary)]">No tickets found for "{{ query }}"</p>
+</div>
+{% endif %}

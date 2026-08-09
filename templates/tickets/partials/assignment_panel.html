@@ -1,0 +1,22 @@
+{% load humanize %}
+{# HTMX target: replaces #assignment-panel after assign POST #}
+<div class="card" id="assignment-panel">
+  <div class="card-header">Assignment</div>
+  <div class="card-body">
+    {% if ticket.assigned_to %}
+    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-[var(--surface-border)]">
+      <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-700 text-indigo-700">
+        {{ ticket.assigned_to.initials }}
+      </div>
+      <div>
+        <p class="text-sm font-600 text-[var(--text-primary)]">{{ ticket.assigned_to.display_name }}</p>
+        <p class="text-xs text-[var(--text-tertiary)]">{{ ticket.assigned_to.get_role_display }}</p>
+      </div>
+    </div>
+    {% else %}
+    <p class="text-sm text-[var(--text-tertiary)] mb-4">Not yet assigned</p>
+    {% endif %}
+
+    <p class="text-sm text-green-600 font-500 mb-3">✓ Assignment updated</p>
+  </div>
+</div>
