@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+<div class="flex h-screen overflow-hidden bg-[var(--surface-bg)]">
+
+  {# ── Sidebar ──────────────────────────────────────────────────────────── #}
+  {% include "partials/sidebar.html" %}
+
+  {# ── Mobile sidebar overlay ─────────────────────────────────────────── #}
+  <div id="sidebar-overlay"
+       class="fixed inset-0 bg-black/40 z-40 hidden md:hidden"
+       onclick="closeSidebar()"></div>
+
+  {# ── Main content ─────────────────────────────────────────────────────── #}
+  <div class="flex flex-col flex-1 overflow-hidden ml-0 md:ml-64 transition-all" id="main-content">
+
+    {# Top bar #}
+    {% include "partials/topbar.html" %}
+
+    {# Page content #}
+    <main class="flex-1 overflow-y-auto p-4 md:p-6" id="page-content">
+      {% block breadcrumbs %}{% endblock %}
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+</div>
+{% endblock %}

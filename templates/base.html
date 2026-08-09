@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_description %}MaintenanceHub — Smart Maintenance Management{% endblock %}">
+  <title>{% block title %}{{ APP_NAME }}{% endblock %} — MaintenanceHub</title>
+
+  {# Preconnect for fonts #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  {# Main CSS #}
+  <link rel="stylesheet" href="{% load static %}{% static 'css/main.css' %}">
+
+  {# HTMX #}
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  <script src="https://unpkg.com/htmx.org/dist/ext/ws.js" defer></script>
+
+  {# Heroicons (inline SVG via CDN) #}
+  <script>
+    // Theme initialization — runs before body render to prevent FOUC
+    (function() {
+      const stored = localStorage.getItem('mh-theme') || 'system';
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = stored === 'dark' || (stored === 'system' && prefersDark);
+      document.documentElement.setAttribute('data-theme', stored);
+      if (isDark) document.documentElement.classList.add('dark');
+    })();
+  </script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-[var(--surface-bg)] text-[var(--text-primary)]">
+
+  {# CSRF token for HTMX #}
+  {% csrf_token %}
+  <script>
+    document.body.addEventListener('htmx:configRequest', function(evt) {
+      evt.detail.headers['X-CSRFToken'] = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    });
+  </script>
+
+  {# Toast container #}
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  {% block body %}{% endblock %}
+
+  {# Django messages → Toasts #}
+  {% load messages_tags %}
+  {% if messages %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      {% for message in messages %}
+      showToast({{ message.message|escapejs|jsonify }}, '{{ message.tags }}');
+      {% endfor %}
+    });
+  </script>
+  {% endif %}
+
+  {# Core JS — minimal, no framework #}
+  <script src="{% static 'js/app.js' %}" defer></script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
