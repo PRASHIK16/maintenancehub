@@ -3,8 +3,8 @@
    Built with Tailwind CSS v4 + custom CSS variables
    ============================================================================ */
 
-/* Import Tailwind v4 */
-@import "tailwindcss";
+/* Tailwind utilities are loaded via the Play CDN script in base.html (dev)
+   For production, run: npx @tailwindcss/cli -i ./static/css/main.css -o ./static/css/dist.css */
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
