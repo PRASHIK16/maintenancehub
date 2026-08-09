@@ -1,136 +1,243 @@
 {% extends "base.html" %}
-{% load static core_tags %}
+{% load static %}
 
 {% block title %}Sign In{% endblock %}
+{% block meta_description %}Sign in to your MaintenanceHub account to manage maintenance requests and operations.{% endblock %}
 
 {% block body %}
-<div class="min-h-screen flex bg-[var(--surface-bg)]">
+<div class="flex min-h-screen">
 
-  {# Left panel — branding #}
-  <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 text-white flex-col justify-between p-12 relative overflow-hidden">
+  <!-- ================================================================
+       LEFT PANEL — Brand / Trust (hidden on mobile)
+  ================================================================ -->
+  <div class="hidden lg:flex lg:w-1/2 flex-col justify-between bg-[#08111f] px-12 py-16 relative overflow-hidden">
 
-    {# Background pattern #}
-    <div class="absolute inset-0 opacity-10">
-      <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-white"></div>
-      <div class="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-white"></div>
-    </div>
+    <!-- Subtle background glow -->
+    <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-500/5 to-transparent"></div>
+    <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-emerald-500/5 blur-3xl"></div>
 
-    <div class="relative z-10">
-      <div class="flex items-center gap-3 mb-12">
-        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    <div class="relative">
+      <!-- Logo mark -->
+      <a href="/" class="flex items-center gap-3 mb-16">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 shadow-lg shadow-emerald-500/30">
+          <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
-        <span class="text-xl font-700">MaintenanceHub</span>
-      </div>
+        <div>
+          <span class="block text-lg font-semibold text-white tracking-tight">MaintenanceHub</span>
+        </div>
+      </a>
 
-      <h1 class="text-4xl font-800 leading-tight mb-6">
-        Maintenance,<br>without the chaos.
+      <!-- Main brand copy -->
+      <h1 class="text-4xl font-bold text-white leading-tight mb-3">
+        Intelligent Maintenance<br>Operations
       </h1>
-      <p class="text-indigo-200 text-lg leading-relaxed">
-        Report, assign, track and resolve maintenance requests from one intelligent workspace.
+      <p class="text-base text-white/40 mb-12 leading-relaxed">
+        The complete platform for managing facility maintenance — from first report to final resolution.
       </p>
+
+      <!-- Trust bullets -->
+      <ul class="space-y-5">
+        <li class="flex items-start gap-3.5">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+            <svg class="h-3 w-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm text-white/60 leading-relaxed">Multi-tenant SaaS for campuses &amp; facilities</span>
+        </li>
+        <li class="flex items-start gap-3.5">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+            <svg class="h-3 w-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm text-white/60 leading-relaxed">SLA-driven ticket management with auto-alerts</span>
+        </li>
+        <li class="flex items-start gap-3.5">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+            <svg class="h-3 w-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm text-white/60 leading-relaxed">Real-time operations dashboard for every role</span>
+        </li>
+      </ul>
     </div>
 
-    {# Feature list #}
-    <div class="relative z-10 space-y-4">
-      {% for feature in "Track every request|Assign to the right team|Monitor SLA compliance|Data-driven analytics"|split:"|" %}
-      <div class="flex items-center gap-3">
-        <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-          </svg>
-        </div>
-        <span class="text-indigo-100 text-sm">{{ feature }}</span>
-      </div>
-      {% endfor %}
+    <!-- Bottom quote -->
+    <div class="relative border-l-2 border-emerald-500/30 pl-5">
+      <p class="text-sm text-white/30 italic leading-relaxed">
+        "Moved from a WhatsApp group to MaintenanceHub — our resolution time dropped by 60% in the first month."
+      </p>
+      <p class="mt-2 text-xs text-white/20 font-medium uppercase tracking-wider">Facility Manager, Engineering College</p>
     </div>
+
   </div>
 
-  {# Right panel — login form #}
-  <div class="flex-1 flex items-center justify-center p-6 sm:p-12">
-    <div class="w-full max-w-md">
 
-      {# Mobile logo #}
-      <div class="lg:hidden flex items-center gap-3 mb-8">
-        <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+  <!-- ================================================================
+       RIGHT PANEL — Login Form
+  ================================================================ -->
+  <div class="flex w-full lg:w-1/2 flex-col items-center justify-center bg-white dark:bg-slate-950 px-6 py-16 sm:px-12">
+
+    <div class="w-full max-w-sm">
+
+      <!-- Mobile logo (visible only on small screens) -->
+      <div class="lg:hidden mb-10 flex items-center gap-2.5">
+        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500">
+          <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
-        <span class="text-lg font-700 text-[var(--text-primary)]">MaintenanceHub</span>
+        <span class="text-base font-semibold text-slate-900 dark:text-white">MaintenanceHub</span>
       </div>
 
-      <h2 class="text-2xl font-700 text-[var(--text-primary)] mb-1">Welcome back</h2>
-      <p class="text-[var(--text-secondary)] text-sm mb-8">Sign in to your account to continue</p>
+      <!-- Heading -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome back</h2>
+        <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Sign in to your account to continue</p>
+      </div>
 
-      <form method="post" novalidate class="space-y-5">
+      <!-- Error block -->
+      {% if form.errors %}
+      <div class="mb-6 flex gap-3 rounded-xl border border-red-200 bg-red-50 dark:border-red-500/20 dark:bg-red-500/10 p-4">
+        <svg class="h-5 w-5 flex-shrink-0 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div>
+          <p class="text-sm font-medium text-red-700 dark:text-red-400">Unable to sign in</p>
+          {% for field in form %}
+            {% for error in field.errors %}
+              <p class="mt-0.5 text-sm text-red-600 dark:text-red-300">{{ error }}</p>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <p class="mt-0.5 text-sm text-red-600 dark:text-red-300">{{ error }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Login form -->
+      <form method="post" action="{% url 'accounts:login' %}" novalidate>
         {% csrf_token %}
 
-        {# Non-field errors #}
-        {% if form.non_field_errors %}
-        <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-start gap-3">
-          <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <p class="text-red-700 text-sm">{{ form.non_field_errors.0 }}</p>
-        </div>
-        {% endif %}
+        <div class="space-y-5">
 
-        <div class="form-group">
-          <label for="{{ form.email.id_for_label }}" class="form-label">Email address</label>
-          {{ form.email }}
-          {% if form.email.errors %}
-          <p class="form-error">{{ form.email.errors.0 }}</p>
-          {% endif %}
-        </div>
-
-        <div class="form-group">
-          <div class="flex items-center justify-between mb-1.5">
-            <label for="{{ form.password.id_for_label }}" class="form-label mb-0">Password</label>
-            <a href="#" class="text-xs text-indigo-600 hover:text-indigo-700 font-500">Forgot password?</a>
+          <!-- Email field -->
+          <div>
+            <label for="id_email" class="form-label">Email address</label>
+            <input
+              type="email"
+              name="email"
+              id="id_email"
+              class="form-input{% if form.email.errors %} border-red-400 dark:border-red-500 focus:ring-red-400{% endif %}"
+              placeholder="you@example.com"
+              autocomplete="email"
+              autofocus
+              value="{{ form.email.value|default:'' }}"
+              required
+            >
+            {% if form.email.errors %}
+              <p class="mt-1.5 text-xs text-red-500">{{ form.email.errors.0 }}</p>
+            {% endif %}
           </div>
-          {{ form.password }}
-          {% if form.password.errors %}
-          <p class="form-error">{{ form.password.errors.0 }}</p>
-          {% endif %}
+
+          <!-- Password field -->
+          <div>
+            <label for="id_password" class="form-label">Password</label>
+            <div class="relative">
+              <input
+                type="password"
+                name="password"
+                id="id_password"
+                class="form-input pr-11{% if form.password.errors %} border-red-400 dark:border-red-500 focus:ring-red-400{% endif %}"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+              >
+              <!-- Show/hide toggle -->
+              <button
+                type="button"
+                onclick="togglePasswordVisibility()"
+                class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                aria-label="Toggle password visibility"
+              >
+                <svg id="pw-icon-show" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg id="pw-icon-hide" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
+            {% if form.password.errors %}
+              <p class="mt-1.5 text-xs text-red-500">{{ form.password.errors.0 }}</p>
+            {% endif %}
+          </div>
+
         </div>
 
-        <div class="flex items-center gap-2">
-          {{ form.remember_me }}
-          <label for="{{ form.remember_me.id_for_label }}" class="text-sm text-[var(--text-secondary)] cursor-pointer">
-            Keep me signed in for 30 days
-          </label>
+        <!-- Submit -->
+        <div class="mt-6">
+          <button type="submit" class="btn btn-primary w-full justify-center">
+            Sign In
+          </button>
         </div>
 
-        <button type="submit" class="btn btn-primary w-full justify-center py-2.5 text-base">
-          Sign in to MaintenanceHub
-        </button>
+        <!-- Forgot password -->
+        <div class="mt-4 text-center">
+          <a href="{% url 'accounts:password_reset' %}"
+             class="text-sm text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+            Forgot your password?
+          </a>
+        </div>
+
       </form>
 
-      <p class="mt-8 text-center text-sm text-[var(--text-secondary)]">
-        Don't have an account?
-        <a href="{% url 'accounts:register' %}" class="text-indigo-600 hover:text-indigo-700 font-500 ml-1">
-          Create account
+      <!-- Divider -->
+      <div class="my-8 flex items-center gap-4">
+        <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></div>
+        <span class="text-xs text-slate-400 dark:text-slate-600 uppercase tracking-wider">or</span>
+        <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></div>
+      </div>
+
+      <!-- Register link -->
+      <p class="text-center text-sm text-slate-500 dark:text-slate-400">
+        New organization?
+        <a href="{% url 'organizations:register' %}"
+           class="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors">
+          Get started &rarr;
         </a>
       </p>
-
-      {# Demo credentials hint #}
-      <div class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-xl border border-indigo-100 dark:border-indigo-800">
-        <p class="text-xs font-600 text-indigo-700 dark:text-indigo-300 mb-2">Demo Credentials</p>
-        <div class="space-y-1 text-xs text-indigo-600 dark:text-indigo-400">
-          <p><span class="font-500">Admin:</span> admin@demo.maintenancehub.com / Demo@123</p>
-          <p><span class="font-500">Manager:</span> manager@demo.maintenancehub.com / Demo@123</p>
-          <p><span class="font-500">Staff:</span> staff@demo.maintenancehub.com / Demo@123</p>
-          <p><span class="font-500">User:</span> user@demo.maintenancehub.com / Demo@123</p>
-        </div>
-      </div>
 
     </div>
   </div>
 
 </div>
+
+<script>
+  function togglePasswordVisibility() {
+    var input = document.getElementById('id_password');
+    var iconShow = document.getElementById('pw-icon-show');
+    var iconHide = document.getElementById('pw-icon-hide');
+
+    if (input.type === 'password') {
+      input.type = 'text';
+      iconShow.classList.add('hidden');
+      iconHide.classList.remove('hidden');
+    } else {
+      input.type = 'password';
+      iconShow.classList.remove('hidden');
+      iconHide.classList.add('hidden');
+    }
+  }
+</script>
 {% endblock %}

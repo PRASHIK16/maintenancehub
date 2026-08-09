@@ -1,184 +1,442 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}MaintenanceHub — Smart Maintenance Management{% endblock %}
+{% block title %}MaintenanceHub — Operational Intelligence for Facilities{% endblock %}
+{% block meta_description %}Track every maintenance request, hit every SLA, and understand your operations. Built for colleges, hostels, offices, and campuses.{% endblock %}
 
-{% block content %}
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+{% block body %}
+<div class="min-h-screen bg-[#060b18] text-white antialiased">
 
-  {# ── Navigation ── #}
-  <nav class="border-b border-white/10 px-6 py-4">
-    <div class="max-w-6xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
+  <!-- ================================================================
+       NAVBAR
+  ================================================================ -->
+  <nav class="sticky top-0 z-50 border-b border-white/5 bg-[#060b18]/80 backdrop-blur-xl">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-3">
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500">
+            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <span class="text-base font-semibold text-white tracking-tight">MaintenanceHub</span>
+        </a>
+
+        <!-- Nav actions -->
+        <div class="flex items-center gap-4">
+          <a href="{% url 'accounts:login' %}"
+             class="hidden sm:block text-sm font-medium text-white/60 hover:text-white transition-colors duration-150">
+            Sign In
+          </a>
+          <a href="{% url 'organizations:register' %}"
+             class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-400 transition-colors duration-150">
+            Get Started
+          </a>
         </div>
-        <span class="text-white font-700 text-lg">MaintenanceHub</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <a href="{% url 'accounts:login' %}" class="text-white/70 hover:text-white text-sm font-500 transition-colors">
-          Sign In
-        </a>
-        <a href="{% url 'accounts:register' %}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-600 rounded-lg transition-colors">
-          Get Started
-        </a>
+
       </div>
     </div>
   </nav>
 
-  {# ── Hero ── #}
-  <section class="px-6 py-24 text-center">
-    <div class="max-w-4xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/20 border border-indigo-500/30 rounded-full text-indigo-300 text-xs font-600 mb-8">
-        <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></span>
-        Smart Maintenance for Modern Facilities
+
+  <!-- ================================================================
+       HERO
+  ================================================================ -->
+  <section class="relative overflow-hidden px-6 py-32 text-center lg:px-8">
+
+    <!-- Subtle radial glow -->
+    <div class="pointer-events-none absolute inset-0 flex items-start justify-center">
+      <div class="h-[600px] w-[900px] -translate-y-1/4 rounded-full bg-emerald-500/10 blur-[120px]"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-4xl">
+
+      <!-- Pill badge -->
+      <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+        </span>
+        <span class="text-sm font-medium text-emerald-400 tracking-wide">Operational Intelligence Platform</span>
       </div>
-      <h1 class="text-5xl sm:text-6xl font-800 text-white leading-tight mb-6">
-        Maintenance requests,<br>
-        <span class="text-indigo-400">resolved faster.</span>
+
+      <!-- H1 -->
+      <h1 class="text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
+        Maintenance operations,<br>
+        <span class="text-emerald-400">finally under control.</span>
       </h1>
-      <p class="text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-        MaintenanceHub brings tenants, staff, and managers together on one platform —
-        with SLA tracking, smart assignment, and real-time updates.
+
+      <!-- Subtext -->
+      <p class="mt-6 text-xl leading-relaxed text-white/50 max-w-2xl mx-auto">
+        Track every request, hit every SLA, and understand your operations — built for colleges, hostels, offices, and campuses.
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="{% url 'accounts:register' %}"
-           class="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-600 rounded-xl transition-colors text-lg">
+
+      <!-- CTAs -->
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="{% url 'organizations:register' %}"
+           class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-400 transition-all duration-150">
           Start Free Trial
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
         </a>
         <a href="{% url 'accounts:login' %}"
-           class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-600 rounded-xl transition-colors text-lg border border-white/20">
+           class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-8 py-4 text-base font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all duration-150">
           Sign In →
         </a>
       </div>
-      <p class="text-white/30 text-sm mt-6">No credit card required · Works for colleges, hostels, offices & more</p>
+
+      <!-- Social proof line -->
+      <p class="mt-6 text-sm text-white/30 tracking-wide">
+        No credit card required &nbsp;·&nbsp; 5 min setup &nbsp;·&nbsp; Multi-tenant
+      </p>
+
     </div>
   </section>
 
-  {# ── Stats bar ── #}
-  <section class="px-6 py-12 border-y border-white/10">
-    <div class="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
-      <div>
-        <div class="text-3xl font-800 text-indigo-400">4h</div>
-        <div class="text-white/50 text-sm mt-1">Critical SLA</div>
-      </div>
-      <div>
-        <div class="text-3xl font-800 text-indigo-400">5</div>
-        <div class="text-white/50 text-sm mt-1">User Roles</div>
-      </div>
-      <div>
-        <div class="text-3xl font-800 text-indigo-400">10</div>
-        <div class="text-white/50 text-sm mt-1">Ticket States</div>
-      </div>
-      <div>
-        <div class="text-3xl font-800 text-indigo-400">∞</div>
-        <div class="text-white/50 text-sm mt-1">Locations</div>
-      </div>
+
+  <!-- ================================================================
+       STATS BAR
+  ================================================================ -->
+  <div class="border-y border-white/10 bg-white/[0.02]">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <dl class="grid grid-cols-2 gap-px sm:grid-cols-4">
+        {% with stats="10 States|5 Roles|4h Critical SLA|Real-time" %}
+        {% for stat in stats.split:'|' %}{% endfor %}
+        {% endwith %}
+
+        <div class="flex flex-col items-center gap-1 py-8">
+          <dt class="text-3xl font-bold text-emerald-400">10+</dt>
+          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">States</dd>
+        </div>
+        <div class="flex flex-col items-center gap-1 py-8 border-l border-white/10">
+          <dt class="text-3xl font-bold text-emerald-400">5</dt>
+          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">Roles</dd>
+        </div>
+        <div class="flex flex-col items-center gap-1 py-8 border-l border-white/10">
+          <dt class="text-3xl font-bold text-emerald-400">4h</dt>
+          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">Critical SLA</dd>
+        </div>
+        <div class="flex flex-col items-center gap-1 py-8 border-l border-white/10">
+          <dt class="text-3xl font-bold text-emerald-400">Live</dt>
+          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">Real-time</dd>
+        </div>
+      </dl>
     </div>
-  </section>
+  </div>
 
-  {# ── Features grid ── #}
-  <section class="px-6 py-20">
-    <div class="max-w-5xl mx-auto">
-      <h2 class="text-3xl font-700 text-white text-center mb-4">Everything you need</h2>
-      <p class="text-white/50 text-center mb-12">Built for facilities, colleges, hostels, apartments, and offices</p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- ================================================================
+       HOW IT WORKS
+  ================================================================ -->
+  <section class="py-24 px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
 
-        {% for feature in features %}
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="w-10 h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-4 text-2xl">
-            {{ feature.icon }}
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-white sm:text-4xl">
+          From complaint to resolved — <span class="text-emerald-400">in minutes</span>
+        </h2>
+        <p class="mt-4 text-lg text-white/40">A streamlined three-step flow that keeps everyone aligned.</p>
+      </div>
+
+      <div class="relative">
+        <!-- Connector line (desktop) -->
+        <div class="hidden lg:block absolute top-12 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-8">
+
+          <!-- Step 1 -->
+          <div class="relative flex flex-col items-center text-center">
+            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/30">
+              1
+            </div>
+            <div class="mt-6">
+              <h3 class="text-xl font-semibold text-white mb-3">Report</h3>
+              <p class="text-white/50 leading-relaxed">
+                Resident scans a QR code or opens the portal, submits the issue with a photo and priority level — in under 60 seconds.
+              </p>
+            </div>
           </div>
-          <h3 class="text-white font-600 mb-2">{{ feature.title }}</h3>
-          <p class="text-white/50 text-sm leading-relaxed">{{ feature.description }}</p>
-        </div>
-        {% empty %}
-        {# Static fallback features #}
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="text-2xl mb-4">🎫</div>
-          <h3 class="text-white font-600 mb-2">Smart Ticketing</h3>
-          <p class="text-white/50 text-sm leading-relaxed">10-stage lifecycle with controlled state machine. Nothing slips through.</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="text-2xl mb-4">⏱</div>
-          <h3 class="text-white font-600 mb-2">SLA Management</h3>
-          <p class="text-white/50 text-sm leading-relaxed">Configurable SLAs per priority. Auto-alerts before breaches occur.</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="text-2xl mb-4">👥</div>
-          <h3 class="text-white font-600 mb-2">Role-Based Access</h3>
-          <p class="text-white/50 text-sm leading-relaxed">5 distinct roles — Admin, Manager, Staff, User and Super Admin.</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="text-2xl mb-4">📊</div>
-          <h3 class="text-white font-600 mb-2">Real-time Analytics</h3>
-          <p class="text-white/50 text-sm leading-relaxed">Resolution rates, SLA compliance, staff performance. Data-driven decisions.</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="text-2xl mb-4">🔔</div>
-          <h3 class="text-white font-600 mb-2">Smart Notifications</h3>
-          <p class="text-white/50 text-sm leading-relaxed">Async Celery-powered notifications. Right person, right time.</p>
-        </div>
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-          <div class="text-2xl mb-4">📱</div>
-          <h3 class="text-white font-600 mb-2">Mobile-first Design</h3>
-          <p class="text-white/50 text-sm leading-relaxed">Works beautifully on any screen. Field staff love it.</p>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
 
-  {# ── How it works ── #}
-  <section class="px-6 py-20 border-t border-white/10">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-700 text-white text-center mb-4">How it works</h2>
-      <p class="text-white/50 text-center mb-12">Three steps from problem to solved</p>
+          <!-- Step 2 -->
+          <div class="relative flex flex-col items-center text-center">
+            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/30">
+              2
+            </div>
+            <div class="mt-6">
+              <h3 class="text-xl font-semibold text-white mb-3">Assign</h3>
+              <p class="text-white/50 leading-relaxed">
+                Manager triages the ticket, assigns it to the right team or technician, and the SLA clock starts automatically.
+              </p>
+            </div>
+          </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-        <div class="text-center">
-          <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white text-xl font-700">1</div>
-          <h3 class="text-white font-600 mb-2">Report</h3>
-          <p class="text-white/50 text-sm">Residents submit issues with photos, location, and priority in under a minute.</p>
-        </div>
-        <div class="text-center">
-          <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white text-xl font-700">2</div>
-          <h3 class="text-white font-600 mb-2">Assign</h3>
-          <p class="text-white/50 text-sm">Managers triage and assign to the right staff member. SLA clock starts.</p>
-        </div>
-        <div class="text-center">
-          <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white text-xl font-700">3</div>
-          <h3 class="text-white font-600 mb-2">Resolve</h3>
-          <p class="text-white/50 text-sm">Staff resolves, resident verifies, ticket closes. Full audit trail kept.</p>
+          <!-- Step 3 -->
+          <div class="relative flex flex-col items-center text-center">
+            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/30">
+              3
+            </div>
+            <div class="mt-6">
+              <h3 class="text-xl font-semibold text-white mb-3">Resolve</h3>
+              <p class="text-white/50 leading-relaxed">
+                Staff marks the ticket resolved, resident verifies the fix, and analytics update in real-time across your dashboard.
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   </section>
 
-  {# ── CTA ── #}
-  <section class="px-6 py-20">
-    <div class="max-w-2xl mx-auto text-center bg-indigo-600/20 border border-indigo-500/30 rounded-3xl p-12">
-      <h2 class="text-3xl font-700 text-white mb-4">Ready to get started?</h2>
-      <p class="text-white/60 mb-8">Join facilities teams that resolve issues 3× faster with MaintenanceHub.</p>
-      <a href="{% url 'accounts:register' %}"
-         class="inline-block px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-700 rounded-xl transition-colors text-lg">
-        Create Your Organization →
-      </a>
+
+  <!-- ================================================================
+       FEATURES GRID
+  ================================================================ -->
+  <section class="py-24 px-6 lg:px-8 border-t border-white/5">
+    <div class="mx-auto max-w-7xl">
+
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-white sm:text-4xl">Everything your team needs</h2>
+        <p class="mt-4 text-lg text-white/40">Purpose-built features for serious facility operations.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Smart Ticketing -->
+        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2">Smart Ticketing</h3>
+          <p class="text-sm text-white/45 leading-relaxed">10-stage lifecycle from submission to closure. Every status change is logged, timestamped, and visible to all stakeholders.</p>
+        </div>
+
+        <!-- SLA Enforcement -->
+        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2">SLA Enforcement</h3>
+          <p class="text-sm text-white/45 leading-relaxed">Automatic alerts before breach. Priority-tiered response windows with escalation paths to keep nothing falling through the cracks.</p>
+        </div>
+
+        <!-- Role-Based Access -->
+        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2">Role-Based Access</h3>
+          <p class="text-sm text-white/45 leading-relaxed">5 distinct roles — Admin, Manager, Staff, Resident, and Viewer — each with tailored dashboards and permissions.</p>
+        </div>
+
+        <!-- Real-time Analytics -->
+        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2">Real-time Analytics</h3>
+          <p class="text-sm text-white/45 leading-relaxed">Live metrics sliced by location, category, and staff. Identify bottlenecks and track resolution trends before they become problems.</p>
+        </div>
+
+        <!-- Asset Registry -->
+        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2">Asset Registry</h3>
+          <p class="text-sm text-white/45 leading-relaxed">Maintain a complete inventory of facility assets, linked directly to tickets. Full service history at every technician's fingertips.</p>
+        </div>
+
+        <!-- Preventive Maintenance -->
+        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-2">Preventive Maintenance</h3>
+          <p class="text-sm text-white/45 leading-relaxed">Schedule-driven maintenance tasks that auto-generate tickets. Reduce reactive repairs and extend the life of your assets.</p>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  {# ── Footer ── #}
-  <footer class="border-t border-white/10 px-6 py-8">
-    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/40 text-sm">
-      <span>© 2024 MaintenanceHub. Built with Django &amp; HTMX.</span>
-      <div class="flex gap-6">
-        <a href="{% url 'accounts:login' %}" class="hover:text-white/70">Sign In</a>
-        <a href="{% url 'accounts:register' %}" class="hover:text-white/70">Register</a>
+
+  <!-- ================================================================
+       USE CASES
+  ================================================================ -->
+  <section class="py-20 px-6 lg:px-8 border-t border-white/5">
+    <div class="mx-auto max-w-7xl">
+
+      <div class="text-center mb-14">
+        <h2 class="text-3xl font-bold text-white sm:text-4xl">Built for every facility</h2>
+        <p class="mt-4 text-lg text-white/40">One platform, many contexts. Customise it for your environment.</p>
       </div>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+        <!-- Colleges -->
+        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-4">Colleges</h3>
+          <ul class="space-y-2.5 text-sm text-white/45">
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Manage hostels, labs, and campus infrastructure
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Student-facing QR portal for quick submissions
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Department-level reporting for audits
+            </li>
+          </ul>
+        </div>
+
+        <!-- Hostels -->
+        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-4">Hostels</h3>
+          <ul class="space-y-2.5 text-sm text-white/45">
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Per-room, per-block ticket categorisation
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Resident satisfaction tracking post-resolution
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Warden dashboards with live status overview
+            </li>
+          </ul>
+        </div>
+
+        <!-- Office Buildings -->
+        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-4">Office Buildings</h3>
+          <ul class="space-y-2.5 text-sm text-white/45">
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Floor-level and zone-based ticket routing
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Vendor and contractor management
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Compliance-ready audit trails
+            </li>
+          </ul>
+        </div>
+
+        <!-- Residential Communities -->
+        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
+          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-4">Residential Communities</h3>
+          <ul class="space-y-2.5 text-sm text-white/45">
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Society-wide common area maintenance tracking
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Transparent status updates to residents
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 text-emerald-500">✓</span>
+              Committee reporting and performance reviews
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       CTA SECTION
+  ================================================================ -->
+  <section class="py-24 px-6 lg:px-8">
+    <div class="mx-auto max-w-4xl">
+      <div class="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-white/[0.02] to-transparent p-12 text-center">
+
+        <!-- Background glow -->
+        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div class="h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl"></div>
+        </div>
+
+        <div class="relative">
+          <h2 class="text-3xl font-bold text-white sm:text-4xl">
+            Ready to transform your operations?
+          </h2>
+          <p class="mt-4 text-lg text-white/50">
+            Join facilities teams who've moved from spreadsheets and WhatsApp groups to a system that actually works.
+          </p>
+          <div class="mt-10">
+            <a href="{% url 'organizations:register' %}"
+               class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 transition-all duration-150">
+              Create Your Organization
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================================================================
+       FOOTER
+  ================================================================ -->
+  <footer class="border-t border-white/5 py-10 px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-white/30">&copy; 2026 MaintenanceHub. All rights reserved.</p>
+      <nav class="flex items-center gap-6">
+        <a href="{% url 'accounts:login' %}" class="text-sm text-white/30 hover:text-white/60 transition-colors">Sign In</a>
+        <a href="{% url 'organizations:register' %}" class="text-sm text-white/30 hover:text-white/60 transition-colors">Register</a>
+      </nav>
     </div>
   </footer>
 
