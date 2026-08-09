@@ -48,12 +48,11 @@
   {% block body %}{% endblock %}
 
   {# Django messages → Toasts #}
-  {% load messages_tags %}
   {% if messages %}
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       {% for message in messages %}
-      showToast({{ message.message|escapejs|jsonify }}, '{{ message.tags }}');
+      showToast("{{ message.message|escapejs }}", '{{ message.tags }}');
       {% endfor %}
     });
   </script>
