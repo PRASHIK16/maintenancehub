@@ -2,98 +2,134 @@
 {% with user=request.user %}
 <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
 
-  {# Logo #}
-  <div class="flex items-center gap-3 px-5 py-4 border-b border-[var(--surface-border)]">
-    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
+  {# ── Logo Area ─────────────────────────────────────────────────── #}
+  <div class="flex items-center gap-3 px-4 py-4 border-b border-white/10">
+    <div class="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center flex-shrink-0">
       <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-        <path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94
+                 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724
+                 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0
+                 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0
+                 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0
+                 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0
+                 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
       </svg>
     </div>
     <div class="flex-1 min-w-0">
-      <p class="text-sm font-700 text-[var(--text-primary)] truncate">MaintenanceHub</p>
+      <p class="text-sm font-semibold text-white truncate">MaintenanceHub</p>
       {% if user_org %}
-      <p class="text-xs text-[var(--text-tertiary)] truncate">{{ user_org.name }}</p>
+      <p class="text-xs text-white/40 truncate">{{ user_org.name }}</p>
       {% endif %}
     </div>
-    {# Mobile close #}
-    <button class="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded"
-            onclick="closeSidebar()" aria-label="Close sidebar">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+    {# Mobile close button — hidden on md+ #}
+    <button class="md:hidden text-white/60 hover:text-white p-1 rounded transition-colors"
+            onclick="document.getElementById('sidebar').classList.remove('open');
+                     document.getElementById('sidebar-overlay').classList.add('hidden')"
+            aria-label="Close sidebar">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
       </svg>
     </button>
   </div>
 
-  {# Navigation #}
-  <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+  {# ── Navigation (scrollable middle) ───────────────────────────── #}
+  <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
 
-    {# Common nav item #}
-    <a href="{% url 'dashboard:home' %}" class="sidebar-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+    {# Always-visible items #}
+    <a href="{% url 'dashboard:home' %}"
+       class="sidebar-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0
+                 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
       </svg>
       <span>Dashboard</span>
     </a>
 
-    <a href="{% url 'dashboard:my-tickets' %}" class="sidebar-nav-item {% if 'my-tickets' in request.path %}active{% endif %}">
+    <a href="{% url 'dashboard:my-tickets' %}"
+       class="sidebar-nav-item {% if 'my-tickets' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0
+                 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
       </svg>
-      <span>My Tickets</span>
+      <span>My Requests</span>
     </a>
 
+    {# ── OPERATIONS section (managers) ─────────────────────────── #}
     {% if user.can_manage %}
-    {# Management section #}
-    <div class="px-5 pt-4 pb-1">
-      <p class="text-xs font-600 text-[var(--text-tertiary)] uppercase tracking-wider">Management</p>
-    </div>
+    <p class="text-xs font-semibold text-white/30 uppercase tracking-wider px-4 mt-4 mb-1">Operations</p>
 
-    <a href="{% url 'dashboard:all-tickets' %}" class="sidebar-nav-item {% if 'all-tickets' in request.path %}active{% endif %}">
+    <a href="{% url 'dashboard:all-tickets' %}"
+       class="sidebar-nav-item {% if 'all-tickets' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
       </svg>
       <span>All Tickets</span>
     </a>
 
-    <a href="{% url 'dashboard:kanban' %}" class="sidebar-nav-item {% if 'kanban' in request.path %}active{% endif %}">
+    <a href="{% url 'dashboard:kanban' %}"
+       class="sidebar-nav-item {% if 'kanban' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0
+                 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0
+                 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
       </svg>
       <span>Kanban Board</span>
     </a>
 
-    <a href="{% url 'analytics:overview' %}" class="sidebar-nav-item {% if 'analytics' in request.path %}active{% endif %}">
+    <a href="{% url 'analytics:overview' %}"
+       class="sidebar-nav-item {% if 'analytics' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0
+                 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0
+                 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
       </svg>
       <span>Analytics</span>
     </a>
     {% endif %}
 
+    {# ── ADMINISTRATION section (admins) ───────────────────────── #}
     {% if user.can_administer %}
-    {# Admin section #}
-    <div class="px-5 pt-4 pb-1">
-      <p class="text-xs font-600 text-[var(--text-tertiary)] uppercase tracking-wider">Administration</p>
-    </div>
+    <p class="text-xs font-semibold text-white/30 uppercase tracking-wider px-4 mt-4 mb-1">Administration</p>
 
-    <a href="{% url 'assets:list' %}" class="sidebar-nav-item {% if 'assets' in request.path %}active{% endif %}">
+    <a href="{% url 'assets:list' %}"
+       class="sidebar-nav-item {% if 'assets' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0
+                 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0
+                 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782
+                 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
       </svg>
       <span>Assets</span>
     </a>
 
-    <a href="{% url 'maintenance:schedules' %}" class="sidebar-nav-item {% if 'maintenance' in request.path %}active{% endif %}">
+    <a href="{% url 'maintenance:list' %}"
+       class="sidebar-nav-item {% if 'maintenance' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
-      <span>Maintenance Schedules</span>
+      <span>Maintenance</span>
     </a>
 
-    <a href="{% url 'organizations:settings' %}" class="sidebar-nav-item {% if 'organizations' in request.path %}active{% endif %}">
+    <a href="{% url 'organizations:settings' %}"
+       class="sidebar-nav-item {% if 'settings' in request.path or 'organizations' in request.path %}active{% endif %}">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0
+                 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0
+                 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0
+                 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0
+                 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0
+                 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0
+                 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0
+                 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
       </svg>
       <span>Settings</span>
@@ -102,22 +138,27 @@
 
   </nav>
 
-  {# User profile footer #}
-  <div class="border-t border-[var(--surface-border)] p-4">
+  {# ── User Footer ───────────────────────────────────────────────── #}
+  <div class="border-t border-white/10 p-4">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-600 flex-shrink-0">
+      {# Initials avatar — emerald bg #}
+      <div class="w-9 h-9 rounded-full bg-[#059669] flex items-center justify-center
+                  text-white text-sm font-semibold flex-shrink-0 select-none"
+           aria-hidden="true">
         {{ user.initials }}
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-500 text-[var(--text-primary)] truncate">{{ user.display_name }}</p>
-        <p class="text-xs text-[var(--text-tertiary)] truncate">{{ user.get_role_display }}</p>
+        <p class="text-sm font-medium text-white truncate">{{ user.display_name }}</p>
+        <p class="text-xs text-white/40 truncate">{{ user.get_role_display }}</p>
       </div>
+      {# Logout icon button #}
       <a href="{% url 'accounts:logout' %}"
-         class="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] p-1 rounded transition-colors"
+         class="text-white/40 hover:text-white/80 p-1.5 rounded-md transition-colors"
          title="Sign out"
          aria-label="Sign out">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
         </svg>
       </a>
     </div>

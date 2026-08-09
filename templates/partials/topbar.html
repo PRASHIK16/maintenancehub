@@ -1,80 +1,170 @@
 {% load static %}
-<header class="h-14 flex items-center justify-between px-4 md:px-6 border-b border-[var(--surface-border)] bg-[var(--surface-card)] flex-shrink-0">
+<header class="topbar h-14 flex items-center gap-3 px-4 md:px-6
+               border-b border-[var(--surface-border)] bg-[var(--surface-card)] flex-shrink-0"
+        role="banner">
 
-  {# Mobile menu button #}
-  <button class="md:hidden p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)] transition-colors"
-          onclick="openSidebar()" aria-label="Open navigation menu">
-    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-    </svg>
-  </button>
+  {# ── LEFT: hamburger (mobile) + breadcrumb (desktop) ─────────── #}
+  <div class="flex items-center gap-3 flex-shrink-0">
 
-  {# Global search #}
-  <div class="flex-1 max-w-lg mx-4">
-    <div class="search-input"
-         hx-get="{% url 'dashboard:search' %}"
-         hx-trigger="input changed delay:300ms from:[name=q]"
-         hx-target="#search-results"
-         hx-swap="innerHTML">
-      <svg class="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+    {# Mobile hamburger — opens sidebar overlay #}
+    <button class="md:hidden p-2 -ml-1 rounded-lg text-[var(--text-secondary)]
+                   hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)] transition-colors"
+            onclick="document.getElementById('sidebar').classList.add('open');
+                     document.getElementById('sidebar-overlay').classList.remove('hidden')"
+            aria-label="Open navigation menu">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
-      <input type="search" name="q" placeholder="Search tickets, locations, assets…"
-             class="flex-1 bg-transparent border-none outline-none text-sm text-[var(--text-primary)] placeholder-[var(--text-tertiary)]"
-             autocomplete="off" role="searchbox" aria-label="Search">
-      <span class="hidden sm:flex items-center gap-1 text-xs text-[var(--text-tertiary)] bg-[var(--color-neutral-100)] px-1.5 py-0.5 rounded">
-        <kbd>⌘</kbd><kbd>K</kbd>
-      </span>
-    </div>
-    <div id="search-results"></div>
+    </button>
+
+    {# Desktop breadcrumb — hidden on mobile #}
+    {% if breadcrumbs %}
+    <nav class="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
+      {% for crumb in breadcrumbs %}
+        {% if not forloop.last %}
+          <a href="{{ crumb.url }}"
+             class="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors truncate max-w-[140px]">
+            {{ crumb.label }}
+          </a>
+          <svg class="w-3.5 h-3.5 text-[var(--text-tertiary)] flex-shrink-0"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        {% else %}
+          <span class="text-[var(--text-primary)] font-medium truncate max-w-[200px]">
+            {{ crumb.label }}
+          </span>
+        {% endif %}
+      {% endfor %}
+    </nav>
+    {% else %}
+    {# Spacer when no breadcrumb — keeps centre search truly centred on desktop #}
+    <div class="hidden md:block w-px"></div>
+    {% endif %}
   </div>
 
-  {# Right actions #}
-  <div class="flex items-center gap-2">
+  {# ── CENTRE: Global search ─────────────────────────────────────── #}
+  <div class="flex-1 flex justify-center px-2">
+    <div class="relative w-full max-w-lg">
+      {# Search icon inside the input via absolute positioning #}
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)] pointer-events-none"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+      </svg>
 
-    {# Create ticket button #}
+      <input type="search"
+             name="q"
+             class="search-input"
+             placeholder="Search tickets, assets, locations... ⌘K"
+             autocomplete="off"
+             spellcheck="false"
+             role="searchbox"
+             aria-label="Search tickets, assets and locations"
+             hx-get="{% url 'dashboard:search' %}"
+             hx-trigger="input changed delay:300ms"
+             hx-target="#search-results"
+             hx-swap="innerHTML"
+             hx-indicator="#search-spinner">
+
+      {# Spinner shown while HTMX request is in flight #}
+      <span id="search-spinner"
+            class="htmx-indicator absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+        <svg class="w-4 h-4 text-[var(--text-tertiary)] animate-spin"
+             fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
+      </span>
+
+      {# Search results dropdown — populated by HTMX #}
+      <div id="search-results"
+           class="absolute left-0 right-0 top-full mt-1.5 z-50
+                  bg-[var(--surface-card)] border border-[var(--surface-border)]
+                  rounded-xl shadow-xl overflow-hidden empty:hidden">
+      </div>
+    </div>
+  </div>
+
+  {# ── RIGHT: actions ────────────────────────────────────────────── #}
+  <div class="flex items-center gap-1.5 flex-shrink-0">
+
+    {# New Request — visible on sm+ #}
     <a href="{% url 'dashboard:create-ticket' %}"
-       class="btn btn-primary btn-sm hidden sm:inline-flex">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+       class="btn btn-primary btn-sm hidden sm:inline-flex gap-1.5">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
       </svg>
       <span>New Request</span>
     </a>
 
-    {# Notifications #}
-    <div class="relative" x-data="{ open: false }">
-      <button class="relative p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)] transition-colors"
+    {# Notifications bell #}
+    <div class="relative">
+      <button class="relative p-2 rounded-lg text-[var(--text-secondary)]
+                     hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)] transition-colors"
+              aria-label="Notifications"
               hx-get="{% url 'notifications:panel' %}"
               hx-target="#notifications-panel"
               hx-swap="innerHTML"
-              aria-label="Notifications">
+              onclick="document.getElementById('notifications-panel').classList.toggle('hidden')">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0
+                   00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0
+                   .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
         </svg>
+        {# Unread count badge — red dot #}
         {% if unread_notifications_count %}
-        <span class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs font-600 rounded-full flex items-center justify-center">
+        <span class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1
+                     bg-red-500 text-white text-[10px] font-semibold rounded-full
+                     flex items-center justify-center leading-none">
           {% if unread_notifications_count > 9 %}9+{% else %}{{ unread_notifications_count }}{% endif %}
         </span>
+        {% else %}
+        {# Quiet dot when count is zero but badge is still wanted #}
         {% endif %}
       </button>
 
-      {# Notification panel dropdown #}
+      {# Notification panel — toggled by button above, populated by HTMX #}
       <div id="notifications-panel"
-           class="absolute right-0 mt-2 w-96 bg-[var(--surface-card)] border border-[var(--surface-border)] rounded-xl shadow-xl z-50">
+           class="hidden absolute right-0 mt-2 w-96 max-h-[480px] overflow-y-auto
+                  bg-[var(--surface-card)] border border-[var(--surface-border)]
+                  rounded-xl shadow-xl z-50">
       </div>
     </div>
 
-    {# Theme toggle #}
+    {# Theme toggle — sun (light) / moon (dark) #}
     <button onclick="toggleTheme()"
-            class="p-2 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)] transition-colors"
-            aria-label="Toggle dark mode">
-      <svg class="w-5 h-5 dark-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-      </svg>
+            class="p-2 rounded-lg text-[var(--text-secondary)]
+                   hover:bg-[var(--color-neutral-100)] hover:text-[var(--text-primary)] transition-colors"
+            aria-label="Toggle colour scheme"
+            title="Toggle dark mode">
+      {# Moon — visible in light mode; clicking switches to dark #}
       <svg class="w-5 h-5 light-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+      {# Sun — visible in dark mode; clicking switches to light #}
+      <svg class="w-5 h-5 dark-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707
+                 m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
       </svg>
     </button>
 
+    {# User avatar — emerald initials circle, links to profile #}
+    {% with user=request.user %}
+    <a href="{% url 'accounts:profile' %}"
+       class="w-8 h-8 rounded-full bg-[#059669] flex items-center justify-center
+              text-white text-sm font-semibold flex-shrink-0 select-none
+              hover:ring-2 hover:ring-[#059669] hover:ring-offset-2
+              hover:ring-offset-[var(--surface-card)] transition-all"
+       title="{{ user.display_name }}"
+       aria-label="Your profile">
+      {{ user.initials }}
+    </a>
+    {% endwith %}
+
   </div>
+
 </header>
