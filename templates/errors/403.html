@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied — MaintenanceHub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center p-6">
+  <div class="text-center max-w-sm">
+    <div class="text-8xl font-800 text-[var(--text-tertiary)] opacity-20 select-none mb-4">403</div>
+    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+      <svg class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
+    </div>
+    <h1 class="text-2xl font-700 text-[var(--text-primary)] mb-2">Access denied</h1>
+    <p class="text-[var(--text-secondary)] mb-8">
+      You don't have permission to view this page. Contact your administrator if you believe this is an error.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/" class="btn btn-primary">Go to Dashboard</a>
+      <button onclick="history.back()" class="btn btn-secondary">Go Back</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
