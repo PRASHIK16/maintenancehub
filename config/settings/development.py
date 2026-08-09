@@ -25,6 +25,20 @@ except ImportError:
 # Relaxed CSP for development
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Use local memory cache in dev (no Redis required)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+
+# Disable Channels WebSocket layer in dev (no Redis required)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
 # Show emails in console
 CELERY_TASK_ALWAYS_EAGER = False  # Set True to run Celery tasks synchronously in tests
 
