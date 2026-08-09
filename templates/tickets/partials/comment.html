@@ -2,7 +2,7 @@
 {# Rendered and injected by HTMX after a comment POST #}
 <div id="comment-{{ comment.pk }}"
      class="flex gap-3 {% if comment.is_internal %}bg-violet-50 border border-violet-100 rounded-xl p-3{% endif %}">
-  <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-700 text-indigo-700 flex-shrink-0">
+  <div class="w-8 h-8 rounded-full bg-[#059669]/15 flex items-center justify-center text-sm font-700 text-[#059669] flex-shrink-0">
     {{ comment.author.initials }}
   </div>
   <div class="flex-1 min-w-0">

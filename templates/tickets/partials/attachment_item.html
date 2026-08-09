@@ -1,7 +1,7 @@
 {% load humanize %}
 {# Rendered and injected by HTMX after attachment upload #}
 <a href="{{ attachment.file.url }}" target="_blank"
-   class="flex flex-col items-center gap-2 p-3 border border-[var(--surface-border)] rounded-xl hover:border-indigo-300 hover:bg-indigo-50 transition-colors group">
+   class="flex flex-col items-center gap-2 p-3 border border-[var(--surface-border)] rounded-xl hover:border-[#059669]/30 hover:bg-[#059669]/5 transition-colors group">
   {% if attachment.is_image %}
   <img src="{{ attachment.file.url }}" alt="{{ attachment.original_filename }}"
        class="w-full h-20 object-cover rounded-lg">
@@ -12,7 +12,7 @@
     </svg>
   </div>
   {% endif %}
-  <span class="text-xs text-[var(--text-secondary)] truncate w-full text-center group-hover:text-indigo-600">
+  <span class="text-xs text-[var(--text-secondary)] truncate w-full text-center group-hover:text-[#059669]">
     {{ attachment.original_filename }}
   </span>
   <span class="text-xs text-[var(--text-tertiary)]">{{ attachment.file_size_display }}</span>

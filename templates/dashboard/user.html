@@ -3,6 +3,7 @@
 
 {% block title %}My Dashboard{% endblock %}
 
+{% now "H" as current_hour %}
 {% block content %}
 <div class="space-y-6 fade-in">
 
@@ -10,7 +11,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
       <h1 class="text-2xl font-700 text-[var(--text-primary)]">
-        Good {% now "G" as hour %}{% if hour < 12 %}morning{% elif hour < 17 %}afternoon{% else %}evening{% endif %}, {{ request.user.display_name }}
+        {% if current_hour < "12" %}Good morning{% elif current_hour < "18" %}Good afternoon{% else %}Good evening{% endif %}, {{ request.user.display_name }}
       </h1>
       <p class="text-[var(--text-secondary)] text-sm mt-1">
         Track and manage your maintenance requests.
@@ -56,7 +57,7 @@
   <div class="card">
     <div class="card-header flex items-center justify-between">
       <span>Your Active Requests</span>
-      <a href="{% url 'dashboard:my-tickets' %}" class="text-sm text-indigo-600 hover:text-indigo-700 font-500">
+      <a href="{% url 'dashboard:my-tickets' %}" class="text-sm text-[#059669] hover:text-[#10b981] font-500">
         All tickets →
       </a>
     </div>
@@ -79,7 +80,7 @@
         <div class="flex-1 min-w-0">
           <div class="flex items-start justify-between gap-3">
             <div>
-              <p class="font-500 text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors">
+              <p class="font-500 text-[var(--text-primary)] group-hover:text-[#059669] transition-colors">
                 {{ ticket.title }}
               </p>
               <div class="flex items-center gap-3 mt-1 flex-wrap">
