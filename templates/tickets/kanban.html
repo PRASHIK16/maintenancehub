@@ -1,0 +1,122 @@
+{% extends "layout/app.html" %}
+{% load static humanize %}
+
+{% block title %}Kanban Board{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in">
+
+  {# Header #}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-700 text-[var(--text-primary)]">Kanban Board</h1>
+      <p class="text-[var(--text-secondary)] text-sm mt-1">Visualize ticket flow across stages</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'dashboard:all-tickets' %}" class="btn btn-secondary btn-sm">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+        Table View
+      </a>
+      <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-primary btn-sm">
+        + New Ticket
+      </a>
+    </div>
+  </div>
+
+  {# Kanban board — horizontal scroll on mobile #}
+  <div class="kanban-board" style="min-height: calc(100vh - 220px);">
+
+    {% for column in columns %}
+    <div class="kanban-column">
+      {# Column header #}
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full
+            {% if column.status == 'submitted' %}bg-blue-500
+            {% elif column.status == 'triaged' %}bg-purple-500
+            {% elif column.status == 'assigned' %}bg-indigo-500
+            {% elif column.status == 'in_progress' %}bg-amber-500
+            {% elif column.status == 'on_hold' %}bg-gray-400
+            {% elif column.status == 'resolved' %}bg-green-500
+            {% endif %}"></div>
+          <h3 class="text-sm font-700 text-[var(--text-primary)]">{{ column.label }}</h3>
+        </div>
+        <span class="text-xs bg-[var(--surface-secondary)] text-[var(--text-tertiary)] px-2 py-0.5 rounded-full font-600">
+          {{ column.count }}
+        </span>
+      </div>
+
+      {# Cards #}
+      <div class="space-y-2.5 min-h-[200px]">
+        {% for ticket in column.tickets %}
+        <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
+           class="kanban-card block hover:shadow-md transition-shadow group">
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <span class="font-mono text-xs text-[var(--text-tertiary)]">{{ ticket.ticket_number }}</span>
+            <span class="badge-priority badge-priority-{{ ticket.priority }} text-xs flex-shrink-0">
+              {{ ticket.get_priority_display }}
+            </span>
+          </div>
+          <p class="text-sm font-600 text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors line-clamp-2">
+            {{ ticket.title }}
+          </p>
+          <div class="mt-2 space-y-1">
+            {% if ticket.location %}
+            <p class="text-xs text-[var(--text-tertiary)] truncate">📍 {{ ticket.location.name }}</p>
+            {% endif %}
+            {% if ticket.category %}
+            <p class="text-xs text-[var(--text-tertiary)]">{{ ticket.category.name }}</p>
+            {% endif %}
+          </div>
+          <div class="mt-3 pt-3 border-t border-[var(--surface-border)] flex items-center justify-between">
+            {% if ticket.assigned_to %}
+            <div class="flex items-center gap-1.5">
+              <div class="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-700 text-indigo-700">
+                {{ ticket.assigned_to.initials }}
+              </div>
+              <span class="text-xs text-[var(--text-tertiary)] truncate max-w-[80px]">{{ ticket.assigned_to.display_name }}</span>
+            </div>
+            {% else %}
+            <span class="text-xs text-[var(--text-tertiary)] italic">Unassigned</span>
+            {% endif %}
+            {% if ticket.sla_resolution_due %}
+            <span class="sla-{{ ticket.sla_status }} text-xs">
+              {{ ticket.sla_resolution_due|date:"d M" }}
+            </span>
+            {% endif %}
+          </div>
+          {% if ticket.is_overdue %}
+          <div class="mt-1.5 text-xs text-red-600 font-600 flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            OVERDUE
+          </div>
+          {% endif %}
+        </a>
+        {% empty %}
+        <div class="text-center py-8 text-xs text-[var(--text-tertiary)]">
+          <div class="w-8 h-8 bg-[var(--surface-secondary)] rounded-lg flex items-center justify-center mx-auto mb-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          No tickets
+        </div>
+        {% endfor %}
+
+        {% if column.count > 20 %}
+        <a href="{% url 'dashboard:all-tickets' %}?status={{ column.status }}"
+           class="block text-center text-xs text-indigo-600 hover:text-indigo-700 py-2 font-500">
+          +{{ column.count|add:"-20" }} more — View all →
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}
