@@ -1,0 +1,78 @@
+{% comment %}
+Shared settings layout — extend this, set {% block settings_content %} and `section` var.
+{% endcomment %}
+{% extends "layout/app.html" %}
+{% load static %}
+
+{% block title %}Settings — {{ org.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in">
+
+  {# Page header #}
+  <div>
+    <h1 class="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Settings</h1>
+    <p class="text-sm text-[var(--text-secondary)] mt-1">
+      Manage {{ org.name }}'s configuration and preferences.
+    </p>
+  </div>
+
+  <div class="flex gap-6 items-start">
+
+    {# ── Left nav ──────────────────────────────────────────────────── #}
+    <nav class="w-52 flex-shrink-0 space-y-0.5 sticky top-4">
+
+      <a href="{% url 'organizations:settings' %}"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                {% if section == 'profile' %}bg-[#059669]/10 text-[#059669]{% else %}text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]{% endif %}">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        </svg>
+        Organization
+      </a>
+
+      <a href="{% url 'organizations:locations' %}"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                {% if section == 'locations' %}bg-[#059669]/10 text-[#059669]{% else %}text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]{% endif %}">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        Locations
+      </a>
+
+      <a href="{% url 'organizations:teams' %}"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                {% if section == 'teams' %}bg-[#059669]/10 text-[#059669]{% else %}text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]{% endif %}">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        Teams
+      </a>
+
+      {# Divider #}
+      <div class="pt-3 mt-3 border-t border-[var(--border-default)]">
+        <p class="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider px-3 mb-1">Coming soon</p>
+        <span class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[var(--text-tertiary)] cursor-default">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+          </svg>
+          QR Codes
+        </span>
+        <span class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[var(--text-tertiary)] cursor-default">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+          </svg>
+          API Keys
+        </span>
+      </div>
+    </nav>
+
+    {# ── Main content ──────────────────────────────────────────────── #}
+    <div class="flex-1 min-w-0">
+      {% block settings_content %}{% endblock %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
