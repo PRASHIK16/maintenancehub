@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ schedule.title }} — Maintenance{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-content">
+    <nav class="breadcrumb mb-1">
+      <a href="{% url 'maintenance:list' %}" class="breadcrumb-link">Maintenance</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>{{ schedule.title }}</span>
+    </nav>
+    <h1 class="page-title">{{ schedule.title }}</h1>
+    <p class="page-subtitle">{{ schedule.get_frequency_display }} maintenance schedule</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-6">
+    <div class="card">
+      <div class="card-header">Schedule Details</div>
+      <div class="card-body">
+        {% if schedule.description %}
+        <p class="text-sm text-[var(--text-secondary)] mb-4">{{ schedule.description }}</p>
+        {% endif %}
+        <dl class="detail-grid">
+          <dt>Status</dt>
+          <dd>
+            <span class="badge {% if schedule.status == 'active' %}badge-success{% elif schedule.status == 'overdue' %}badge-danger{% else %}badge-neutral{% endif %}">
+              {{ schedule.get_status_display }}
+            </span>
+          </dd>
+          <dt>Frequency</dt><dd>{{ schedule.get_frequency_display }}</dd>
+          <dt>Asset</dt><dd>{{ schedule.asset.name|default:"—" }}</dd>
+          <dt>Location</dt><dd>{{ schedule.location.full_path|default:"—" }}</dd>
+          <dt>Team</dt><dd>{{ schedule.assigned_team.name|default:"Unassigned" }}</dd>
+          <dt>Next Due</dt><dd>{{ schedule.next_due_at|date:"M d, Y H:i"|default:"Not set" }}</dd>
+          <dt>Last Done</dt><dd>{{ schedule.last_done_at|date:"M d, Y H:i"|default:"Never" }}</dd>
+          <dt>Est. Duration</dt><dd>{{ schedule.estimated_duration_hours|default:"—" }}{% if schedule.estimated_duration_hours %} hours{% endif %}</dd>
+        </dl>
+      </div>
+    </div>
+
+    {% if schedule.checklist_items %}
+    <div class="card">
+      <div class="card-header">Checklist ({{ schedule.checklist_items|length }} items)</div>
+      <div class="card-body">
+        <ul class="space-y-2">
+          {% for item in schedule.checklist_items %}
+          <li class="flex items-start gap-2 text-sm">
+            <input type="checkbox" class="mt-0.5 rounded" disabled>
+            <span>{{ item }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="space-y-4">
+    <div class="card">
+      <div class="card-header">Actions</div>
+      <div class="card-body space-y-2">
+        <p class="text-xs text-[var(--text-secondary)]">Created {{ schedule.created_at|date:"M d, Y" }}</p>
+        <p class="text-xs text-[var(--text-secondary)]">By {{ schedule.created_by.full_name|default:"System" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
