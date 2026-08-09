@@ -1,0 +1,172 @@
+{% extends "layout/app.html" %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6 fade-in">
+
+  {# Header #}
+  <div>
+    <h1 class="text-2xl font-700 text-[var(--text-primary)]">Profile Settings</h1>
+    <p class="text-[var(--text-secondary)] text-sm mt-1">Manage your account and preferences</p>
+  </div>
+
+  {# Avatar + name hero #}
+  <div class="card">
+    <div class="card-body flex items-center gap-5">
+      <div class="relative">
+        {% if request.user.avatar %}
+        <img src="{{ request.user.avatar.url }}" alt="{{ request.user.display_name }}"
+             class="w-20 h-20 rounded-full object-cover border-2 border-[var(--surface-border)]">
+        {% else %}
+        <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-700 text-indigo-700 border-2 border-[var(--surface-border)]">
+          {{ request.user.initials }}
+        </div>
+        {% endif %}
+      </div>
+      <div>
+        <h2 class="text-xl font-700 text-[var(--text-primary)]">{{ request.user.display_name }}</h2>
+        <p class="text-sm text-[var(--text-secondary)]">{{ request.user.email }}</p>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">
+          {{ request.user.get_role_display }}
+          {% if request.user.organization %} · {{ request.user.organization.name }}{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {# Profile form #}
+  <div class="card">
+    <div class="card-header">Personal Information</div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data" class="space-y-5">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="profile">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label">Full Name <span class="text-red-500">*</span></label>
+            {{ profile_form.full_name }}
+            {% if profile_form.full_name.errors %}<p class="form-error">{{ profile_form.full_name.errors.0 }}</p>{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            {{ profile_form.phone }}
+            {% if profile_form.phone.errors %}<p class="form-error">{{ profile_form.phone.errors.0 }}</p>{% endif %}
+          </div>
+        </div>
+
+        {% if profile_form.unit_number %}
+        <div class="form-group">
+          <label class="form-label">Unit / Room Number</label>
+          {{ profile_form.unit_number }}
+          <p class="form-hint">Your room or unit for faster maintenance assignment.</p>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label class="form-label">Bio</label>
+          {{ profile_form.bio }}
+          {% if profile_form.bio.errors %}<p class="form-error">{{ profile_form.bio.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Profile Photo</label>
+          <div class="flex items-center gap-4">
+            {% if request.user.avatar %}
+            <img src="{{ request.user.avatar.url }}" class="w-12 h-12 rounded-full object-cover">
+            {% endif %}
+            {{ profile_form.avatar }}
+          </div>
+        </div>
+
+        <div class="border-t border-[var(--surface-border)] pt-5">
+          <h4 class="text-sm font-600 text-[var(--text-primary)] mb-4">Preferences</h4>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer">
+              {{ profile_form.email_notifications }}
+              <div>
+                <p class="text-sm font-500 text-[var(--text-primary)]">Email notifications</p>
+                <p class="text-xs text-[var(--text-tertiary)]">Receive updates via email</p>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              {{ profile_form.push_notifications }}
+              <div>
+                <p class="text-sm font-500 text-[var(--text-primary)]">Push notifications</p>
+                <p class="text-xs text-[var(--text-tertiary)]">In-app notification alerts</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Theme</label>
+          <div class="grid grid-cols-3 gap-2">
+            {% for value, label in profile_form.theme_preference.field.choices %}
+            <label class="flex items-center gap-2 border border-[var(--surface-border)] rounded-xl px-4 py-3 cursor-pointer hover:border-indigo-300 transition-colors
+                          {% if profile_form.theme_preference.value == value %}border-indigo-500 bg-indigo-50{% endif %}">
+              <input type="radio" name="theme_preference" value="{{ value }}"
+                     {% if profile_form.theme_preference.value == value %}checked{% endif %}
+                     class="text-indigo-600">
+              <span class="text-sm font-500">
+                {% if value == 'system' %}🖥 System{% elif value == 'light' %}☀️ Light{% else %}🌙 Dark{% endif %}
+              </span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# Change password #}
+  <div class="card">
+    <div class="card-header">Change Password</div>
+    <div class="card-body">
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="password">
+
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input type="password" name="current_password" class="form-input" autocomplete="current-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" name="new_password" class="form-input" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" name="confirm_password" class="form-input" autocomplete="new-password">
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="btn btn-secondary">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# Danger zone #}
+  <div class="card border border-red-200">
+    <div class="card-header text-red-600">Account</div>
+    <div class="card-body">
+      <p class="text-sm text-[var(--text-secondary)] mb-3">
+        Your account is linked to <strong>{{ request.user.organization.name }}</strong>.
+        Contact your organization admin to make changes.
+      </p>
+      <a href="{% url 'accounts:logout' %}"
+         class="btn btn-danger btn-sm"
+         data-confirm="Are you sure you want to sign out?">
+        Sign Out
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
