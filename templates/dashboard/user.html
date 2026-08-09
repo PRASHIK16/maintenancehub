@@ -1,0 +1,148 @@
+{% extends "layout/app.html" %}
+{% load static humanize %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in">
+
+  {# Header #}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-700 text-[var(--text-primary)]">
+        Good {% now "G" as hour %}{% if hour < 12 %}morning{% elif hour < 17 %}afternoon{% else %}evening{% endif %}, {{ request.user.display_name }}
+      </h1>
+      <p class="text-[var(--text-secondary)] text-sm mt-1">
+        Track and manage your maintenance requests.
+      </p>
+    </div>
+    <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-primary">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      Report an Issue
+    </a>
+  </div>
+
+  {# Stats row #}
+  <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+    <div class="stat-card text-center">
+      <div class="value text-blue-600">{{ stats.open }}</div>
+      <div class="label">Open</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-amber-600">{{ stats.in_progress }}</div>
+      <div class="label">In Progress</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-violet-600">{{ stats.awaiting_verification }}</div>
+      <div class="label">Awaiting Your Verification</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-green-600">{{ stats.resolved }}</div>
+      <div class="label">Resolved</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-[var(--text-primary)]">{{ stats.total }}</div>
+      <div class="label">Total</div>
+    </div>
+  </div>
+
+  {# Tickets awaiting verification — urgent #}
+  {% with verification_tickets=tickets|dictsort:"status" %}
+  {% endwith %}
+
+  {# Active tickets #}
+  <div class="card">
+    <div class="card-header flex items-center justify-between">
+      <span>Your Active Requests</span>
+      <a href="{% url 'dashboard:my-tickets' %}" class="text-sm text-indigo-600 hover:text-indigo-700 font-500">
+        All tickets →
+      </a>
+    </div>
+
+    {% if tickets %}
+    <div class="divide-y divide-[var(--surface-border)]">
+      {% for ticket in tickets %}
+      <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
+         class="flex items-start gap-4 p-4 hover:bg-[var(--color-neutral-50)] transition-colors group">
+
+        {# Priority indicator #}
+        <div class="w-1.5 self-stretch rounded-full flex-shrink-0 mt-1
+                    {% if ticket.priority == 'critical' %}bg-red-500
+                    {% elif ticket.priority == 'high' %}bg-orange-400
+                    {% elif ticket.priority == 'medium' %}bg-amber-400
+                    {% else %}bg-green-400{% endif %}">
+        </div>
+
+        {# Content #}
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="font-500 text-[var(--text-primary)] group-hover:text-indigo-600 transition-colors">
+                {{ ticket.title }}
+              </p>
+              <div class="flex items-center gap-3 mt-1 flex-wrap">
+                <span class="text-xs text-[var(--text-tertiary)] font-mono">{{ ticket.ticket_number }}</span>
+                {% if ticket.location %}
+                <span class="text-xs text-[var(--text-tertiary)]">📍 {{ ticket.location.name }}</span>
+                {% endif %}
+                {% if ticket.category %}
+                <span class="text-xs text-[var(--text-tertiary)]">{{ ticket.category.name }}</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-2 flex-shrink-0">
+              <span class="badge-status badge-status-{{ ticket.status|cut:'_' }}">
+                {{ ticket.get_status_display }}
+              </span>
+              <span class="badge-priority badge-priority-{{ ticket.priority }}">
+                {{ ticket.get_priority_display }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-2">
+            <div class="text-xs text-[var(--text-tertiary)]">
+              {% if ticket.assigned_to %}
+                <span>Handled by <span class="text-[var(--text-secondary)] font-500">{{ ticket.assigned_to.display_name }}</span></span>
+              {% else %}
+                <span>Awaiting assignment</span>
+              {% endif %}
+            </div>
+            <div class="text-xs text-[var(--text-tertiary)]">
+              {{ ticket.created_at|naturaltime }}
+            </div>
+          </div>
+
+          {# Verification callout #}
+          {% if ticket.status == 'verification_pending' %}
+          <div class="mt-2 flex items-center gap-2 text-xs text-violet-700 bg-violet-50 rounded-lg px-3 py-1.5 border border-violet-200">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Repair complete — please verify and close this ticket.
+          </div>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <svg class="w-8 h-8 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <h3 class="font-500 text-[var(--text-primary)] mt-3">All clear!</h3>
+      <p class="text-sm mt-1">You have no active maintenance requests.</p>
+      <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-primary mt-4">
+        Report an Issue
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
