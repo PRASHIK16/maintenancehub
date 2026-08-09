@@ -1,0 +1,104 @@
+{% extends "layout/app.html" %}
+{% load static humanize %}
+
+{% block title %}All Tickets{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in">
+
+  {# Header #}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-700 text-[var(--text-primary)]">All Tickets</h1>
+      <p class="text-[var(--text-secondary)] text-sm mt-1">
+        {{ page_obj.paginator.count }} ticket{{ page_obj.paginator.count|pluralize }} found
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'dashboard:kanban' %}" class="btn btn-secondary btn-sm">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+        </svg>
+        Kanban
+      </a>
+      <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-primary btn-sm">
+        + New Ticket
+      </a>
+    </div>
+  </div>
+
+  {# Filters #}
+  <div class="card">
+    <div class="card-body">
+      <form method="get"
+            id="filter-form"
+            hx-get="{% url 'dashboard:all-tickets' %}"
+            hx-target="#ticket-results"
+            hx-push-url="true"
+            hx-trigger="change from:select, submit">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="sm:col-span-2 lg:col-span-1">
+            <input type="text" name="q" value="{{ filters.q }}"
+                   placeholder="Search tickets..."
+                   class="form-input"
+                   hx-get="{% url 'dashboard:all-tickets' %}"
+                   hx-target="#ticket-results"
+                   hx-trigger="keyup changed delay:400ms"
+                   hx-push-url="true"
+                   hx-include="#filter-form">
+          </div>
+
+          <select name="status" class="form-select">
+            <option value="">All statuses</option>
+            {% for val, label in statuses %}
+            <option value="{{ val }}" {% if filters.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+
+          <select name="priority" class="form-select">
+            <option value="">All priorities</option>
+            {% for val, label in priorities %}
+            <option value="{{ val }}" {% if filters.priority == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+
+          <select name="assigned" class="form-select">
+            <option value="">All assignees</option>
+            <option value="unassigned" {% if filters.assigned == 'unassigned' %}selected{% endif %}>Unassigned</option>
+            {% for staff in staff_members %}
+            <option value="{{ staff.pk }}" {% if filters.assigned == staff.pk|stringformat:'s' %}selected{% endif %}>
+              {{ staff.display_name }}
+            </option>
+            {% endfor %}
+          </select>
+
+          <select name="category" class="form-select">
+            <option value="">All categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat.pk }}" {% if filters.category == cat.pk|stringformat:'s' %}selected{% endif %}>
+              {{ cat.name }}
+            </option>
+            {% endfor %}
+          </select>
+
+          <input type="date" name="date_from" value="{{ filters.date_from }}"
+                 class="form-input" placeholder="From date">
+          <input type="date" name="date_to" value="{{ filters.date_to }}"
+                 class="form-input" placeholder="To date">
+
+          <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm flex-1">Apply</button>
+            <a href="{% url 'dashboard:all-tickets' %}" class="btn btn-secondary btn-sm">Clear</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# Results #}
+  <div id="ticket-results">
+    {% include "tickets/partials/ticket_table.html" %}
+  </div>
+
+</div>
+{% endblock %}
