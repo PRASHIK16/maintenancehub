@@ -1,4 +1,10 @@
 """URL patterns for analytics app."""
 from django.urls import path
+from . import views
+
 app_name = "analytics"
-urlpatterns = []
+
+urlpatterns = [
+    path("", views.AnalyticsOverviewView.as_view(), name="overview"),
+    path("stats/", views.StatsPartialView.as_view(), name="stats"),
+]
