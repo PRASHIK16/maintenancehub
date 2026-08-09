@@ -1,0 +1,91 @@
+{% load humanize %}
+{# HTMX notification dropdown panel — target for bell icon #}
+<div class="bg-[var(--surface-primary)] border border-[var(--surface-border)] rounded-xl shadow-xl overflow-hidden w-80 max-h-[480px] overflow-y-auto"
+     id="notification-panel">
+
+  <div class="flex items-center justify-between px-4 py-3 border-b border-[var(--surface-border)]">
+    <h4 class="text-sm font-700 text-[var(--text-primary)]">Notifications</h4>
+    {% if notifications %}
+    <form method="post" action="{% url 'notifications:mark-all-read' %}"
+          hx-post="{% url 'notifications:mark-all-read' %}"
+          hx-target="#notification-panel"
+          hx-swap="outerHTML">
+      {% csrf_token %}
+      <button type="submit" class="text-xs text-indigo-600 hover:text-indigo-700 font-500">
+        Mark all read
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  {% if notifications %}
+  <div class="divide-y divide-[var(--surface-border)]">
+    {% for notif in notifications %}
+    <div class="flex items-start gap-3 px-4 py-3 hover:bg-[var(--color-neutral-50)] transition-colors
+                {% if not notif.is_read %}bg-indigo-50{% endif %}">
+      {# Icon by type #}
+      <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5
+        {% if 'created' in notif.notification_type %}bg-blue-100 text-blue-600
+        {% elif 'assigned' in notif.notification_type %}bg-indigo-100 text-indigo-600
+        {% elif 'resolved' in notif.notification_type or 'closed' in notif.notification_type %}bg-green-100 text-green-600
+        {% elif 'sla' in notif.notification_type %}bg-red-100 text-red-600
+        {% elif 'comment' in notif.notification_type %}bg-amber-100 text-amber-600
+        {% else %}bg-[var(--surface-secondary)] text-[var(--text-tertiary)]
+        {% endif %}">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          {% if 'created' in notif.notification_type %}
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+          {% elif 'assigned' in notif.notification_type %}
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          {% elif 'sla' in notif.notification_type %}
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          {% elif 'comment' in notif.notification_type %}
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          {% else %}
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          {% endif %}
+        </svg>
+      </div>
+
+      <div class="flex-1 min-w-0">
+        {% if notif.link %}
+        <a href="{{ notif.link }}" class="block">
+        {% endif %}
+          <p class="text-sm font-600 text-[var(--text-primary)]">{{ notif.title }}</p>
+          <p class="text-xs text-[var(--text-secondary)] mt-0.5 line-clamp-2">{{ notif.message }}</p>
+          <p class="text-xs text-[var(--text-tertiary)] mt-1">{{ notif.created_at|naturaltime }}</p>
+        {% if notif.link %}
+        </a>
+        {% endif %}
+      </div>
+
+      {% if not notif.is_read %}
+      <form method="post" action="{% url 'notifications:mark-read' notif.pk %}"
+            hx-post="{% url 'notifications:mark-read' notif.pk %}"
+            hx-target="closest div.flex"
+            hx-swap="outerHTML">
+        {% csrf_token %}
+        <button type="submit" class="w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0 mt-1.5 hover:bg-indigo-600 transition-colors"
+                title="Mark as read"></button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="px-4 py-3 border-t border-[var(--surface-border)] text-center">
+    <a href="{% url 'notifications:list' %}" class="text-sm text-indigo-600 hover:text-indigo-700 font-500">
+      View all notifications →
+    </a>
+  </div>
+  {% else %}
+  <div class="px-4 py-10 text-center">
+    <div class="w-10 h-10 bg-[var(--surface-secondary)] rounded-full flex items-center justify-center mx-auto mb-3">
+      <svg class="w-5 h-5 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+      </svg>
+    </div>
+    <p class="text-sm text-[var(--text-tertiary)]">You're all caught up!</p>
+  </div>
+  {% endif %}
+</div>
