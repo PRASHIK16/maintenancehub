@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Assets — {{ request.user.organization.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-content">
+    <h1 class="page-title">Asset Registry</h1>
+    <p class="page-subtitle">Track and manage all physical assets for {{ request.user.organization.name }}</p>
+  </div>
+  {% if request.user.role in "admin manager" %}
+  <div class="page-header-actions">
+    <a href="{% url 'assets:create' %}" class="btn btn-primary">
+      <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Add Asset
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+{# KPI Cards #}
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_count }}</div>
+    <div class="stat-label">Total Assets</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value text-green-600">{{ active_count }}</div>
+    <div class="stat-label">Active</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value text-amber-600">{{ maintenance_count }}</div>
+    <div class="stat-label">Under Maintenance</div>
+  </div>
+</div>
+
+{# Filters #}
+<div class="card mb-6">
+  <div class="card-body">
+    <form method="get" class="flex gap-3 flex-wrap">
+      <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search assets…"
+             class="form-input flex-1 min-w-48">
+      <select name="status" class="form-select w-40">
+        <option value="">All Statuses</option>
+        {% for val, label in status_choices %}
+        <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-secondary">Filter</button>
+      <a href="{% url 'assets:list' %}" class="btn btn-ghost">Clear</a>
+    </form>
+  </div>
+</div>
+
+{# Asset Table #}
+<div class="card">
+  <div class="card-body p-0">
+    {% if assets %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Asset Code</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Warranty Expiry</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in assets %}
+        <tr>
+          <td><code class="text-xs font-mono bg-[var(--surface-card)] px-2 py-0.5 rounded">{{ asset.asset_code }}</code></td>
+          <td>
+            <a href="{% url 'assets:detail' asset.pk %}" class="font-medium text-[var(--color-primary)] hover:underline">
+              {{ asset.name }}
+            </a>
+            {% if asset.brand %}<div class="text-xs text-[var(--text-secondary)]">{{ asset.brand }}</div>{% endif %}
+          </td>
+          <td class="text-sm">{{ asset.asset_type }}</td>
+          <td class="text-sm">{{ asset.location.name|default:"—" }}</td>
+          <td>
+            <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
+              {{ asset.get_status_display }}
+            </span>
+          </td>
+          <td class="text-sm">
+            {% if asset.warranty_expiry %}
+            <span class="{% if asset.warranty_expiry < today %}text-red-600{% endif %}">
+              {{ asset.warranty_expiry|date:"M d, Y" }}
+            </span>
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            {% if request.user.role in "admin manager" %}
+            <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-ghost btn-xs">Edit</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {# Pagination #}
+    {% if is_paginated %}
+    <div class="px-6 py-4 border-t border-[var(--surface-border)]">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-[var(--text-secondary)]">
+          Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }}
+        </p>
+        <div class="flex gap-1">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="btn btn-ghost btn-sm">Previous</a>
+          {% endif %}
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="btn btn-ghost btn-sm">Next</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">🔧</div>
+      <div class="empty-state-title">No assets found</div>
+      <div class="empty-state-desc">
+        {% if request.GET.q %}No assets match your search.{% else %}Start by adding your first asset.{% endif %}
+      </div>
+      {% if request.user.role in "admin manager" %}
+      <a href="{% url 'assets:create' %}" class="btn btn-primary mt-4">Add First Asset</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
