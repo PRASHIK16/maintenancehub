@@ -8,11 +8,39 @@ from .models import Ticket, TicketComment, Priority
 from apps.organizations.models import Location
 
 
+class MultipleFileInput(forms.FileInput):
+    """Custom widget supporting multiple file selection (Django 4.2+)."""
+    allow_multiple_selected = True
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("attrs", {})
+        kwargs["attrs"]["multiple"] = True
+        super().__init__(*args, **kwargs)
+
+    def value_from_datadict(self, data, files, name):
+        return files.getlist(name)
+
+
+class MultipleFileField(forms.FileField):
+    """FileField that accepts multiple files."""
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        # data is a list of files from MultipleFileInput
+        if not data:
+            return []
+        result = []
+        for item in data:
+            result.append(super().clean(item, initial))
+        return result
+
+
 class TicketCreateForm(forms.ModelForm):
-    attachments = forms.FileField(
+    attachments = MultipleFileField(
         required=False,
-        widget=forms.ClearableFileInput(attrs={
-            "multiple": True,
+        widget=MultipleFileInput(attrs={
             "class": "hidden",
             "id": "ticket-file-upload",
             "accept": "image/*,.pdf,.doc,.docx",
