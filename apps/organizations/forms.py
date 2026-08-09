@@ -1,6 +1,6 @@
 """Organization settings forms."""
 from django import forms
-from .models import Organization, Location, Team
+from .models import Organization, Location, Team, ResidentProfile
 
 
 class OrganizationProfileForm(forms.ModelForm):
@@ -83,3 +83,38 @@ class TeamForm(forms.ModelForm):
             "color": forms.TextInput(attrs={"class": "form-input", "type": "color", "style": "height:42px;padding:4px 6px;"}),
             "is_active": forms.CheckboxInput(attrs={"class": "form-checkbox"}),
         }
+
+
+class ResidentProfileForm(forms.ModelForm):
+    """Create or edit a hostel resident profile."""
+    class Meta:
+        model = ResidentProfile
+        fields = [
+            "user", "room", "room_number", "bed_number",
+            "gender", "check_in_date", "check_out_date",
+            "emergency_contact_name", "emergency_contact_phone",
+            "notes", "is_active",
+        ]
+        widgets = {
+            "user": forms.Select(attrs={"class": "form-select"}),
+            "room": forms.Select(attrs={"class": "form-select"}),
+            "room_number": forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g. 101A"}),
+            "bed_number": forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g. B1"}),
+            "gender": forms.Select(attrs={"class": "form-select"}),
+            "check_in_date": forms.DateInput(attrs={"class": "form-input", "type": "date"}),
+            "check_out_date": forms.DateInput(attrs={"class": "form-input", "type": "date"}),
+            "emergency_contact_name": forms.TextInput(attrs={"class": "form-input", "placeholder": "Parent/guardian name"}),
+            "emergency_contact_phone": forms.TextInput(attrs={"class": "form-input", "placeholder": "+91 ..."}),
+            "notes": forms.Textarea(attrs={"class": "form-textarea", "rows": 2}),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-checkbox"}),
+        }
+
+    def __init__(self, organization, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from apps.accounts.models import User
+        self.fields["user"].queryset = User.objects.filter(organization=organization).order_by("full_name")
+        self.fields["room"].queryset = Location.objects.filter(
+            organization=organization,
+            location_type__in=["hostel_room", "room"],
+        ).order_by("name")
+        self.fields["room"].required = False

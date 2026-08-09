@@ -1,0 +1,148 @@
+{% extends "layout/app.html" %}
+{% load static %}
+
+{% block title %}{{ action }} Resident — {{ request.user.organization.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6 fade-in">
+
+  {# ── Header ───────────────────────────────────────────────────────── #}
+  <div>
+    <div class="flex items-center gap-2 text-xs text-[var(--text-tertiary)] mb-1">
+      <a href="{% url 'organizations:hostel-dashboard' %}" class="hover:text-[#059669] transition-colors">Hostel</a>
+      <span>›</span>
+      <a href="{% url 'organizations:hostel-residents' %}" class="hover:text-[#059669] transition-colors">Residents</a>
+      <span>›</span>
+      <span>{{ action }}</span>
+    </div>
+    <h1 class="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+      {{ action }} Resident
+    </h1>
+    <p class="text-sm text-[var(--text-secondary)] mt-1">
+      {% if action == "Add" %}Register a new hostel resident and assign their room.
+      {% else %}Update resident profile and room assignment.{% endif %}
+    </p>
+  </div>
+
+  {# ── Form card ────────────────────────────────────────────────────── #}
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+      {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    {# ── User assignment ───────────────────────────────────────────── #}
+    <div class="card px-5 py-5 space-y-4">
+      <h3 class="text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider">User Account</h3>
+
+      <div>
+        <label class="form-label" for="{{ form.user.id_for_label }}">User *</label>
+        {{ form.user }}
+        {% if form.user.errors %}
+        <p class="form-error">{{ form.user.errors.0 }}</p>
+        {% endif %}
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Select the user account to link with this resident profile.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="form-label" for="{{ form.gender.id_for_label }}">Gender</label>
+          {{ form.gender }}
+          {% if form.gender.errors %}<p class="form-error">{{ form.gender.errors.0 }}</p>{% endif %}
+        </div>
+        <div class="flex items-end">
+          <div class="flex items-center gap-2 mb-1">
+            {{ form.is_active }}
+            <label for="{{ form.is_active.id_for_label }}" class="text-sm text-[var(--text-secondary)] cursor-pointer">
+              Active resident
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# ── Room assignment ───────────────────────────────────────────── #}
+    <div class="card px-5 py-5 space-y-4">
+      <h3 class="text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider">Room Assignment</h3>
+
+      <div>
+        <label class="form-label" for="{{ form.room.id_for_label }}">Room (Location)</label>
+        {{ form.room }}
+        {% if form.room.errors %}<p class="form-error">{{ form.room.errors.0 }}</p>{% endif %}
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Link to a hostel room defined in Locations settings.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="form-label" for="{{ form.room_number.id_for_label }}">Room Number Label</label>
+          {{ form.room_number }}
+          {% if form.room_number.errors %}<p class="form-error">{{ form.room_number.errors.0 }}</p>{% endif %}
+          <p class="text-xs text-[var(--text-tertiary)] mt-1">Display label (e.g. 101A)</p>
+        </div>
+        <div>
+          <label class="form-label" for="{{ form.bed_number.id_for_label }}">Bed Number</label>
+          {{ form.bed_number }}
+          {% if form.bed_number.errors %}<p class="form-error">{{ form.bed_number.errors.0 }}</p>{% endif %}
+          <p class="text-xs text-[var(--text-tertiary)] mt-1">E.g. B1, Upper</p>
+        </div>
+      </div>
+    </div>
+
+    {# ── Stay dates ────────────────────────────────────────────────── #}
+    <div class="card px-5 py-5 space-y-4">
+      <h3 class="text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider">Stay Period</h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="form-label" for="{{ form.check_in_date.id_for_label }}">Check-in Date</label>
+          {{ form.check_in_date }}
+          {% if form.check_in_date.errors %}<p class="form-error">{{ form.check_in_date.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="form-label" for="{{ form.check_out_date.id_for_label }}">Check-out Date</label>
+          {{ form.check_out_date }}
+          {% if form.check_out_date.errors %}<p class="form-error">{{ form.check_out_date.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# ── Emergency contact ─────────────────────────────────────────── #}
+    <div class="card px-5 py-5 space-y-4">
+      <h3 class="text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider">Emergency Contact</h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="form-label" for="{{ form.emergency_contact_name.id_for_label }}">Contact Name</label>
+          {{ form.emergency_contact_name }}
+          {% if form.emergency_contact_name.errors %}<p class="form-error">{{ form.emergency_contact_name.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label class="form-label" for="{{ form.emergency_contact_phone.id_for_label }}">Contact Phone</label>
+          {{ form.emergency_contact_phone }}
+          {% if form.emergency_contact_phone.errors %}<p class="form-error">{{ form.emergency_contact_phone.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+
+      <div>
+        <label class="form-label" for="{{ form.notes.id_for_label }}">Notes</label>
+        {{ form.notes }}
+        {% if form.notes.errors %}<p class="form-error">{{ form.notes.errors.0 }}</p>{% endif %}
+      </div>
+    </div>
+
+    {# ── Actions ───────────────────────────────────────────────────── #}
+    <div class="flex items-center justify-between">
+      <a href="{% url 'organizations:hostel-residents' %}" class="btn btn-secondary btn-sm">
+        Cancel
+      </a>
+      <button type="submit" class="btn btn-primary">
+        {{ action }} Resident
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

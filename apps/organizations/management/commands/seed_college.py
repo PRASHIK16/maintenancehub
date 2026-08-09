@@ -12,7 +12,7 @@ import random
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 from django.db import transaction
-from apps.organizations.models import Organization, Location, Team, TeamMembership
+from apps.organizations.models import Organization, Location, Team, TeamMembership, ResidentProfile
 from apps.accounts.models import User
 from apps.tickets.models import Ticket, Category
 from apps.assets.models import Asset
@@ -187,6 +187,7 @@ class Command(BaseCommand):
         # ── Wipe old non-superuser data ───────────────────────────────
         if not options["keep_tickets"]:
             Ticket.objects.filter(organization=org).delete()
+        ResidentProfile.objects.filter(organization=org).delete()
         Location.objects.filter(organization=org).delete()
         Team.objects.filter(organization=org).delete()
         Category.objects.filter(organization=org).delete()
@@ -294,6 +295,34 @@ class Command(BaseCommand):
                 created += 1
 
             self.stdout.write(f"  ✓ {created} tickets created")
+
+        # ── Hostel Residents ──────────────────────────────────────────
+        from datetime import date
+        resident_data = [
+            # (email, room_name, room_number_label, bed, gender, emergency_name, emergency_phone)
+            ("student1@rit.edu", "Room 101", "101",  "A1", "M", "Mr. S. Reddy",  "+91 98001 11001"),
+            ("student3@rit.edu", "Room 102", "102",  "B1", "M", "Mr. D. Das",    "+91 98001 11002"),
+            ("student2@rit.edu", "Room W101", "W101", "A1", "F", "Mrs. R. Gupta", "+91 98001 11003"),
+        ]
+        resident_count = 0
+        for email, room_name, room_num, bed, gender, em_name, em_phone in resident_data:
+            u = user_map.get(email)
+            room = loc_map.get(room_name)
+            if u:
+                ResidentProfile.objects.create(
+                    user=u,
+                    organization=org,
+                    room=room,
+                    room_number=room_num,
+                    bed_number=bed,
+                    gender=gender,
+                    check_in_date=date(2025, 7, 15),
+                    emergency_contact_name=em_name,
+                    emergency_contact_phone=em_phone,
+                    is_active=True,
+                )
+                resident_count += 1
+        self.stdout.write(f"  ✓ {resident_count} resident profiles created")
 
         self.stdout.write("")
         self.stdout.write(self.style.SUCCESS("✅ College seed complete!"))

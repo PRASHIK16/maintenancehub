@@ -19,4 +19,10 @@ urlpatterns = [
     path("settings/teams/add/", views.TeamCreateView.as_view(), name="team-create"),
     path("settings/teams/<int:pk>/edit/", views.TeamEditView.as_view(), name="team-edit"),
     path("settings/teams/<int:pk>/delete/", views.TeamDeleteView.as_view(), name="team-delete"),
+
+    # Hostel
+    path("hostel/", views.HostelDashboardView.as_view(), name="hostel-dashboard"),
+    path("hostel/residents/", views.ResidentListView.as_view(), name="hostel-residents"),
+    path("hostel/residents/add/", views.ResidentCreateView.as_view(), name="hostel-resident-add"),
+    path("hostel/residents/<int:pk>/edit/", views.ResidentEditView.as_view(), name="hostel-resident-edit"),
 ]

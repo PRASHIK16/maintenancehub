@@ -67,6 +67,15 @@ class Location(TimeStampedModel):
             ("room", "Room / Unit"),
             ("area", "Area / Zone"),
             ("outdoor", "Outdoor / Grounds"),
+            # Hostel-specific
+            ("hostel_block", "Hostel Block"),
+            ("hostel_floor", "Hostel Floor"),
+            ("hostel_room", "Hostel Room"),
+            ("common_area", "Common Area"),
+            ("washroom", "Washroom / Bathroom"),
+            # Lab-specific
+            ("lab", "Laboratory"),
+            ("workshop", "Workshop"),
         ],
         default="room",
     )
@@ -129,3 +138,47 @@ class TeamMembership(TimeStampedModel):
 
     def __str__(self):
         return f"{self.user.display_name} in {self.team.name}"
+
+
+class ResidentProfile(TimeStampedModel):
+    """
+    Hostel resident profile. Links a User to a specific room and
+    captures hostel-specific data like room number, bed, and dates.
+    """
+    GENDER_CHOICES = [("M", "Male"), ("F", "Female"), ("O", "Other")]
+
+    user = models.OneToOneField(
+        "accounts.User",
+        on_delete=models.CASCADE,
+        related_name="resident_profile",
+    )
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name="residents",
+    )
+    room = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="residents",
+        limit_choices_to={"location_type__in": ["hostel_room", "room"]},
+    )
+    room_number = models.CharField(max_length=20, blank=True, help_text="Display room number/label")
+    bed_number = models.CharField(max_length=10, blank=True, help_text="Bed letter/number within room")
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
+    check_in_date = models.DateField(null=True, blank=True)
+    check_out_date = models.DateField(null=True, blank=True)
+    emergency_contact_name = models.CharField(max_length=150, blank=True)
+    emergency_contact_phone = models.CharField(max_length=20, blank=True)
+    notes = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "organizations_resident_profile"
+        verbose_name = "Resident Profile"
+        verbose_name_plural = "Resident Profiles"
+
+    def __str__(self):
+        room_label = self.room_number or (self.room.name if self.room else "no room")
+        return f"{self.user.display_name} — {room_label}"
