@@ -1,0 +1,274 @@
+{% extends "layout/app.html" %}
+{% load static humanize %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in">
+
+  {# Header #}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-700 text-[var(--text-primary)]">Analytics</h1>
+      <p class="text-[var(--text-secondary)] text-sm mt-1">
+        Operational insights for the last {{ period }} days
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <select class="form-select text-sm py-1.5" id="period-select"
+              onchange="window.location.href='?period='+this.value">
+        <option value="7" {% if period == 7 %}selected{% endif %}>Last 7 days</option>
+        <option value="30" {% if period == 30 %}selected{% endif %}>Last 30 days</option>
+        <option value="90" {% if period == 90 %}selected{% endif %}>Last 90 days</option>
+      </select>
+    </div>
+  </div>
+
+  {# KPI row #}
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+
+    <div class="stat-card text-center">
+      <div class="value text-[var(--text-primary)]">{{ stats.total|intcomma }}</div>
+      <div class="label">Total</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-green-600">{{ stats.closed|intcomma }}</div>
+      <div class="label">Resolved</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-indigo-600">{{ stats.resolution_rate }}%</div>
+      <div class="label">Resolution Rate</div>
+    </div>
+    <div class="stat-card text-center {% if stats.overdue %}border-l-4 border-l-red-500{% endif %}">
+      <div class="value text-red-600">{{ stats.overdue|intcomma }}</div>
+      <div class="label">SLA Breached</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-amber-600">{{ stats.sla_rate }}%</div>
+      <div class="label">SLA Compliance</div>
+    </div>
+    <div class="stat-card text-center">
+      <div class="value text-[var(--text-primary)]">
+        {% if stats.avg_resolution_hours %}{{ stats.avg_resolution_hours }}h{% else %}—{% endif %}
+      </div>
+      <div class="label">Avg Resolution</div>
+    </div>
+
+  </div>
+
+  {# Charts row #}
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    {# Daily trend #}
+    <div class="card">
+      <div class="card-header">Tickets Created (Last 14 Days)</div>
+      <div class="card-body">
+        <canvas id="trend-chart" height="200"></canvas>
+      </div>
+    </div>
+
+    {# By priority #}
+    <div class="card">
+      <div class="card-header">By Priority</div>
+      <div class="card-body flex items-center justify-center">
+        <canvas id="priority-chart" height="200"></canvas>
+      </div>
+    </div>
+
+    {# By status #}
+    <div class="card">
+      <div class="card-header">By Status</div>
+      <div class="card-body">
+        <canvas id="status-chart" height="200"></canvas>
+      </div>
+    </div>
+
+    {# By category #}
+    <div class="card">
+      <div class="card-header">Top Categories</div>
+      <div class="card-body">
+        <canvas id="category-chart" height="200"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  {# Staff performance #}
+  {% if staff_performance %}
+  <div class="card">
+    <div class="card-header">Staff Performance</div>
+    <div class="overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Staff Member</th>
+            <th class="text-center">Assigned</th>
+            <th class="text-center">Resolved</th>
+            <th class="text-center">Resolution Rate</th>
+            <th>Performance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for staff in staff_performance %}
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-700 text-indigo-700">
+                  {{ staff.initials }}
+                </div>
+                <div>
+                  <p class="font-500 text-sm text-[var(--text-primary)]">{{ staff.display_name }}</p>
+                  <p class="text-xs text-[var(--text-tertiary)]">{{ staff.get_role_display }}</p>
+                </div>
+              </div>
+            </td>
+            <td class="text-center font-mono text-sm">{{ staff.assigned }}</td>
+            <td class="text-center font-mono text-sm text-green-600">{{ staff.resolved }}</td>
+            <td class="text-center">
+              {% if staff.assigned > 0 %}
+              {% widthratio staff.resolved staff.assigned 100 as rate %}
+              <span class="text-sm font-600 {% if rate >= 80 %}text-green-600{% elif rate >= 50 %}text-amber-600{% else %}text-red-600{% endif %}">
+                {{ rate }}%
+              </span>
+              {% else %}
+              <span class="text-[var(--text-tertiary)]">—</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if staff.assigned > 0 %}
+              {% widthratio staff.resolved staff.assigned 100 as rate %}
+              <div class="w-full bg-[var(--surface-secondary)] rounded-full h-2">
+                <div class="h-2 rounded-full {% if rate >= 80 %}bg-green-500{% elif rate >= 50 %}bg-amber-500{% else %}bg-red-500{% endif %}"
+                     style="width: {{ rate }}%"></div>
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const textColor = isDark ? '#94a3b8' : '#64748b';
+  const gridColor = isDark ? '#1e293b' : '#f1f5f9';
+
+  Chart.defaults.color = textColor;
+  Chart.defaults.borderColor = gridColor;
+  Chart.defaults.font.family = 'Inter, sans-serif';
+
+  // ── Daily trend ──
+  const trendData = {{ daily_trend|safe }};
+  new Chart(document.getElementById('trend-chart'), {
+    type: 'line',
+    data: {
+      labels: trendData.map(d => d.day),
+      datasets: [{
+        label: 'Tickets Created',
+        data: trendData.map(d => d.count),
+        fill: true,
+        borderColor: '#6366f1',
+        backgroundColor: 'rgba(99,102,241,0.1)',
+        tension: 0.4,
+        pointBackgroundColor: '#6366f1',
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1, precision: 0 } }
+      }
+    }
+  });
+
+  // ── Priority donut ──
+  const priorityData = {{ by_priority|safe }};
+  const priorityColors = { low: '#22c55e', medium: '#f59e0b', high: '#f97316', critical: '#ef4444' };
+  if (priorityData.length) {
+    new Chart(document.getElementById('priority-chart'), {
+      type: 'doughnut',
+      data: {
+        labels: priorityData.map(d => d.priority.charAt(0).toUpperCase() + d.priority.slice(1)),
+        datasets: [{
+          data: priorityData.map(d => d.count),
+          backgroundColor: priorityData.map(d => priorityColors[d.priority] || '#94a3b8'),
+          borderWidth: 2,
+          borderColor: isDark ? '#0f172a' : '#ffffff',
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'right' } }
+      }
+    });
+  }
+
+  // ── Status bar ──
+  const statusData = {{ by_status|safe }};
+  const statusColors = {
+    submitted: '#3b82f6', triaged: '#8b5cf6', assigned: '#6366f1',
+    in_progress: '#f59e0b', on_hold: '#94a3b8', resolved: '#22c55e',
+    closed: '#10b981', reopened: '#f97316', cancelled: '#ef4444',
+    verification_pending: '#7c3aed',
+  };
+  if (statusData.length) {
+    new Chart(document.getElementById('status-chart'), {
+      type: 'bar',
+      data: {
+        labels: statusData.map(d => d.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())),
+        datasets: [{
+          label: 'Tickets',
+          data: statusData.map(d => d.count),
+          backgroundColor: statusData.map(d => statusColors[d.status] || '#94a3b8'),
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } },
+          y: { grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1, precision: 0 } }
+        }
+      }
+    });
+  }
+
+  // ── Category horizontal bar ──
+  const catData = {{ by_category|safe }};
+  if (catData.length) {
+    new Chart(document.getElementById('category-chart'), {
+      type: 'bar',
+      data: {
+        labels: catData.map(d => d.category__name || 'Uncategorised'),
+        datasets: [{
+          label: 'Tickets',
+          data: catData.map(d => d.count),
+          backgroundColor: '#6366f1',
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor, stepSize: 1, precision: 0 } },
+          y: { grid: { display: false }, ticks: { color: textColor, font: { size: 11 } } }
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}
