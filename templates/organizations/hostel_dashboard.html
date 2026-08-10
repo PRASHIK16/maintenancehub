@@ -8,11 +8,9 @@
 
   {# ── Header ───────────────────────────────────────────────────────── #}
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-bold tracking-tight" style="color: var(--text-primary);">Hostel Operations</h1>
-      <p class="text-sm mt-1" style="color: var(--text-secondary);">
-        Room-by-room issue tracker and resident overview for {{ org.name }}.
-      </p>
+    <div class="page-intro" style="margin-bottom: 0;">
+      <h1 class="page-intro-title">Hostel Operations</h1>
+      <p class="page-intro-sub">Room-by-room issue tracker and resident overview for {{ org.name }}.</p>
     </div>
     <div class="flex items-center gap-2">
       <a href="{% url 'organizations:hostel-residents' %}" class="btn btn-secondary btn-sm">
