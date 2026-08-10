@@ -22,6 +22,16 @@
     .feature-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.09); transform: translateY(-2px); }
     .stat-number { font-variant-numeric: tabular-nums; letter-spacing: -0.04em; }
     a { text-decoration: none; }
+    @media (max-width: 768px) {
+      #desktop-nav { display: none; }
+      #mobile-menu-btn { display: flex; }
+      #mobile-menu { display: none; }
+      #mobile-menu.open { display: flex; flex-direction: column; }
+    }
+    #mobile-menu-btn { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; }
+    @media (max-width: 480px) {
+      #features .feature-grid { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -55,11 +65,21 @@
         <div style="display: flex; align-items: center; gap: 8px;">
           <a href="{% url 'accounts:login' %}" style="padding: 7px 16px; font-size: 13px; font-weight: 600; color: #475569; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; transition: border-color 0.15s, color 0.15s; white-space: nowrap;" onmouseover="this.style.borderColor='#059669';this.style.color='#059669'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#475569'">Sign in</a>
           <a href="{% url 'accounts:register' %}" style="padding: 7px 16px; font-size: 13px; font-weight: 600; color: #ffffff; background-color: #059669; border: 1px solid #059669; border-radius: 8px; white-space: nowrap; box-shadow: 0 1px 3px rgba(5,150,105,0.3); transition: background-color 0.15s;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'">Get started</a>
+          <button id="mobile-menu-btn" onclick="document.getElementById('mobile-menu').classList.toggle('open')" aria-label="Open menu">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#475569" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
         </div>
       </div>
     </div>
   </header>
 
+  <div id="mobile-menu" style="display:none; flex-direction:column; background:#fff; border-bottom:1px solid #e2e8f0; padding:12px 24px; gap:4px; position:sticky; top:60px; z-index:49;">
+    <a href="#features" onclick="document.getElementById('mobile-menu').classList.remove('open')" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Features</a>
+    <a href="#roles" onclick="document.getElementById('mobile-menu').classList.remove('open')" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Who it's for</a>
+    <a href="#stats" onclick="document.getElementById('mobile-menu').classList.remove('open')" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Results</a>
+    <a href="{% url 'accounts:login' %}" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Sign in</a>
+    <a href="{% url 'accounts:register' %}" style="margin-top:8px;padding:10px 16px;font-size:14px;font-weight:600;color:#fff;background:#059669;border-radius:8px;text-align:center;">Get started</a>
+  </div>
 
   <!-- ================================================================
        HERO
@@ -116,8 +136,10 @@
             <span style="font-size: 11px; color: #94a3b8;">maintenancehub.io/dashboard</span>
           </div>
         </div>
+        <!-- Mock dashboard — scrollable wrapper for narrow screens -->
+        <div style="overflow-x: auto;">
         <!-- Mock dashboard KPIs -->
-        <div style="background-color: #f8fafc; padding: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+        <div style="background-color: #f8fafc; padding: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; min-width: 560px;">
           <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
             <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Total Tickets</p>
             <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">48</p>
@@ -140,7 +162,7 @@
           </div>
         </div>
         <!-- Recent tickets table row -->
-        <div style="background-color: #f8fafc; padding: 0 24px 24px; display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+        <div style="background-color: #f8fafc; padding: 0 24px 24px; display: grid; grid-template-columns: 2fr 1fr; gap: 12px; min-width: 560px;">
           <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
             <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9;">
               <p style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.06em;">Recent Tickets</p>
@@ -186,6 +208,7 @@
             </div>
           </div>
         </div>
+        </div>{# end overflow-x-auto #}
       </div>
     </div>
   </section>
@@ -232,7 +255,7 @@
         </p>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div class="feature-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
         <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
           <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">

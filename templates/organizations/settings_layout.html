@@ -17,10 +17,10 @@ Shared settings layout — extend this, set {% block settings_content %} and `se
     </p>
   </div>
 
-  <div class="flex gap-6 items-start">
+  <div class="flex flex-col sm:flex-row gap-6 items-start">
 
     {# ── Left nav ──────────────────────────────────────────────────── #}
-    <nav class="w-52 flex-shrink-0 space-y-0.5 sticky top-4">
+    <nav class="w-full sm:w-52 flex-shrink-0 sm:sticky sm:top-4 space-y-0.5 flex flex-row flex-wrap sm:flex-col gap-1 sm:gap-0">
 
       <a href="{% url 'organizations:settings' %}"
          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
@@ -51,7 +51,7 @@ Shared settings layout — extend this, set {% block settings_content %} and `se
       </a>
 
       {# Divider #}
-      <div class="pt-3 mt-3" style="border-top: 1px solid var(--border-subtle);">
+      <div class="pt-3 mt-3 hidden sm:block" style="border-top: 1px solid var(--border-subtle);">
         <p class="text-xs font-semibold uppercase tracking-wider px-3 mb-1" style="color: var(--text-muted);">Coming soon</p>
         <span class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm cursor-default" style="color: var(--text-muted);">
           <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">

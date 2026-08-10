@@ -20,7 +20,7 @@
         {{ residents.count }} resident{{ residents.count|pluralize }} registered at {{ org.name }}.
       </p>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 flex-wrap">
       <a href="{% url 'organizations:hostel-dashboard' %}" class="btn btn-secondary btn-sm">
         ← Hostel Dashboard
       </a>

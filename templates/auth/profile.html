@@ -115,7 +115,7 @@
         {# Theme #}
         <div class="form-group">
           <label class="form-label">Colour theme</label>
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {% for value, label in profile_form.theme_preference.field.choices %}
             <label class="flex items-center gap-2 rounded-lg px-4 py-3 cursor-pointer transition-colors"
                    style="border: 1px solid {% if profile_form.theme_preference.value == value %}var(--color-emerald-500){% else %}var(--border-default){% endif %}; background-color: {% if profile_form.theme_preference.value == value %}rgba(5,150,105,0.05){% else %}var(--bg-card){% endif %};">

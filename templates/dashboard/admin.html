@@ -20,7 +20,7 @@
       <p class="page-subtitle">Operations Overview &middot; {{ today|date:"l, d F Y" }}</p>
     </div>
 
-    <div class="flex items-center gap-3 shrink-0">
+    <div class="flex items-center gap-3 shrink-0 flex-wrap">
       {# Period selector — segmented control #}
       <div class="flex items-center gap-0.5 rounded-lg border p-0.5 shrink-0"
            id="period-selector"
@@ -329,7 +329,7 @@
            style="color: var(--text-muted);">View all &rarr;</a>
       </div>
       <div class="overflow-x-auto">
-        <table class="data-table w-full" style="border-collapse: collapse;">
+        <table class="data-table table-responsive-cards w-full" style="border-collapse: collapse;">
           <thead>
             <tr style="border-bottom: 1px solid var(--border-default);">
               <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
@@ -351,10 +351,10 @@
             <tr class="group cursor-pointer transition-colors data-table-row"
                 style="border-bottom: 1px solid var(--border-subtle);"
                 onclick="location.href='{% url 'dashboard:ticket-detail' ticket.pk %}'">
-              <td class="px-5 py-3.5">
+              <td data-label="ID" class="px-5 py-3.5">
                 <span class="mono tabular-nums" style="color: var(--text-muted);">{{ ticket.ticket_number }}</span>
               </td>
-              <td class="px-5 py-3.5 max-w-xs">
+              <td data-label="Title" class="px-5 py-3.5 max-w-xs">
                 <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
                    class="text-sm font-semibold truncate block transition-colors"
                    style="color: var(--text-primary);"
@@ -365,24 +365,24 @@
                 <span class="text-xs" style="color: var(--text-muted);">{{ ticket.location.name }}</span>
                 {% endif %}
               </td>
-              <td class="px-5 py-3.5">
+              <td data-label="Priority" class="px-5 py-3.5">
                 <span class="badge badge-priority-{{ ticket.priority }}">
                   {{ ticket.get_priority_display }}
                 </span>
               </td>
-              <td class="px-5 py-3.5">
+              <td data-label="Status" class="px-5 py-3.5">
                 <span class="badge badge-{{ ticket.status|cut:'_' }}">
                   {{ ticket.get_status_display }}
                 </span>
               </td>
-              <td class="px-5 py-3.5">
+              <td data-label="Assigned" class="px-5 py-3.5">
                 {% if ticket.assigned_to %}
                   <span class="text-sm" style="color: var(--text-secondary);">{{ ticket.assigned_to.display_name }}</span>
                 {% else %}
                   <span class="text-xs italic" style="color: var(--text-muted);">Unassigned</span>
                 {% endif %}
               </td>
-              <td class="px-5 py-3.5 text-right">
+              <td data-label="Time" class="px-5 py-3.5 text-right">
                 <span class="tabular-nums text-xs whitespace-nowrap" style="color: var(--text-muted);">
                   {{ ticket.created_at|timesince }} ago
                 </span>

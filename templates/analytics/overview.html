@@ -108,7 +108,7 @@
       <p class="card-title">Staff Performance</p>
     </div>
     <div class="overflow-x-auto">
-      <table class="data-table">
+      <table class="data-table table-responsive-cards">
         <thead>
           <tr>
             <th>Staff Member</th>
@@ -121,7 +121,7 @@
         <tbody>
           {% for staff in staff_performance %}
           <tr>
-            <td>
+            <td data-label="Staff">
               <div class="flex items-center gap-3">
                 <div class="avatar-emerald">{{ staff.initials }}</div>
                 <div>
@@ -130,9 +130,9 @@
                 </div>
               </div>
             </td>
-            <td class="text-center tabular-nums text-sm">{{ staff.assigned }}</td>
-            <td class="text-center tabular-nums text-sm" style="color: var(--color-emerald-600);">{{ staff.resolved }}</td>
-            <td class="text-center">
+            <td data-label="Assigned" class="text-center tabular-nums text-sm">{{ staff.assigned }}</td>
+            <td data-label="Resolved" class="text-center tabular-nums text-sm" style="color: var(--color-emerald-600);">{{ staff.resolved }}</td>
+            <td data-label="Rate" class="text-center">
               {% if staff.assigned > 0 %}
               {% widthratio staff.resolved staff.assigned 100 as rate %}
               <span class="text-sm font-semibold" style="color: {% if rate >= 80 %}#16a34a{% elif rate >= 50 %}#d97706{% else %}#dc2626{% endif %};">
@@ -142,7 +142,7 @@
               <span style="color: var(--text-muted);">—</span>
               {% endif %}
             </td>
-            <td>
+            <td data-label="Performance">
               {% if staff.assigned > 0 %}
               {% widthratio staff.resolved staff.assigned 100 as rate %}
               <div class="w-full h-2 rounded-full" style="background-color: var(--bg-subtle);">

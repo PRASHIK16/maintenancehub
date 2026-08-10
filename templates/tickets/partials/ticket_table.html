@@ -3,7 +3,7 @@
 <div class="card">
   {% if page_obj.object_list %}
   <div class="overflow-x-auto">
-    <table class="data-table">
+    <table class="data-table table-responsive-cards">
       <thead>
         <tr>
           <th>
@@ -37,11 +37,11 @@
       <tbody>
         {% for ticket in page_obj %}
         <tr class="cursor-pointer" onclick="location.href='{% url 'dashboard:ticket-detail' ticket.pk %}'">
-          <td>
+          <td data-label="Ticket">
             <div class="ticket-num">{{ ticket.ticket_number }}</div>
             <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">{{ ticket.created_at|naturaltime }}</div>
           </td>
-          <td>
+          <td data-label="Issue">
             <div class="font-medium text-sm max-w-xs truncate" style="color: var(--text-primary);">{{ ticket.title }}</div>
             <div class="flex items-center gap-2 flex-wrap" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
               {% if ticket.location %}<span>📍 {{ ticket.location.name }}</span>{% endif %}
@@ -49,13 +49,13 @@
               <span>{{ ticket.created_by.display_name }}</span>
             </div>
           </td>
-          <td>
+          <td data-label="Priority">
             <span class="badge badge-priority-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span>
           </td>
-          <td>
+          <td data-label="Status">
             <span class="badge badge-{{ ticket.status|cut:'_' }}">{{ ticket.get_status_display }}</span>
           </td>
-          <td>
+          <td data-label="Assigned">
             {% if ticket.assigned_to %}
             <div class="flex items-center gap-2">
               <div class="avatar-emerald flex-shrink-0" style="width: 24px; height: 24px; font-size: 10px;">
@@ -67,7 +67,7 @@
             <span style="font-size: 13px; color: var(--text-muted); font-style: italic;">Unassigned</span>
             {% endif %}
           </td>
-          <td>
+          <td data-label="SLA">
             {% if ticket.sla_resolution_due %}
             <div class="sla-timer sla-{{ ticket.sla_status }}" style="font-size: 12px;">
               {{ ticket.sla_resolution_due|date:"d M, g:i A" }}
