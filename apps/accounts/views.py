@@ -20,11 +20,18 @@ class LoginView(View):
     """Email/password login with role-based redirect."""
     template_name = "auth/login.html"
 
+    FEATURES = [
+        "SLA-driven ticket management with auto-alerts",
+        "Role-based access for staff and residents",
+        "Kanban, analytics, and real-time dashboards",
+        "Asset tracking and preventive maintenance",
+    ]
+
     def get(self, request):
         if request.user.is_authenticated:
             return redirect("dashboard:home")
         form = LoginForm()
-        return render(request, self.template_name, {"form": form})
+        return render(request, self.template_name, {"form": form, "features": self.FEATURES})
 
     def post(self, request):
         form = LoginForm(request.POST)
@@ -39,7 +46,7 @@ class LoginView(View):
                     return redirect(next_url)
                 return redirect("dashboard:home")
             form.add_error(None, "Invalid email address or password.")
-        return render(request, self.template_name, {"form": form})
+        return render(request, self.template_name, {"form": form, "features": self.FEATURES})
 
 
 class LogoutView(View):

@@ -10,8 +10,8 @@
   <!-- ================================================================
        LEFT PANEL — Brand / Trust (hidden on mobile)
   ================================================================ -->
-  <div class="hidden lg:flex lg:w-[480px] xl:w-[520px] flex-col justify-between px-12 py-14 flex-shrink-0"
-       style="background-color: #ffffff; border-right: 1px solid #e8edf2;">
+  <div class="hidden lg:flex flex-col justify-between px-12 py-14"
+       style="background-color: #ffffff; border-right: 1px solid #e8edf2; width: 480px; flex-shrink: 0;">
 
     <div>
       <!-- Logo -->
@@ -36,16 +36,53 @@
       </p>
 
       <!-- Feature list -->
-      <ul class="space-y-4 mb-14">
-        {% for feature in "SLA-driven ticket management with auto-alerts,Role-based access for staff and residents,Kanban, analytics, and real-time dashboards,Asset tracking and preventive maintenance" %}
+      <ul class="space-y-4 mb-14" role="list">
+        {% for feature in features %}
         <li class="flex items-start gap-3">
           <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
                style="background-color: rgba(5,150,105,0.10);">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3">
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <span class="text-sm leading-relaxed" style="color: #475569;">{{ feature }}</span>
+        </li>
+        {% empty %}
+        <li class="flex items-start gap-3">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+               style="background-color: rgba(5,150,105,0.10);">
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm leading-relaxed" style="color: #475569;">SLA-driven ticket management with auto-alerts</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+               style="background-color: rgba(5,150,105,0.10);">
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm leading-relaxed" style="color: #475569;">Role-based access for staff and residents</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+               style="background-color: rgba(5,150,105,0.10);">
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm leading-relaxed" style="color: #475569;">Kanban, analytics, and real-time dashboards</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+               style="background-color: rgba(5,150,105,0.10);">
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span class="text-sm leading-relaxed" style="color: #475569;">Asset tracking and preventive maintenance</span>
         </li>
         {% endfor %}
       </ul>
@@ -65,7 +102,7 @@
        RIGHT PANEL — Login Form
   ================================================================ -->
   <div class="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:px-12">
-    <div class="w-full max-w-sm">
+    <div class="w-full max-w-md">
 
       <!-- Mobile logo -->
       <div class="lg:hidden mb-10 flex items-center gap-2.5">
