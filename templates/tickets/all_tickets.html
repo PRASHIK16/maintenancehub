@@ -52,21 +52,21 @@
                    hx-include="#filter-form">
           </div>
 
-          <select name="status" class="form-select">
+          <select name="status" class="form-select" aria-label="Filter by status">
             <option value="">All statuses</option>
             {% for val, label in statuses %}
             <option value="{{ val }}" {% if filters.status == val %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
           </select>
 
-          <select name="priority" class="form-select">
+          <select name="priority" class="form-select" aria-label="Filter by priority">
             <option value="">All priorities</option>
             {% for val, label in priorities %}
             <option value="{{ val }}" {% if filters.priority == val %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
           </select>
 
-          <select name="assigned" class="form-select">
+          <select name="assigned" class="form-select" aria-label="Filter by assignee">
             <option value="">All assignees</option>
             <option value="unassigned" {% if filters.assigned == 'unassigned' %}selected{% endif %}>Unassigned</option>
             {% for staff in staff_members %}
@@ -76,7 +76,7 @@
             {% endfor %}
           </select>
 
-          <select name="category" class="form-select">
+          <select name="category" class="form-select" aria-label="Filter by category">
             <option value="">All categories</option>
             {% for cat in categories %}
             <option value="{{ cat.pk }}" {% if filters.category == cat.pk|stringformat:'s' %}selected{% endif %}>
@@ -86,9 +86,9 @@
           </select>
 
           <input type="date" name="date_from" value="{{ filters.date_from }}"
-                 class="form-input" placeholder="From date">
+                 class="form-input" aria-label="From date" placeholder="From date">
           <input type="date" name="date_to" value="{{ filters.date_to }}"
-                 class="form-input" placeholder="To date">
+                 class="form-input" aria-label="To date" placeholder="To date">
 
           <div class="flex gap-2">
             <button type="submit" class="btn btn-primary btn-sm flex-1">Apply</button>
