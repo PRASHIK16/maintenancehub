@@ -9,16 +9,17 @@
   {# ── Header ───────────────────────────────────────────────────────── #}
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <div class="flex items-center gap-2 text-xs mb-1" style="color: var(--text-muted);">
-        <a href="{% url 'organizations:hostel-dashboard' %}" class="transition-colors"
-           style="color: var(--text-muted); text-decoration: none;">Hostel</a>
-        <span>›</span>
+      <nav class="breadcrumb mb-2">
+        <a href="{% url 'organizations:hostel-dashboard' %}" class="breadcrumb-link">Hostel</a>
+        <span class="breadcrumb-sep">›</span>
         <span>Residents</span>
+      </nav>
+      <div class="page-intro" style="margin-bottom: 0;">
+        <h1 class="page-intro-title">Residents</h1>
+        <p class="page-intro-sub">
+          {{ residents.count }} resident{{ residents.count|pluralize }} registered at {{ org.name }}.
+        </p>
       </div>
-      <h1 class="text-2xl font-bold tracking-tight" style="color: var(--text-primary);">Residents</h1>
-      <p class="text-sm mt-1" style="color: var(--text-secondary);">
-        {{ residents.count }} resident{{ residents.count|pluralize }} registered at {{ org.name }}.
-      </p>
     </div>
     <div class="flex items-center gap-2 flex-wrap">
       <a href="{% url 'organizations:hostel-dashboard' %}" class="btn btn-secondary btn-sm">
