@@ -4,26 +4,24 @@
 {% block title %}{{ action }} Resident — {{ request.user.organization.name }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto space-y-6 fade-in">
+<div class="content-medium mx-auto space-y-6 fade-in">
 
   {# ── Header ───────────────────────────────────────────────────────── #}
   <div>
-    <div class="flex items-center gap-2 text-xs mb-1" style="color: var(--text-muted);">
-      <a href="{% url 'organizations:hostel-dashboard' %}" class="transition-colors"
-         style="color: var(--text-muted); text-decoration: none;">Hostel</a>
-      <span>›</span>
-      <a href="{% url 'organizations:hostel-residents' %}" class="transition-colors"
-         style="color: var(--text-muted); text-decoration: none;">Residents</a>
-      <span>›</span>
+    <nav class="breadcrumb mb-3">
+      <a href="{% url 'organizations:hostel-dashboard' %}" class="breadcrumb-link">Hostel</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="{% url 'organizations:hostel-residents' %}" class="breadcrumb-link">Residents</a>
+      <span class="breadcrumb-sep">›</span>
       <span>{{ action }}</span>
+    </nav>
+    <div class="page-intro" style="margin-bottom: 0;">
+      <h1 class="page-intro-title">{{ action }} Resident</h1>
+      <p class="page-intro-sub">
+        {% if action == "Add" %}Register a new hostel resident and assign their room.
+        {% else %}Update resident profile and room assignment.{% endif %}
+      </p>
     </div>
-    <h1 class="text-2xl font-bold tracking-tight" style="color: var(--text-primary);">
-      {{ action }} Resident
-    </h1>
-    <p class="text-sm mt-1" style="color: var(--text-secondary);">
-      {% if action == "Add" %}Register a new hostel resident and assign their room.
-      {% else %}Update resident profile and room assignment.{% endif %}
-    </p>
   </div>
 
   {# ── Form card ────────────────────────────────────────────────────── #}
