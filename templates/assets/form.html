@@ -25,45 +25,51 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
-            <label class="form-label required">Asset Code</label>
-            <input type="text" name="asset_code" value="{{ asset.asset_code|default:post_data.asset_code }}"
+            <label for="id_asset_code" class="form-label required">Asset Code</label>
+            <input type="text" name="asset_code" id="id_asset_code"
+                   value="{{ asset.asset_code|default:post_data.asset_code }}"
                    class="form-input" placeholder="e.g. HVAC-001" {% if asset %}readonly{% endif %} required>
           </div>
           <div class="form-group">
-            <label class="form-label required">Asset Type</label>
-            <input type="text" name="asset_type" value="{{ asset.asset_type|default:post_data.asset_type }}"
+            <label for="id_asset_type" class="form-label required">Asset Type</label>
+            <input type="text" name="asset_type" id="id_asset_type"
+                   value="{{ asset.asset_type|default:post_data.asset_type }}"
                    class="form-input" placeholder="e.g. HVAC, Elevator, Generator" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label required">Name</label>
-          <input type="text" name="name" value="{{ asset.name|default:post_data.name }}"
+          <label for="id_name" class="form-label required">Name</label>
+          <input type="text" name="name" id="id_name"
+                 value="{{ asset.name|default:post_data.name }}"
                  class="form-input" placeholder="Descriptive name" required>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
-            <label class="form-label">Brand</label>
-            <input type="text" name="brand" value="{{ asset.brand|default:post_data.brand }}"
+            <label for="id_brand" class="form-label">Brand</label>
+            <input type="text" name="brand" id="id_brand"
+                   value="{{ asset.brand|default:post_data.brand }}"
                    class="form-input" placeholder="Manufacturer">
           </div>
           <div class="form-group">
-            <label class="form-label">Model Number</label>
-            <input type="text" name="model_number" value="{{ asset.model_number|default:post_data.model_number }}"
+            <label for="id_model_number" class="form-label">Model Number</label>
+            <input type="text" name="model_number" id="id_model_number"
+                   value="{{ asset.model_number|default:post_data.model_number }}"
                    class="form-input">
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
-            <label class="form-label">Serial Number</label>
-            <input type="text" name="serial_number" value="{{ asset.serial_number|default:post_data.serial_number }}"
+            <label for="id_serial_number" class="form-label">Serial Number</label>
+            <input type="text" name="serial_number" id="id_serial_number"
+                   value="{{ asset.serial_number|default:post_data.serial_number }}"
                    class="form-input">
           </div>
           <div class="form-group">
-            <label class="form-label">Status</label>
-            <select name="status" class="form-select">
+            <label for="id_status" class="form-label">Status</label>
+            <select name="status" id="id_status" class="form-select">
               <option value="active" {% if asset.status == 'active' or not asset %}selected{% endif %}>Active</option>
               <option value="under_maintenance" {% if asset.status == 'under_maintenance' %}selected{% endif %}>Under Maintenance</option>
               <option value="retired" {% if asset.status == 'retired' %}selected{% endif %}>Retired</option>
@@ -72,8 +78,8 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Location</label>
-          <select name="location" class="form-select">
+          <label for="id_location" class="form-label">Location</label>
+          <select name="location" id="id_location" class="form-select">
             <option value="">— No specific location —</option>
             {% for loc in locations %}
             <option value="{{ loc.pk }}" {% if asset.location_id == loc.pk %}selected{% endif %}>
@@ -85,20 +91,20 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
-            <label class="form-label">Purchase Date</label>
-            <input type="date" name="purchase_date"
+            <label for="id_purchase_date" class="form-label">Purchase Date</label>
+            <input type="date" name="purchase_date" id="id_purchase_date"
                    value="{{ asset.purchase_date|date:'Y-m-d'|default:'' }}" class="form-input">
           </div>
           <div class="form-group">
-            <label class="form-label">Warranty Expiry</label>
-            <input type="date" name="warranty_expiry"
+            <label for="id_warranty_expiry" class="form-label">Warranty Expiry</label>
+            <input type="date" name="warranty_expiry" id="id_warranty_expiry"
                    value="{{ asset.warranty_expiry|date:'Y-m-d'|default:'' }}" class="form-input">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Notes</label>
-          <textarea name="notes" rows="3" class="form-textarea"
+          <label for="id_notes" class="form-label">Notes</label>
+          <textarea name="notes" id="id_notes" rows="3" class="form-textarea"
                     placeholder="Any additional notes about this asset…">{{ asset.notes|default:'' }}</textarea>
         </div>
 
