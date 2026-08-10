@@ -22,8 +22,8 @@
             {{ asset.get_status_display }}
           </span>
         </div>
-        <h1 class="text-xl font-bold mb-1" style="color: var(--text-primary); letter-spacing: -0.02em;">{{ asset.name }}</h1>
-        <p class="text-sm" style="color: var(--text-muted);">{{ asset.asset_type }}</p>
+        <h1 class="page-intro-title" style="margin-bottom: 2px;">{{ asset.name }}</h1>
+        <p class="page-intro-sub">{{ asset.asset_type }}</p>
       </div>
       {% if request.user.role in "admin manager" %}
       <div class="flex items-center gap-2 flex-shrink-0">
