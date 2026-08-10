@@ -87,10 +87,10 @@ class ProfileView(View):
     template_name = "auth/profile.html"
 
     def get(self, request):
-        form = UserProfileForm(instance=request.user)
+        profile_form = UserProfileForm(instance=request.user)
         password_form = PasswordChangeForm(request.user)
         return render(request, self.template_name, {
-            "form": form,
+            "profile_form": profile_form,
             "password_form": password_form,
         })
 
@@ -102,17 +102,17 @@ class ProfileView(View):
                 update_session_auth_hash(request, user)
                 messages.success(request, "Password updated successfully.")
                 return redirect("accounts:profile")
-            form = UserProfileForm(instance=request.user)
+            profile_form = UserProfileForm(instance=request.user)
         else:
-            form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+            profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
             password_form = PasswordChangeForm(request.user)
-            if form.is_valid():
-                form.save()
+            if profile_form.is_valid():
+                profile_form.save()
                 messages.success(request, "Profile updated successfully.")
                 return redirect("accounts:profile")
 
         return render(request, self.template_name, {
-            "form": form,
+            "profile_form": profile_form,
             "password_form": password_form,
         })
 
