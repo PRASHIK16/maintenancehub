@@ -139,6 +139,36 @@
   --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 }
 
+/* ─── Forced Light Mode (auth pages, onboarding, public pages) ───────────────── */
+/* Add data-theme="light" to a wrapper to guarantee light rendering regardless of
+   the user's system or app-level theme preference.                                */
+[data-theme="light"] {
+  --bg-page:        #f0f4f8;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f8fafc;
+  --bg-input:       #ffffff;
+  --bg-subtle:      #f1f5f9;
+  --bg-overlay:     rgba(0, 0, 0, 0.5);
+
+  --border-default: #e2e8f0;
+  --border-subtle:  #f1f5f9;
+  --border-focus:   #059669;
+  --border-card:    #e2e8f0;
+
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --text-disabled:  #cbd5e1;
+  --text-link:      #059669;
+  --text-link-hover:#047857;
+
+  --shadow-xs:  0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm:  0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.09), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
 /* ─── Base Reset & Body ──────────────────────────────────────────────────────── */
 *,
 *::before,
@@ -2362,10 +2392,18 @@ pre code {
   letter-spacing: 0.03em;
 }
 
-/* Avatar emerald (standard for this app) */
+/* Avatar emerald (standard for this app) — fully self-contained, no .avatar base required */
 .avatar-emerald {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  flex-shrink: 0;
   background: linear-gradient(135deg, var(--color-emerald-500), var(--color-emerald-700));
   color: #ffffff;
+  user-select: none;
+  letter-spacing: -0.01em;
 }
 
 /* ─── Inline tab bar (not border-bottom tabs) ───────────────────────────── */
