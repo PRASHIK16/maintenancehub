@@ -2414,7 +2414,14 @@ pre code {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   padding: 3px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap;
+  /* hide scrollbar visually but keep scroll functionality */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.tab-bar::-webkit-scrollbar { display: none; }
 
 .tab-bar-item {
   padding: 5px 14px;

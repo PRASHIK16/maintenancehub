@@ -131,8 +131,8 @@
 
       {# Notification panel — toggled by button above, populated by HTMX #}
       <div id="notifications-panel"
-           class="hidden absolute right-0 mt-2 w-96 max-h-[480px] overflow-y-auto rounded-xl shadow-xl z-50"
-           style="background-color: var(--bg-card); border: 1px solid var(--border-card);">
+           class="hidden absolute right-0 mt-2 overflow-y-auto rounded-xl shadow-xl z-50"
+           style="background-color: var(--bg-card); border: 1px solid var(--border-card); width: min(384px, calc(100vw - 16px)); max-height: 480px;">
       </div>
     </div>
 

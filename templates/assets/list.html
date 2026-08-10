@@ -4,18 +4,16 @@
 {% block title %}Assets — {{ request.user.organization.name }}{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div class="page-header-content">
-    <h1 class="page-title">Asset Registry</h1>
-    <p class="page-subtitle">Track and manage all physical assets for {{ request.user.organization.name }}</p>
+<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+  <div class="page-intro">
+    <h1 class="page-intro-title">Asset Registry</h1>
+    <p class="page-intro-sub">Track and manage all physical assets for {{ request.user.organization.name }}</p>
   </div>
   {% if request.user.role in "admin manager" %}
-  <div class="page-header-actions">
-    <a href="{% url 'assets:create' %}" class="btn btn-primary">
-      <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-      Add Asset
-    </a>
-  </div>
+  <a href="{% url 'assets:create' %}" class="btn btn-primary flex-shrink-0 self-start">
+    <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    Add Asset
+  </a>
   {% endif %}
 </div>
 
@@ -38,17 +36,19 @@
 {# Filters #}
 <div class="card mb-6">
   <div class="card-body">
-    <form method="get" class="flex gap-3 flex-wrap">
+    <form method="get" class="flex flex-col sm:flex-row gap-3">
       <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search assets…"
-             class="form-input flex-1 min-w-48">
-      <select name="status" class="form-select w-40">
+             class="form-input flex-1">
+      <select name="status" class="form-select">
         <option value="">All Statuses</option>
         {% for val, label in status_choices %}
         <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
-      <button type="submit" class="btn btn-secondary">Filter</button>
-      <a href="{% url 'assets:list' %}" class="btn btn-secondary">Clear</a>
+      <div class="flex gap-2">
+        <button type="submit" class="btn btn-secondary flex-1 sm:flex-none">Filter</button>
+        <a href="{% url 'assets:list' %}" class="btn btn-secondary flex-1 sm:flex-none">Clear</a>
+      </div>
     </form>
   </div>
 </div>
