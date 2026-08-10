@@ -7,14 +7,15 @@
 <div class="min-h-screen flex" data-theme="light" style="background-color: #f8fafc;">
 
   {# ── Left: Brand panel (hidden on mobile) ────────────────────────── #}
-  <div class="hidden lg:flex lg:w-[440px] xl:w-[480px] flex-col justify-between px-12 py-14 flex-shrink-0"
-       style="background-color: #ffffff; border-right: 1px solid #e8edf2;">
+  <aside class="hidden lg:flex lg:w-[440px] xl:w-[480px] flex-col justify-between px-12 py-14 flex-shrink-0"
+         aria-label="Product features"
+         style="background-color: #ffffff; border-right: 1px solid #e8edf2;">
 
     {# Logo #}
-    <a href="/" class="flex items-center gap-3">
+    <a href="/" class="flex items-center gap-3" aria-label="MaintenanceHub home">
       <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
            style="background-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.25);">
-        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round"
                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94
                    3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724
@@ -34,7 +35,7 @@
       <div>
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
              style="background-color: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.2);">
-          <span class="w-1.5 h-1.5 rounded-full" style="background-color: #059669;"></span>
+          <span class="w-1.5 h-1.5 rounded-full" style="background-color: #059669;" aria-hidden="true"></span>
           <span class="text-xs font-semibold uppercase tracking-wide" style="color: #059669;">Get started free</span>
         </div>
         <h2 class="text-3xl font-bold leading-tight mb-3" style="color: #0f172a; letter-spacing: -0.03em;">
@@ -47,11 +48,11 @@
       </div>
 
       {# Feature list #}
-      <div class="space-y-5">
-        <div class="flex items-start gap-3">
+      <ul class="space-y-5 list-none" role="list">
+        <li class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-               style="background-color: rgba(5,150,105,0.08);">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2">
+               style="background-color: rgba(5,150,105,0.08);" aria-hidden="true">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
             </svg>
           </div>
@@ -59,12 +60,12 @@
             <p class="text-sm font-semibold" style="color: #1e293b;">Smart ticket management</p>
             <p class="text-xs mt-0.5" style="color: #94a3b8;">Priority triage, SLA enforcement, and full audit trail</p>
           </div>
-        </div>
+        </li>
 
-        <div class="flex items-start gap-3">
+        <li class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-               style="background-color: rgba(5,150,105,0.08);">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2">
+               style="background-color: rgba(5,150,105,0.08);" aria-hidden="true">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
           </div>
@@ -72,12 +73,12 @@
             <p class="text-sm font-semibold" style="color: #1e293b;">Operations analytics</p>
             <p class="text-xs mt-0.5" style="color: #94a3b8;">Resolution rates, MTTR, SLA compliance at a glance</p>
           </div>
-        </div>
+        </li>
 
-        <div class="flex items-start gap-3">
+        <li class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-               style="background-color: rgba(5,150,105,0.08);">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2">
+               style="background-color: rgba(5,150,105,0.08);" aria-hidden="true">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
           </div>
@@ -85,34 +86,34 @@
             <p class="text-sm font-semibold" style="color: #1e293b;">Role-based access</p>
             <p class="text-xs mt-0.5" style="color: #94a3b8;">Requesters, technicians, managers — one platform</p>
           </div>
-        </div>
-      </div>
+        </li>
+      </ul>
     </div>
 
     {# Bottom stat strip #}
-    <div class="grid grid-cols-3 gap-4 pt-6" style="border-top: 1px solid #e8edf2;">
+    <dl class="grid grid-cols-3 gap-4 pt-6" style="border-top: 1px solid #e8edf2;">
       <div>
-        <p class="text-lg font-bold tabular-nums" style="color: #0f172a;">10+</p>
-        <p class="text-xs mt-0.5" style="color: #94a3b8;">Ticket states</p>
+        <dd class="text-lg font-bold tabular-nums" style="color: #0f172a;">10+</dd>
+        <dt class="text-xs mt-0.5" style="color: #94a3b8;">Ticket states</dt>
       </div>
       <div>
-        <p class="text-lg font-bold tabular-nums" style="color: #0f172a;">4h</p>
-        <p class="text-xs mt-0.5" style="color: #94a3b8;">Critical SLA</p>
+        <dd class="text-lg font-bold tabular-nums" style="color: #0f172a;">4h</dd>
+        <dt class="text-xs mt-0.5" style="color: #94a3b8;">Critical SLA</dt>
       </div>
       <div>
-        <p class="text-lg font-bold" style="color: #0f172a;">Live</p>
-        <p class="text-xs mt-0.5" style="color: #94a3b8;">Real-time ops</p>
+        <dd class="text-lg font-bold" style="color: #0f172a;">Live</dd>
+        <dt class="text-xs mt-0.5" style="color: #94a3b8;">Real-time ops</dt>
       </div>
-    </div>
-  </div>
+    </dl>
+  </aside>
 
   {# ── Right: Form panel ────────────────────────────────────────────── #}
-  <div class="flex-1 flex flex-col justify-center px-6 py-12 lg:px-12 xl:px-16 overflow-y-auto">
+  <main class="flex-1 flex flex-col justify-center px-6 py-12 lg:px-12 xl:px-16 overflow-y-auto">
 
     {# Mobile logo #}
-    <div class="flex items-center gap-3 mb-10 lg:hidden">
+    <div class="flex items-center gap-3 mb-10 lg:hidden" aria-hidden="true">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: #059669;">
-        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round"
                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94
                    3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724
@@ -129,18 +130,19 @@
 
     <div class="w-full max-w-md mx-auto">
 
-      <div class="mb-8">
+      <header class="mb-8">
         <h1 class="text-2xl font-bold tracking-tight mb-1.5" style="color: #0f172a; letter-spacing: -0.02em;">Create your account</h1>
         <p class="text-sm" style="color: #64748b;">
           Join your organization — your admin will assign your role.
         </p>
-      </div>
+      </header>
 
-      {# Form errors #}
+      {# Non-field form errors #}
       {% if form.non_field_errors %}
       <div class="mb-6 flex items-start gap-3 px-4 py-3 rounded-xl text-sm"
+           role="alert"
            style="background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
-        <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
         <span>{{ form.non_field_errors.0 }}</span>
@@ -148,78 +150,106 @@
       {% endif %}
 
       <div class="rounded-2xl p-8" style="background-color: #ffffff; border: 1px solid #e8edf2; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
-        <form method="post" novalidate class="space-y-4">
+        <form method="post" novalidate class="space-y-4" aria-label="Create account form">
           {% csrf_token %}
 
           {# Full name #}
           <div class="form-group">
-            <label class="form-label">Full name <span style="color: #ef4444;">*</span></label>
+            <label for="{{ form.full_name.id_for_label }}" class="form-label">
+              Full name <span style="color: #ef4444;" aria-hidden="true">*</span>
+              <span class="sr-only">(required)</span>
+            </label>
             {{ form.full_name }}
-            {% if form.full_name.errors %}<p class="form-error">{{ form.full_name.errors.0 }}</p>{% endif %}
+            {% if form.full_name.errors %}
+            <p class="form-error" role="alert" id="full-name-error">{{ form.full_name.errors.0 }}</p>
+            {% endif %}
           </div>
 
           {# Email #}
           <div class="form-group">
-            <label class="form-label">Email address <span style="color: #ef4444;">*</span></label>
+            <label for="{{ form.email.id_for_label }}" class="form-label">
+              Email address <span style="color: #ef4444;" aria-hidden="true">*</span>
+              <span class="sr-only">(required)</span>
+            </label>
             {{ form.email }}
-            {% if form.email.errors %}<p class="form-error">{{ form.email.errors.0 }}</p>{% endif %}
+            {% if form.email.errors %}
+            <p class="form-error" role="alert" id="email-error">{{ form.email.errors.0 }}</p>
+            {% endif %}
           </div>
 
           {# Phone #}
           <div class="form-group">
-            <label class="form-label">
+            <label for="{{ form.phone.id_for_label }}" class="form-label">
               Phone number
               <span class="font-normal" style="color: #94a3b8;">(optional)</span>
             </label>
             {{ form.phone }}
-            {% if form.phone.errors %}<p class="form-error">{{ form.phone.errors.0 }}</p>{% endif %}
+            {% if form.phone.errors %}
+            <p class="form-error" role="alert" id="phone-error">{{ form.phone.errors.0 }}</p>
+            {% endif %}
           </div>
 
-          {# Password row #}
-          <div class="grid grid-cols-2 sm:grid-cols-2 gap-3">
+          {# Password row — stacks on mobile, side-by-side on sm+ #}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
             <div class="form-group">
-              <label class="form-label">Password <span style="color: #ef4444;">*</span></label>
+              <label for="{{ form.password.id_for_label }}" class="form-label">
+                Password <span style="color: #ef4444;" aria-hidden="true">*</span>
+                <span class="sr-only">(required)</span>
+              </label>
               <div class="relative">
                 {{ form.password }}
-                <button type="button" tabindex="-1"
-                        onclick="togglePass('id_password', this)"
+                <button type="button"
+                        tabindex="-1"
+                        onclick="togglePass('{{ form.password.id_for_label }}', this)"
+                        aria-label="Toggle password visibility"
                         class="absolute inset-y-0 right-3 flex items-center transition-colors"
                         style="color: #94a3b8;"
                         onmouseover="this.style.color='#64748b'"
                         onmouseout="this.style.color='#94a3b8'">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                   </svg>
                 </button>
               </div>
-              <p class="form-hint">Min. 8 characters</p>
-              {% if form.password.errors %}<p class="form-error">{{ form.password.errors.0 }}</p>{% endif %}
+              <p class="form-hint" id="password-hint">Min. 8 characters</p>
+              {% if form.password.errors %}
+              <p class="form-error" role="alert" id="password-error">{{ form.password.errors.0 }}</p>
+              {% endif %}
             </div>
 
             <div class="form-group">
-              <label class="form-label">Confirm <span style="color: #ef4444;">*</span></label>
+              <label for="{{ form.confirm_password.id_for_label }}" class="form-label">
+                Confirm <span style="color: #ef4444;" aria-hidden="true">*</span>
+                <span class="sr-only">(required)</span>
+              </label>
               <div class="relative">
                 {{ form.confirm_password }}
-                <button type="button" tabindex="-1"
-                        onclick="togglePass('id_confirm_password', this)"
+                <button type="button"
+                        tabindex="-1"
+                        onclick="togglePass('{{ form.confirm_password.id_for_label }}', this)"
+                        aria-label="Toggle confirm password visibility"
                         class="absolute inset-y-0 right-3 flex items-center transition-colors"
                         style="color: #94a3b8;"
                         onmouseover="this.style.color='#64748b'"
                         onmouseout="this.style.color='#94a3b8'">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                   </svg>
                 </button>
               </div>
-              {% if form.confirm_password.errors %}<p class="form-error">{{ form.confirm_password.errors.0 }}</p>{% endif %}
+              {% if form.confirm_password.errors %}
+              <p class="form-error" role="alert" id="confirm-password-error">{{ form.confirm_password.errors.0 }}</p>
+              {% endif %}
             </div>
+
           </div>
 
           {# Submit #}
           <button type="submit" class="btn btn-primary w-full justify-center mt-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
             </svg>
             Create Account
@@ -245,14 +275,16 @@
         </p>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <script>
 function togglePass(fieldId, btn) {
   const field = document.getElementById(fieldId);
   if (!field) return;
-  field.type = field.type === 'password' ? 'text' : 'password';
+  const isPassword = field.type === 'password';
+  field.type = isPassword ? 'text' : 'password';
+  btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Toggle password visibility');
 }
 </script>
 {% endblock %}

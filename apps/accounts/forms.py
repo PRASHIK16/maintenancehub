@@ -32,6 +32,7 @@ class RegistrationForm(forms.ModelForm):
             "class": "form-input",
             "placeholder": "Minimum 8 characters",
             "autocomplete": "new-password",
+            "aria-describedby": "password-hint",
         })
     )
     confirm_password = forms.CharField(
