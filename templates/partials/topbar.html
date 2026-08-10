@@ -106,10 +106,12 @@
       <button class="relative p-2 rounded-lg transition-colors"
               style="color: var(--text-secondary);"
               aria-label="Notifications"
+              aria-expanded="false"
+              aria-controls="notifications-panel"
               hx-get="{% url 'notifications:panel' %}"
               hx-target="#notifications-panel"
               hx-swap="innerHTML"
-              onclick="document.getElementById('notifications-panel').classList.toggle('hidden')">
+              onclick="const p=document.getElementById('notifications-panel');p.classList.toggle('hidden');this.setAttribute('aria-expanded',!p.classList.contains('hidden'))">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
           <path stroke-linecap="round" stroke-linejoin="round"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0
