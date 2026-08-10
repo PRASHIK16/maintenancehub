@@ -2,6 +2,12 @@
 {% load static %}
 
 {% block body %}
+{# Skip link — allows keyboard/screen-reader users to bypass the sidebar nav #}
+<a href="#page-content"
+   class="sr-only focus:not-sr-only focus:fixed focus:z-[9999] focus:top-3 focus:left-3 focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold"
+   style="background-color: #059669; color: #ffffff;">
+  Skip to main content
+</a>
 <div class="flex h-screen overflow-hidden" style="background-color: var(--bg-page);">
 
   {# ── Sidebar ──────────────────────────────────────────────────────────── #}
