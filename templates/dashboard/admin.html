@@ -5,7 +5,7 @@
 
 {% block content %}
 {% now "H" as current_hour %}
-<div class="space-y-6 animate-fade-in">
+<div class="space-y-6 fade-in">
 
 {# ────────────────────────────────────────────────────────────────────────────
    Page Header — sticky, full-bleed, fintech command center feel
@@ -77,7 +77,7 @@
   {# Total Requests #}
   <div class="stat-card">
     <div class="stat-card-label">Total Requests</div>
-    <div class="stat-card-value tabular-nums font-700 animate-count-up">
+    <div class="stat-card-value tabular-nums font-bold animate-count-up">
       {{ stats.total|intcomma }}
     </div>
     <div class="stat-card-meta">
@@ -99,7 +99,7 @@
   {# Open #}
   <div class="stat-card">
     <div class="stat-card-label">Open</div>
-    <div class="stat-card-value tabular-nums font-700 animate-count-up {% if stats.open > 0 %}text-amber-500{% endif %}">
+    <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.open > 0 %}text-amber-500{% endif %}">
       {{ stats.open|intcomma }}
     </div>
     <div class="stat-card-meta">
@@ -108,9 +108,9 @@
   </div>
 
   {# At Risk / Overdue #}
-  <div class="stat-card {% if stats.overdue > 0 %}border-l-4 border-l-red-500{% endif %}">
+  <div class="stat-card" {% if stats.overdue > 0 %}style="border-left: 4px solid #ef4444;"{% endif %}>
     <div class="stat-card-label">At Risk / Overdue</div>
-    <div class="stat-card-value tabular-nums font-700 animate-count-up {% if stats.overdue > 0 %}text-red-500{% endif %}">
+    <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.overdue > 0 %}text-red-500{% endif %}">
       {{ stats.overdue|intcomma }}
     </div>
     <div class="stat-card-meta">
@@ -122,7 +122,7 @@
   {% with sla=stats.sla_rate|default:0 %}
   <div class="stat-card">
     <div class="stat-card-label">SLA Compliance</div>
-    <div class="stat-card-value tabular-nums font-700 animate-count-up
+    <div class="stat-card-value tabular-nums font-bold animate-count-up
       {% if sla >= 90 %}text-emerald-500{% elif sla >= 75 %}text-amber-500{% else %}text-red-500{% endif %}">
       {{ sla }}%
     </div>
@@ -153,7 +153,7 @@
         Resolution Rate
       </div>
       <div class="flex items-end gap-1 mb-4">
-        <span class="tabular-nums font-700 leading-none" style="font-size: 2.25rem; color: var(--text-primary);">{{ rate }}</span>
+        <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-primary);">{{ rate }}</span>
         <span class="font-semibold pb-0.5" style="font-size: 1.125rem; color: var(--text-muted);">%</span>
       </div>
       <div>
@@ -182,12 +182,12 @@
       </div>
       <div class="flex items-end gap-1 mb-4">
         {% if stats.avg_resolution_hours %}
-          <span class="tabular-nums font-700 leading-none" style="font-size: 2.25rem; color: var(--text-primary);">
+          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-primary);">
             {{ stats.avg_resolution_hours }}
           </span>
           <span class="font-semibold pb-0.5" style="font-size: 1.125rem; color: var(--text-muted);">h</span>
         {% else %}
-          <span class="tabular-nums font-700 leading-none" style="font-size: 2.25rem; color: var(--text-disabled);">&mdash;</span>
+          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-disabled);">&mdash;</span>
         {% endif %}
       </div>
       <div class="text-xs" style="color: var(--text-muted);">Mean time to close a request</div>
@@ -202,12 +202,12 @@
       </div>
       <div class="flex items-end gap-1 mb-4">
         {% if stats.avg_first_response_mins %}
-          <span class="tabular-nums font-700 leading-none" style="font-size: 2.25rem; color: var(--text-primary);">
+          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-primary);">
             {{ stats.avg_first_response_mins }}
           </span>
           <span class="font-semibold pb-0.5" style="font-size: 1.125rem; color: var(--text-muted);">m</span>
         {% else %}
-          <span class="tabular-nums font-700 leading-none" style="font-size: 2.25rem; color: var(--text-disabled);">&mdash;</span>
+          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-disabled);">&mdash;</span>
         {% endif %}
       </div>
       <div class="text-xs" style="color: var(--text-muted);">Median time to first reply</div>
@@ -228,7 +228,7 @@
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Live Operations</h2>
-        <span class="inline-flex items-center gap-1.5 text-xs font-700" style="color: var(--color-emerald-600);">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold" style="color: var(--color-emerald-600);">
           <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: var(--color-emerald-500);"></span>
           LIVE
         </span>
@@ -241,16 +241,16 @@
             <div class="flex items-center gap-3">
               <span class="w-2 h-2 rounded-full shrink-0 {% if stats.critical > 0 %}animate-pulse{% endif %}"
                     style="background-color: {% if stats.critical > 0 %}#ef4444{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-600" style="color: var(--text-primary);">Critical Issues</span>
+              <span class="text-sm font-semibold" style="color: var(--text-primary);">Critical Issues</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-700 text-xl leading-none"
+              <span class="tabular-nums font-bold text-xl leading-none"
                     style="color: {% if stats.critical > 0 %}#dc2626{% else %}var(--text-disabled){% endif %};">
                 {{ stats.critical|default:0|intcomma }}
               </span>
               {% if stats.critical > 0 %}
               <a href="{% url 'dashboard:all-tickets' %}?priority=critical"
-                 class="text-xs font-600 transition-colors"
+                 class="text-xs font-semibold transition-colors"
                  style="color: #dc2626;">View all &rarr;</a>
               {% endif %}
             </div>
@@ -261,16 +261,16 @@
             <div class="flex items-center gap-3">
               <span class="w-2 h-2 rounded-full shrink-0"
                     style="background-color: {% if stats.overdue > 0 %}#f97316{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-600" style="color: var(--text-primary);">Overdue</span>
+              <span class="text-sm font-semibold" style="color: var(--text-primary);">Overdue</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-700 text-xl leading-none"
+              <span class="tabular-nums font-bold text-xl leading-none"
                     style="color: {% if stats.overdue > 0 %}#ea580c{% else %}var(--text-disabled){% endif %};">
                 {{ stats.overdue|default:0|intcomma }}
               </span>
               {% if stats.overdue > 0 %}
               <a href="{% url 'dashboard:all-tickets' %}?overdue=1"
-                 class="text-xs font-600 transition-colors"
+                 class="text-xs font-semibold transition-colors"
                  style="color: #f97316;">View all &rarr;</a>
               {% endif %}
             </div>
@@ -281,16 +281,16 @@
             <div class="flex items-center gap-3">
               <span class="w-2 h-2 rounded-full shrink-0"
                     style="background-color: {% if stats.unassigned > 0 %}#facc15{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-600" style="color: var(--text-primary);">Unassigned</span>
+              <span class="text-sm font-semibold" style="color: var(--text-primary);">Unassigned</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-700 text-xl leading-none"
+              <span class="tabular-nums font-bold text-xl leading-none"
                     style="color: {% if stats.unassigned > 0 %}#ca8a04{% else %}var(--text-disabled){% endif %};">
                 {{ stats.unassigned|default:0|intcomma }}
               </span>
               {% if stats.unassigned > 0 %}
               <a href="{% url 'dashboard:all-tickets' %}?assigned=none"
-                 class="text-xs font-600 transition-colors"
+                 class="text-xs font-semibold transition-colors"
                  style="color: #ca8a04;">Triage &rarr;</a>
               {% endif %}
             </div>
@@ -301,16 +301,16 @@
             <div class="flex items-center gap-3">
               <span class="w-2 h-2 rounded-full shrink-0"
                     style="background-color: {% if stats.awaiting_verification > 0 %}#60a5fa{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-600" style="color: var(--text-primary);">Awaiting Verification</span>
+              <span class="text-sm font-semibold" style="color: var(--text-primary);">Awaiting Verification</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-700 text-xl leading-none"
+              <span class="tabular-nums font-bold text-xl leading-none"
                     style="color: {% if stats.awaiting_verification > 0 %}#2563eb{% else %}var(--text-disabled){% endif %};">
                 {{ stats.awaiting_verification|default:0|intcomma }}
               </span>
               {% if stats.awaiting_verification > 0 %}
               <a href="{% url 'dashboard:all-tickets' %}?status=awaiting_verification"
-                 class="text-xs font-600 transition-colors"
+                 class="text-xs font-semibold transition-colors"
                  style="color: #3b82f6;">Review &rarr;</a>
               {% endif %}
             </div>
@@ -325,24 +325,24 @@
       <div class="card-header">
         <h2 class="card-title">Recent Activity</h2>
         <a href="{% url 'dashboard:all-tickets' %}"
-           class="text-xs font-600 transition-colors"
+           class="text-xs font-semibold transition-colors"
            style="color: var(--text-muted);">View all &rarr;</a>
       </div>
       <div class="overflow-x-auto">
         <table class="data-table w-full" style="border-collapse: collapse;">
           <thead>
             <tr style="border-bottom: 1px solid var(--border-default);">
-              <th class="px-5 py-3 text-left text-xs font-700 uppercase whitespace-nowrap"
+              <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
                   style="letter-spacing: 0.07em; color: var(--text-muted);">ID</th>
-              <th class="px-5 py-3 text-left text-xs font-700 uppercase"
+              <th class="px-5 py-3 text-left text-xs font-bold uppercase"
                   style="letter-spacing: 0.07em; color: var(--text-muted);">Title</th>
-              <th class="px-5 py-3 text-left text-xs font-700 uppercase whitespace-nowrap"
+              <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
                   style="letter-spacing: 0.07em; color: var(--text-muted);">Priority</th>
-              <th class="px-5 py-3 text-left text-xs font-700 uppercase whitespace-nowrap"
+              <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
                   style="letter-spacing: 0.07em; color: var(--text-muted);">Status</th>
-              <th class="px-5 py-3 text-left text-xs font-700 uppercase"
+              <th class="px-5 py-3 text-left text-xs font-bold uppercase"
                   style="letter-spacing: 0.07em; color: var(--text-muted);">Assigned</th>
-              <th class="px-5 py-3 text-right text-xs font-700 uppercase whitespace-nowrap"
+              <th class="px-5 py-3 text-right text-xs font-bold uppercase whitespace-nowrap"
                   style="letter-spacing: 0.07em; color: var(--text-muted);">Time</th>
             </tr>
           </thead>
@@ -356,7 +356,7 @@
               </td>
               <td class="px-5 py-3.5 max-w-xs">
                 <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
-                   class="text-sm font-600 truncate block transition-colors"
+                   class="text-sm font-semibold truncate block transition-colors"
                    style="color: var(--text-primary);"
                    onclick="event.stopPropagation()">
                   {{ ticket.title|truncatechars:52 }}
@@ -366,12 +366,12 @@
                 {% endif %}
               </td>
               <td class="px-5 py-3.5">
-                <span class="badge-priority badge-priority-{{ ticket.priority }}">
+                <span class="badge badge-priority-{{ ticket.priority }}">
                   {{ ticket.get_priority_display }}
                 </span>
               </td>
               <td class="px-5 py-3.5">
-                <span class="badge-status badge-status-{{ ticket.status|cut:'_' }}">
+                <span class="badge badge-{{ ticket.status|cut:'_' }}">
                   {{ ticket.get_status_display }}
                 </span>
               </td>
@@ -433,7 +433,7 @@
           </svg>
           Triage Queue
           {% if stats.unassigned > 0 %}
-          <span class="ml-auto tabular-nums text-xs font-700 px-1.5 py-0.5 rounded"
+          <span class="ml-auto tabular-nums text-xs font-bold px-1.5 py-0.5 rounded"
                 style="background-color: rgba(245,158,11,0.15); color: #b45309;">
             {{ stats.unassigned }}
           </span>
@@ -459,7 +459,7 @@
           <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #ef4444;"></span>
           Critical Tickets
         </h2>
-        <span class="tabular-nums text-xs font-700" style="color: #ef4444;">
+        <span class="tabular-nums text-xs font-bold" style="color: #ef4444;">
           {{ critical_tickets|length }} active
         </span>
       </div>
@@ -471,14 +471,14 @@
             <div class="flex items-start gap-3">
               <div class="min-w-0 flex-1">
                 <div class="mono text-xs mb-1" style="color: #ef4444;">{{ ticket.ticket_number }}</div>
-                <p class="text-sm font-600 truncate leading-snug" style="color: var(--text-primary);">
+                <p class="text-sm font-semibold truncate leading-snug" style="color: var(--text-primary);">
                   {{ ticket.title|truncatechars:40 }}
                 </p>
               </div>
               {% if ticket.sla_resolution_due %}
               <div class="shrink-0 text-right">
                 <div class="text-xs mb-0.5" style="color: var(--text-muted);">SLA</div>
-                <div class="tabular-nums text-xs font-700
+                <div class="tabular-nums text-xs font-bold
                   {% if ticket.is_overdue %}sla-breached{% else %}sla-warn{% endif %}"
                      style="background: none; padding: 0;">
                   {% if ticket.is_overdue %}Overdue{% else %}{{ ticket.sla_resolution_due|timeuntil }}{% endif %}
@@ -510,7 +510,7 @@
     color: var(--text-secondary);
   }
   .data-table-row:hover td { background-color: var(--bg-subtle); }
-  .data-table-row:hover .text-sm.font-600 { color: var(--text-link); }
+  .data-table-row:hover td a { color: var(--text-link); }
   .critical-ticket-item:hover { background-color: rgba(239, 68, 68, 0.04); }
   [data-theme="dark"] .critical-ticket-item:hover { background-color: rgba(239, 68, 68, 0.07); }
 </style>
