@@ -5,231 +5,233 @@
 {% block meta_description %}Sign in to your MaintenanceHub account to manage maintenance requests and operations.{% endblock %}
 
 {% block body %}
-<div class="flex min-h-screen" data-theme="light" style="background-color: #f8fafc;">
+<div class="auth-split" data-theme="light">
 
   <!-- ================================================================
-       LEFT PANEL — Brand / Trust (hidden on mobile)
+       LEFT PANEL — Brand / Trust (lg+)
   ================================================================ -->
-  <div class="hidden lg:flex flex-col justify-between px-12 py-14"
-       style="background-color: #ffffff; border-right: 1px solid #e8edf2; width: 480px; flex-shrink: 0;">
+  <div class="auth-brand">
 
     <div>
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-3 mb-14">
-        <div class="flex h-9 w-9 items-center justify-center rounded-xl"
-             style="background-color: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.25);">
-          <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <a href="/" class="flex items-center gap-2.5 mb-12" style="text-decoration: none;">
+        <div class="sidebar-logo-icon">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
-        <span class="text-base font-bold tracking-tight" style="color: #0f172a;">MaintenanceHub</span>
+        <span class="sidebar-logo-name" style="font-size: 14px;">MaintenanceHub</span>
       </a>
 
-      <!-- Heading -->
-      <h1 class="text-3xl font-bold mb-3 leading-tight" style="color: #0f172a; letter-spacing: -0.03em;">
+      <!-- Headline -->
+      <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: #0F172A; margin: 0 0 10px; line-height: 1.2;">
         The operations platform<br>for modern facilities.
       </h1>
-      <p class="text-sm leading-relaxed mb-12" style="color: #64748b;">
+      <p style="font-size: 13px; line-height: 1.65; color: #64748B; margin: 0 0 40px;">
         From first report to final resolution — manage every maintenance request, asset, and team in one place.
       </p>
 
       <!-- Feature list -->
-      <ul class="space-y-4 mb-14" role="list">
+      <div style="border-top: 1px solid #E2E8F0; padding-top: 28px;">
         {% for feature in features %}
-        <li class="flex items-start gap-3">
-          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-               style="background-color: rgba(5,150,105,0.10);">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        <div class="auth-feature">
+          <div class="auth-feature-icon">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <span class="text-sm leading-relaxed" style="color: #475569;">{{ feature }}</span>
-        </li>
+          <div>
+            <div class="auth-feature-label">{{ feature }}</div>
+          </div>
+        </div>
         {% empty %}
-        <li class="flex items-start gap-3">
-          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-               style="background-color: rgba(5,150,105,0.10);">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        <div class="auth-feature">
+          <div class="auth-feature-icon">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <span class="text-sm leading-relaxed" style="color: #475569;">SLA-driven ticket management with auto-alerts</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-               style="background-color: rgba(5,150,105,0.10);">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          <div>
+            <div class="auth-feature-label">SLA-driven ticket management</div>
+            <div class="auth-feature-desc">Auto-escalation, breach alerts, priority queues</div>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <span class="text-sm leading-relaxed" style="color: #475569;">Role-based access for staff and residents</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-               style="background-color: rgba(5,150,105,0.10);">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          <div>
+            <div class="auth-feature-label">Role-based access control</div>
+            <div class="auth-feature-desc">Residents, staff, managers, and admins</div>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <span class="text-sm leading-relaxed" style="color: #475569;">Kanban, analytics, and real-time dashboards</span>
-        </li>
-        <li class="flex items-start gap-3">
-          <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-               style="background-color: rgba(5,150,105,0.10);">
-            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          <div>
+            <div class="auth-feature-label">Kanban, analytics, real-time dashboards</div>
+            <div class="auth-feature-desc">See the full picture at a glance</div>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
           </div>
-          <span class="text-sm leading-relaxed" style="color: #475569;">Asset tracking and preventive maintenance</span>
-        </li>
+          <div>
+            <div class="auth-feature-label">Asset tracking & preventive maintenance</div>
+            <div class="auth-feature-desc">Schedule before things break</div>
+          </div>
+        </div>
         {% endfor %}
-      </ul>
+      </div>
     </div>
 
     <!-- Bottom testimonial -->
-    <div class="rounded-xl p-5" style="background-color: #f1f5f9; border: 1px solid #e2e8f0;">
-      <p class="text-sm leading-relaxed italic mb-3" style="color: #475569;">
+    <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 20px 20px; margin-top: 32px;">
+      <p style="font-size: 13px; line-height: 1.65; color: #475569; font-style: italic; margin: 0 0 10px;">
         "Moved from a WhatsApp group to MaintenanceHub — our resolution time dropped by 60% in the first month."
       </p>
-      <p class="text-xs font-semibold uppercase tracking-wider" style="color: #94a3b8;">Facility Manager, Engineering College</p>
+      <p style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94A3B8; margin: 0;">
+        Facility Manager, Engineering College
+      </p>
     </div>
+
   </div>
 
 
   <!-- ================================================================
        RIGHT PANEL — Login Form
   ================================================================ -->
-  <div class="flex flex-1 flex-col items-center justify-center px-6 py-16 sm:px-12">
-    <div class="w-full max-w-md">
+  <div class="auth-form-area">
+    <div class="auth-form-container">
 
       <!-- Mobile logo -->
-      <div class="lg:hidden mb-10 flex items-center gap-2.5">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg" style="background-color: #059669;">
-          <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <div class="lg:hidden mb-8 flex items-center gap-2.5">
+        <div class="sidebar-logo-icon">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
-        <span class="text-base font-bold" style="color: #0f172a;">MaintenanceHub</span>
+        <span style="font-size: 14px; font-weight: 700; color: #0F172A; letter-spacing: -0.01em;">MaintenanceHub</span>
       </div>
 
-      <!-- Form card -->
-      <div class="rounded-2xl p-8" style="background-color: #ffffff; border: 1px solid #e8edf2; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
+      <!-- Heading -->
+      <div style="margin-bottom: 28px;">
+        <h2 style="font-size: 22px; font-weight: 800; letter-spacing: -0.025em; color: #0F172A; margin: 0 0 6px;">
+          Welcome back
+        </h2>
+        <p style="font-size: 13px; color: #64748B; margin: 0;">Sign in to your account to continue</p>
+      </div>
 
-        <!-- Heading -->
-        <div class="mb-6">
-          <h2 class="text-xl font-bold mb-1" style="color: #0f172a; letter-spacing: -0.02em;">Welcome back</h2>
-          <p class="text-sm" style="color: #64748b;">Sign in to your account to continue</p>
+      <!-- Error block -->
+      {% if form.errors %}
+      <div class="flex gap-3 rounded-xl mb-5" style="background-color: #FEF2F2; border: 1px solid #FECACA; padding: 14px 16px;">
+        <svg class="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="#EF4444" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div>
+          <p style="font-size: 13px; font-weight: 600; color: #991B1B; margin: 0 0 2px;">Unable to sign in</p>
+          {% for field in form %}
+            {% for error in field.errors %}
+              <p style="font-size: 12px; color: #B91C1C; margin: 0;">{{ error }}</p>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <p style="font-size: 12px; color: #B91C1C; margin: 0;">{{ error }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Login form -->
+      <form method="post" action="{% url 'accounts:login' %}" novalidate class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="id_email" class="form-label">Email address</label>
+          <input
+            type="email"
+            name="email"
+            id="id_email"
+            class="form-input{% if form.email.errors %} error{% endif %}"
+            placeholder="you@example.com"
+            autocomplete="email"
+            autofocus
+            value="{{ form.email.value|default:'' }}"
+            required>
+          {% if form.email.errors %}
+            <p class="form-error">{{ form.email.errors.0 }}</p>
+          {% endif %}
         </div>
 
-        <!-- Error block -->
-        {% if form.errors %}
-        <div class="mb-5 flex gap-3 rounded-xl p-4" style="background-color: #fef2f2; border: 1px solid #fecaca;">
-          <svg class="h-5 w-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="#ef4444" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <div>
-            <p class="text-sm font-medium" style="color: #991b1b;">Unable to sign in</p>
-            {% for field in form %}
-              {% for error in field.errors %}
-                <p class="mt-0.5 text-sm" style="color: #b91c1c;">{{ error }}</p>
-              {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-              <p class="mt-0.5 text-sm" style="color: #b91c1c;">{{ error }}</p>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-
-        <!-- Login form -->
-        <form method="post" action="{% url 'accounts:login' %}" novalidate class="space-y-4">
-          {% csrf_token %}
-
-          <!-- Email -->
-          <div>
-            <label for="id_email" class="form-label">Email address</label>
+        <!-- Password -->
+        <div class="form-group">
+          <label for="id_password" class="form-label">Password</label>
+          <div class="relative">
             <input
-              type="email"
-              name="email"
-              id="id_email"
-              class="form-input{% if form.email.errors %} error{% endif %}"
-              placeholder="you@example.com"
-              autocomplete="email"
-              autofocus
-              value="{{ form.email.value|default:'' }}"
-              required
-            >
-            {% if form.email.errors %}
-              <p class="form-error mt-1">{{ form.email.errors.0 }}</p>
-            {% endif %}
+              type="password"
+              name="password"
+              id="id_password"
+              class="form-input{% if form.password.errors %} error{% endif %}"
+              style="padding-right: 44px;"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required>
+            <button type="button"
+                    onclick="togglePasswordVisibility()"
+                    class="absolute inset-y-0 right-0 flex items-center px-3 transition-colors"
+                    style="color: var(--text-muted);"
+                    onmouseover="this.style.color='var(--text-secondary)'"
+                    onmouseout="this.style.color='var(--text-muted)'"
+                    aria-label="Toggle password visibility">
+              <svg id="pw-icon-show" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              <svg id="pw-icon-hide" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+              </svg>
+            </button>
           </div>
+          {% if form.password.errors %}
+            <p class="form-error">{{ form.password.errors.0 }}</p>
+          {% endif %}
+        </div>
 
-          <!-- Password -->
-          <div>
-            <label for="id_password" class="form-label">Password</label>
-            <div class="relative">
-              <input
-                type="password"
-                name="password"
-                id="id_password"
-                class="form-input pr-11{% if form.password.errors %} error{% endif %}"
-                placeholder="••••••••"
-                autocomplete="current-password"
-                required
-              >
-              <button
-                type="button"
-                onclick="togglePasswordVisibility()"
-                class="absolute inset-y-0 right-0 flex items-center px-3 transition-colors"
-                style="color: #94a3b8;"
-                onmouseover="this.style.color='#475569'"
-                onmouseout="this.style.color='#94a3b8'"
-                aria-label="Toggle password visibility"
-              >
-                <svg id="pw-icon-show" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <svg id="pw-icon-hide" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                </svg>
-              </button>
-            </div>
-            {% if form.password.errors %}
-              <p class="form-error mt-1">{{ form.password.errors.0 }}</p>
-            {% endif %}
-          </div>
+        <!-- Forgot password -->
+        <div class="flex justify-end" style="margin-top: -8px;">
+          <a href="{% url 'accounts:password_reset' %}"
+             style="font-size: 12px; color: #64748B; transition: color 150ms;"
+             onmouseover="this.style.color='#059669'"
+             onmouseout="this.style.color='#64748B'">
+            Forgot your password?
+          </a>
+        </div>
 
-          <!-- Forgot password -->
-          <div class="flex justify-end">
-            <a href="{% url 'accounts:password_reset' %}"
-               class="text-xs transition-colors"
-               style="color: #64748b;"
-               onmouseover="this.style.color='#059669'"
-               onmouseout="this.style.color='#64748b'">
-              Forgot your password?
-            </a>
-          </div>
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary w-full justify-center" style="margin-top: 4px;">
+          Sign in to your account
+        </button>
 
-          <!-- Submit -->
-          <button type="submit" class="btn btn-primary w-full justify-center mt-2">
-            Sign in to your account
-          </button>
-
-        </form>
-
-      </div>
+      </form>
 
       <!-- Register link -->
-      <p class="text-center text-sm mt-6" style="color: #64748b;">
+      <p class="text-center mt-6" style="font-size: 13px; color: #64748B;">
         New organization?
         <a href="{% url 'accounts:register' %}"
-           class="font-semibold transition-colors"
-           style="color: #059669;"
+           style="font-weight: 600; color: #059669; transition: color 150ms;"
            onmouseover="this.style.color='#047857'"
            onmouseout="this.style.color='#059669'">
           Get started &rarr;
