@@ -6,15 +6,15 @@
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
-  /* Sidebar — permanently dark, never overridden by theme */
-  --mh-sidebar-bg:        #08111f;
+  /* Sidebar — light, premium fintech */
+  --mh-sidebar-bg:        #ffffff;
   --mh-sidebar-width:     256px;
-  --mh-sidebar-border:    rgba(255, 255, 255, 0.06);
-  --mh-sidebar-text:      #94a3b8;
-  --mh-sidebar-heading:   #64748b;
-  --mh-sidebar-hover:     rgba(255, 255, 255, 0.08);
-  --mh-sidebar-active-bg: rgba(16, 185, 129, 0.12);
-  --mh-sidebar-active:    #10b981;
+  --mh-sidebar-border:    #e8edf2;
+  --mh-sidebar-text:      #64748b;
+  --mh-sidebar-heading:   #94a3b8;
+  --mh-sidebar-hover:     #f1f5f9;
+  --mh-sidebar-active-bg: rgba(5, 150, 105, 0.08);
+  --mh-sidebar-active:    #059669;
 
   /* Emerald accent */
   --color-emerald-50:  #ecfdf5;
@@ -92,6 +92,12 @@
   --z-dropdown: 50;
   --z-modal:    60;
   --z-toast:    70;
+
+  /* ─── Surface aliases (template compatibility) ──────────────────────────── */
+  --surface-bg:       var(--bg-page);
+  --surface-card:     var(--bg-card);
+  --surface-border:   var(--border-default);
+  --text-tertiary:    var(--text-muted);
 }
 
 /* ─── Dark Mode Overrides ────────────────────────────────────────────────────── */
@@ -210,11 +216,11 @@ img, svg {
   padding: 24px 32px;
 }
 
-/* ─── Sidebar — ALWAYS DARK ──────────────────────────────────────────────────── */
+/* ─── Sidebar ────────────────────────────────────────────────────────────────── */
 .sidebar {
   width: var(--mh-sidebar-width);
   min-height: 100vh;
-  background-color: var(--mh-sidebar-bg) !important;
+  background-color: var(--mh-sidebar-bg);
   border-right: 1px solid var(--mh-sidebar-border);
   display: flex;
   flex-direction: column;
@@ -228,14 +234,21 @@ img, svg {
   transition: transform var(--transition-slow);
 }
 
-/* Force sidebar to always remain dark regardless of theme */
-.sidebar,
-.sidebar *,
-[data-theme="dark"] .sidebar,
-[data-theme="dark"] .sidebar * {
-  --bg-card: transparent;
-  --bg-subtle: rgba(255, 255, 255, 0.04);
+/* Sidebar — use its own border token */
+.sidebar {
   --border-default: var(--mh-sidebar-border);
+}
+
+/* Dark theme: sidebar inverts back to dark for contrast */
+[data-theme="dark"] .sidebar {
+  --mh-sidebar-bg:        #0d1a2e;
+  --mh-sidebar-border:    rgba(255, 255, 255, 0.07);
+  --mh-sidebar-text:      #94a3b8;
+  --mh-sidebar-heading:   #64748b;
+  --mh-sidebar-hover:     rgba(255, 255, 255, 0.06);
+  --mh-sidebar-active-bg: rgba(16, 185, 129, 0.12);
+  --mh-sidebar-active:    #10b981;
+  background-color: var(--mh-sidebar-bg);
 }
 
 .sidebar-logo {
@@ -269,7 +282,7 @@ img, svg {
 .sidebar-logo-text {
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
@@ -327,7 +340,7 @@ img, svg {
 
 .nav-item:hover {
   background-color: var(--mh-sidebar-hover);
-  color: #ffffff;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -412,7 +425,7 @@ img, svg {
 .sidebar-user-name {
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.2;
 }
 
@@ -2134,7 +2147,7 @@ pre code {
 }
 .sidebar-nav-item:hover {
   background-color: var(--mh-sidebar-hover);
-  color: #ffffff;
+  color: var(--text-primary);
   text-decoration: none;
 }
 .sidebar-nav-item.active {

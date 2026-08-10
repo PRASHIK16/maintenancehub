@@ -1,272 +1,297 @@
-{% extends "base.html" %}
 {% load static %}
-
-{% block title %}MaintenanceHub — Operational Intelligence for Facilities{% endblock %}
-{% block meta_description %}Track every maintenance request, hit every SLA, and understand your operations. Built for colleges, hostels, offices, and campuses.{% endblock %}
-
-{% block body %}
-<div class="min-h-screen bg-[#060b18] text-white antialiased">
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MaintenanceHub — Smart Maintenance Operations</title>
+  <meta name="description" content="The complete platform for managing facility maintenance. SLA-driven ticket management, real-time analytics, and role-based operations for campuses and facilities.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #ffffff; color: #0f172a; line-height: 1.6; }
+    .fade-in { animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .gradient-text { background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .feature-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+    .feature-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.09); transform: translateY(-2px); }
+    .stat-number { font-variant-numeric: tabular-nums; letter-spacing: -0.04em; }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
 
   <!-- ================================================================
        NAVBAR
   ================================================================ -->
-  <nav class="sticky top-0 z-50 border-b border-white/5 bg-[#060b18]/80 backdrop-blur-xl">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
+  <header style="background-color: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid #f0f4f8; position: sticky; top: 0; z-index: 50;">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; height: 60px;">
 
         <!-- Logo -->
-        <a href="/" class="flex items-center gap-3">
-          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500">
-            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+          <div style="width: 32px; height: 32px; background-color: #059669; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(5,150,105,0.25);">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#ffffff" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
           </div>
-          <span class="text-base font-semibold text-white tracking-tight">MaintenanceHub</span>
+          <span style="font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: -0.02em;">MaintenanceHub</span>
         </a>
 
-        <!-- Nav actions -->
-        <div class="flex items-center gap-4">
-          <a href="{% url 'accounts:login' %}"
-             class="hidden sm:block text-sm font-medium text-white/60 hover:text-white transition-colors duration-150">
-            Sign In
-          </a>
-          <a href="{% url 'accounts:register' %}"
-             class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-400 transition-colors duration-150">
-            Get Started
-          </a>
-        </div>
+        <!-- Nav links (desktop) -->
+        <nav id="desktop-nav" style="display: flex; align-items: center; gap: 4px;">
+          <a href="#features" style="padding: 6px 14px; font-size: 13px; font-weight: 500; color: #64748b; border-radius: 6px; transition: color 0.15s;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Features</a>
+          <a href="#roles" style="padding: 6px 14px; font-size: 13px; font-weight: 500; color: #64748b; border-radius: 6px;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Who it's for</a>
+          <a href="#stats" style="padding: 6px 14px; font-size: 13px; font-weight: 500; color: #64748b; border-radius: 6px;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Results</a>
+        </nav>
 
+        <!-- CTA -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a href="{% url 'accounts:login' %}" style="padding: 7px 16px; font-size: 13px; font-weight: 600; color: #475569; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; transition: border-color 0.15s, color 0.15s; white-space: nowrap;" onmouseover="this.style.borderColor='#059669';this.style.color='#059669'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#475569'">Sign in</a>
+          <a href="{% url 'accounts:register' %}" style="padding: 7px 16px; font-size: 13px; font-weight: 600; color: #ffffff; background-color: #059669; border: 1px solid #059669; border-radius: 8px; white-space: nowrap; box-shadow: 0 1px 3px rgba(5,150,105,0.3); transition: background-color 0.15s;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'">Get started</a>
+        </div>
       </div>
     </div>
-  </nav>
+  </header>
 
 
   <!-- ================================================================
        HERO
   ================================================================ -->
-  <section class="relative overflow-hidden px-6 py-32 text-center lg:px-8">
+  <section style="padding: 80px 24px 72px; background-color: #ffffff; text-align: center;">
+    <div style="max-width: 760px; margin: 0 auto;">
 
-    <!-- Subtle radial glow -->
-    <div class="pointer-events-none absolute inset-0 flex items-start justify-center">
-      <div class="h-[600px] w-[900px] -translate-y-1/4 rounded-full bg-emerald-500/10 blur-[120px]"></div>
-    </div>
-
-    <div class="relative mx-auto max-w-4xl">
-
-      <!-- Pill badge -->
-      <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5">
-        <span class="relative flex h-2 w-2">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-        </span>
-        <span class="text-sm font-medium text-emerald-400 tracking-wide">Operational Intelligence Platform</span>
+      <!-- Badge -->
+      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px; background-color: rgba(5,150,105,0.07); border: 1px solid rgba(5,150,105,0.2); margin-bottom: 32px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background-color: #059669;"></span>
+        <span style="font-size: 12px; font-weight: 600; color: #059669; text-transform: uppercase; letter-spacing: 0.06em;">Premium Facility Operations Platform</span>
       </div>
 
-      <!-- H1 -->
-      <h1 class="text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
+      <!-- Heading -->
+      <h1 style="font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; color: #0f172a; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 20px;">
         Maintenance operations,<br>
-        <span class="text-emerald-400">finally under control.</span>
+        <span class="gradient-text">done right.</span>
       </h1>
 
-      <!-- Subtext -->
-      <p class="mt-6 text-xl leading-relaxed text-white/50 max-w-2xl mx-auto">
-        Track every request, hit every SLA, and understand your operations — built for colleges, hostels, offices, and campuses.
+      <!-- Subheading -->
+      <p style="font-size: 17px; color: #64748b; line-height: 1.65; max-width: 540px; margin: 0 auto 40px;">
+        From the first report to the final sign-off. MaintenanceHub gives your entire facility team one place to work — requesters, technicians, and managers.
       </p>
 
       <!-- CTAs -->
-      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="{% url 'accounts:register' %}"
-           class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-400 transition-all duration-150">
-          Start Free Trial
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="{% url 'accounts:register' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 700; color: #ffffff; background-color: #059669; border-radius: 10px; box-shadow: 0 4px 14px rgba(5,150,105,0.35); transition: background-color 0.15s;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'">
+          Start for free
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         </a>
-        <a href="{% url 'accounts:login' %}"
-           class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-8 py-4 text-base font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all duration-150">
-          Sign In →
+        <a href="{% url 'accounts:login' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 600; color: #475569; background-color: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 10px; transition: border-color 0.15s, color 0.15s;" onmouseover="this.style.borderColor='#059669';this.style.color='#059669'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#475569'">
+          Sign in to your account
         </a>
       </div>
 
-      <!-- Social proof line -->
-      <p class="mt-6 text-sm text-white/30 tracking-wide">
-        No credit card required &nbsp;·&nbsp; 5 min setup &nbsp;·&nbsp; Multi-tenant
+      <p style="margin-top: 32px; font-size: 12.5px; color: #94a3b8;">
+        Trusted by facility teams at engineering colleges, campuses &amp; hostels
       </p>
+    </div>
+  </section>
 
+  <!-- Dashboard preview mockup -->
+  <section style="padding: 0 24px 80px; background-color: #ffffff;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <div style="border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.08);">
+        <!-- Fake window chrome -->
+        <div style="display: flex; align-items: center; gap: 6px; padding: 12px 16px; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #fca5a5;"></span>
+          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #fde68a;"></span>
+          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #a7f3d0;"></span>
+          <div style="flex: 1; margin: 0 12px; background-color: #e2e8f0; border-radius: 4px; height: 22px; display: flex; align-items: center; padding: 0 10px;">
+            <span style="font-size: 11px; color: #94a3b8;">maintenancehub.io/dashboard</span>
+          </div>
+        </div>
+        <!-- Mock dashboard KPIs -->
+        <div style="background-color: #f8fafc; padding: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Total Tickets</p>
+            <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">48</p>
+            <p style="font-size: 11px; color: #10b981; margin-top: 4px; font-weight: 600;">↑ 12% vs last month</p>
+          </div>
+          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Open</p>
+            <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">12</p>
+            <p style="font-size: 11px; color: #64748b; margin-top: 4px; font-weight: 500;">4 critical</p>
+          </div>
+          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">SLA Compliance</p>
+            <p style="font-size: 1.875rem; font-weight: 700; color: #059669; letter-spacing: -0.04em; line-height: 1;">96%</p>
+            <p style="font-size: 11px; color: #10b981; margin-top: 4px; font-weight: 600;">↑ 3% vs last month</p>
+          </div>
+          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Avg Resolution</p>
+            <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">4.2h</p>
+            <p style="font-size: 11px; color: #10b981; margin-top: 4px; font-weight: 600;">↓ 18 min faster</p>
+          </div>
+        </div>
+        <!-- Recent tickets table row -->
+        <div style="background-color: #f8fafc; padding: 0 24px 24px; display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+            <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9;">
+              <p style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.06em;">Recent Tickets</p>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f8fafc;">
+              <span style="font-size: 12.5px; color: #475569;">Broken AC in Room 204</span>
+              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #fef3c7; color: #b45309;">In Progress</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f8fafc;">
+              <span style="font-size: 12.5px; color: #475569;">Leaking pipe — Ground floor</span>
+              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #dbeafe; color: #1d4ed8;">Assigned</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f8fafc;">
+              <span style="font-size: 12.5px; color: #475569;">Elevator out of service</span>
+              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #fee2e2; color: #991b1b;">Critical</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px;">
+              <span style="font-size: 12.5px; color: #475569;">Door lock malfunction</span>
+              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #d1fae5; color: #065f46;">Resolved</span>
+            </div>
+          </div>
+          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+            <p style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">By Priority</p>
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #ef4444;"></div>
+              <span style="font-size: 12px; color: #64748b; flex: 1;">Critical</span>
+              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">4</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #f97316;"></div>
+              <span style="font-size: 12px; color: #64748b; flex: 1;">High</span>
+              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">11</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #f59e0b;"></div>
+              <span style="font-size: 12px; color: #64748b; flex: 1;">Medium</span>
+              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">22</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #10b981;"></div>
+              <span style="font-size: 12px; color: #64748b; flex: 1;">Low</span>
+              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">11</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
 
   <!-- ================================================================
-       STATS BAR
+       STATS STRIP
   ================================================================ -->
-  <div class="border-y border-white/10 bg-white/[0.02]">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <dl class="grid grid-cols-2 gap-px sm:grid-cols-4">
-        <div class="flex flex-col items-center gap-1 py-8">
-          <dt class="text-3xl font-bold text-emerald-400">10+</dt>
-          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">States</dd>
-        </div>
-        <div class="flex flex-col items-center gap-1 py-8 border-l border-white/10">
-          <dt class="text-3xl font-bold text-emerald-400">5</dt>
-          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">Roles</dd>
-        </div>
-        <div class="flex flex-col items-center gap-1 py-8 border-l border-white/10">
-          <dt class="text-3xl font-bold text-emerald-400">4h</dt>
-          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">Critical SLA</dd>
-        </div>
-        <div class="flex flex-col items-center gap-1 py-8 border-l border-white/10">
-          <dt class="text-3xl font-bold text-emerald-400">Live</dt>
-          <dd class="text-sm font-medium text-white/40 uppercase tracking-widest">Real-time</dd>
-        </div>
-      </dl>
+  <section id="stats" style="padding: 72px 24px; background-color: #f8fafc; border-top: 1px solid #f0f4f8; border-bottom: 1px solid #f0f4f8;">
+    <div style="max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 48px; text-align: center;">
+      <div>
+        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #059669; line-height: 1;">60%</p>
+        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Avg. faster resolution</p>
+      </div>
+      <div>
+        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #0f172a; line-height: 1;">10+</p>
+        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Ticket lifecycle states</p>
+      </div>
+      <div>
+        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #0f172a; line-height: 1;">4h</p>
+        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Critical SLA target</p>
+      </div>
+      <div>
+        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #0f172a; line-height: 1;">∞</p>
+        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Locations &amp; buildings</p>
+      </div>
     </div>
-  </div>
+  </section>
 
 
   <!-- ================================================================
-       HOW IT WORKS
+       FEATURES
   ================================================================ -->
-  <section class="py-24 px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl">
+  <section id="features" style="padding: 96px 24px; background-color: #ffffff;">
+    <div style="max-width: 1100px; margin: 0 auto;">
 
-      <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold text-white sm:text-4xl">
-          From complaint to resolved — <span class="text-emerald-400">in minutes</span>
+      <div style="text-align: center; margin-bottom: 64px;">
+        <p style="font-size: 12px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Everything in one platform</p>
+        <h2 style="font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 800; color: #0f172a; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 14px;">
+          Built for facility teams<br>that care about results.
         </h2>
-        <p class="mt-4 text-lg text-white/40">A streamlined three-step flow that keeps everyone aligned.</p>
+        <p style="font-size: 15px; color: #64748b; max-width: 480px; margin: 0 auto; line-height: 1.65;">
+          Every workflow your operations team needs — from first complaint to resolved ticket.
+        </p>
       </div>
 
-      <div class="relative">
-        <!-- Connector line (desktop) -->
-        <div class="hidden lg:block absolute top-12 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-        <div class="grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-8">
-
-          <!-- Step 1 -->
-          <div class="relative flex flex-col items-center text-center">
-            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/30">
-              1
-            </div>
-            <div class="mt-6">
-              <h3 class="text-xl font-semibold text-white mb-3">Report</h3>
-              <p class="text-white/50 leading-relaxed">
-                Resident scans a QR code or opens the portal, submits the issue with a photo and priority level — in under 60 seconds.
-              </p>
-            </div>
-          </div>
-
-          <!-- Step 2 -->
-          <div class="relative flex flex-col items-center text-center">
-            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/30">
-              2
-            </div>
-            <div class="mt-6">
-              <h3 class="text-xl font-semibold text-white mb-3">Assign</h3>
-              <p class="text-white/50 leading-relaxed">
-                Manager triages the ticket, assigns it to the right team or technician, and the SLA clock starts automatically.
-              </p>
-            </div>
-          </div>
-
-          <!-- Step 3 -->
-          <div class="relative flex flex-col items-center text-center">
-            <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/30">
-              3
-            </div>
-            <div class="mt-6">
-              <h3 class="text-xl font-semibold text-white mb-3">Resolve</h3>
-              <p class="text-white/50 leading-relaxed">
-                Staff marks the ticket resolved, resident verifies the fix, and analytics update in real-time across your dashboard.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ================================================================
-       FEATURES GRID
-  ================================================================ -->
-  <section class="py-24 px-6 lg:px-8 border-t border-white/5">
-    <div class="mx-auto max-w-7xl">
-
-      <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold text-white sm:text-4xl">Everything your team needs</h2>
-        <p class="mt-4 text-lg text-white/40">Purpose-built features for serious facility operations.</p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-
-        <!-- Smart Ticketing -->
-        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-2">Smart Ticketing</h3>
-          <p class="text-sm text-white/45 leading-relaxed">10-stage lifecycle from submission to closure. Every status change is logged, timestamped, and visible to all stakeholders.</p>
+          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Smart Ticket Management</h3>
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Priority triage, auto-assignment, SLA enforcement, and full audit trails — from submission to closure.</p>
         </div>
 
-        <!-- SLA Enforcement -->
-        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-2">SLA Enforcement</h3>
-          <p class="text-sm text-white/45 leading-relaxed">Automatic alerts before breach. Priority-tiered response windows with escalation paths to keep nothing falling through the cracks.</p>
+          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Kanban Board</h3>
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Drag-and-drop visual workflow for your operations team. See everything in flight at a glance.</p>
         </div>
 
-        <!-- Role-Based Access -->
-        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-2">Role-Based Access</h3>
-          <p class="text-sm text-white/45 leading-relaxed">5 distinct roles — Admin, Manager, Staff, Resident, and Viewer — each with tailored dashboards and permissions.</p>
+          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Operations Analytics</h3>
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">MTTR, SLA compliance, resolution rates, team performance — actionable data for every decision.</p>
         </div>
 
-        <!-- Real-time Analytics -->
-        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-2">Real-time Analytics</h3>
-          <p class="text-sm text-white/45 leading-relaxed">Live metrics sliced by location, category, and staff. Identify bottlenecks and track resolution trends before they become problems.</p>
+          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Asset Tracking</h3>
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Track every asset by location, status, and maintenance history. Know what needs attention before it breaks.</p>
         </div>
 
-        <!-- Asset Registry -->
-        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-2">Asset Registry</h3>
-          <p class="text-sm text-white/45 leading-relaxed">Maintain a complete inventory of facility assets, linked directly to tickets. Full service history at every technician's fingertips.</p>
+          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Hostel &amp; Location Management</h3>
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Hierarchical building → floor → room structure with resident profiles, bed assignments, and check-in records.</p>
         </div>
 
-        <!-- Preventive Maintenance -->
-        <div class="group rounded-2xl border border-white/8 bg-white/[0.03] p-6 hover:border-emerald-500/30 hover:bg-white/[0.05] transition-all duration-200">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-2">Preventive Maintenance</h3>
-          <p class="text-sm text-white/45 leading-relaxed">Schedule-driven maintenance tasks that auto-generate tickets. Reduce reactive repairs and extend the life of your assets.</p>
+          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Role-Based Access</h3>
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Fine-grained permissions for requesters, technicians, managers, and admins — everyone sees only what they need.</p>
         </div>
 
       </div>
@@ -275,113 +300,58 @@
 
 
   <!-- ================================================================
-       USE CASES
+       WHO IT'S FOR
   ================================================================ -->
-  <section class="py-20 px-6 lg:px-8 border-t border-white/5">
-    <div class="mx-auto max-w-7xl">
+  <section id="roles" style="padding: 96px 24px; background-color: #f8fafc;">
+    <div style="max-width: 1060px; margin: 0 auto;">
 
-      <div class="text-center mb-14">
-        <h2 class="text-3xl font-bold text-white sm:text-4xl">Built for every facility</h2>
-        <p class="mt-4 text-lg text-white/40">One platform, many contexts. Customise it for your environment.</p>
+      <div style="text-align: center; margin-bottom: 64px;">
+        <p style="font-size: 12px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Built for every role</p>
+        <h2 style="font-size: clamp(1.75rem, 3.5vw, 2.25rem); font-weight: 800; color: #0f172a; letter-spacing: -0.03em; line-height: 1.2;">
+          One platform, every perspective.
+        </h2>
       </div>
 
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
 
-        <!-- Colleges -->
-        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: #dbeafe; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-4">Colleges</h3>
-          <ul class="space-y-2.5 text-sm text-white/45">
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Manage hostels, labs, and campus infrastructure
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Student-facing QR portal for quick submissions
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Department-level reporting for audits
-            </li>
-          </ul>
+          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Students &amp; Residents</h3>
+          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">Submit requests in seconds. Track real-time status. No more chasing emails or WhatsApp messages.</p>
         </div>
 
-        <!-- Hostels -->
-        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: #fef3c7; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#b45309" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-4">Hostels</h3>
-          <ul class="space-y-2.5 text-sm text-white/45">
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Per-room, per-block ticket categorisation
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Resident satisfaction tracking post-resolution
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Warden dashboards with live status overview
-            </li>
-          </ul>
+          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Technicians</h3>
+          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">See your assigned queue, update status on the go, and never miss a critical SLA deadline.</p>
         </div>
 
-        <!-- Office Buildings -->
-        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: rgba(5,150,105,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-4">Office Buildings</h3>
-          <ul class="space-y-2.5 text-sm text-white/45">
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Floor-level and zone-based ticket routing
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Vendor and contractor management
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Compliance-ready audit trails
-            </li>
-          </ul>
+          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Operations Managers</h3>
+          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">Kanban visibility, SLA alerts, team performance dashboards, and workload balancing in real time.</p>
         </div>
 
-        <!-- Residential Communities -->
-        <div class="rounded-2xl border border-white/8 bg-white/[0.03] p-6">
-          <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: #f3e8ff; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#7e22ce" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
             </svg>
           </div>
-          <h3 class="text-base font-semibold text-white mb-4">Residential Communities</h3>
-          <ul class="space-y-2.5 text-sm text-white/45">
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Society-wide common area maintenance tracking
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Transparent status updates to residents
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-0.5 text-emerald-500">✓</span>
-              Committee reporting and performance reviews
-            </li>
-          </ul>
+          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Administrators</h3>
+          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">Full control over organization settings, user roles, locations, assets, and maintenance schedules.</p>
         </div>
 
       </div>
@@ -390,34 +360,45 @@
 
 
   <!-- ================================================================
-       CTA SECTION
+       TESTIMONIAL
   ================================================================ -->
-  <section class="py-24 px-6 lg:px-8">
-    <div class="mx-auto max-w-4xl">
-      <div class="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-white/[0.02] to-transparent p-12 text-center">
+  <section style="padding: 96px 24px; background-color: #ffffff;">
+    <div style="max-width: 640px; margin: 0 auto; text-align: center;">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background-color: rgba(5,150,105,0.08); margin: 0 auto 28px; display: flex; align-items: center; justify-content: center;">
+        <svg width="24" height="24" fill="#059669" viewBox="0 0 24 24">
+          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+        </svg>
+      </div>
+      <blockquote style="font-size: 19px; font-weight: 500; color: #1e293b; line-height: 1.55; letter-spacing: -0.01em; margin-bottom: 28px; font-style: italic;">
+        "We moved from a WhatsApp group to MaintenanceHub and our resolution time dropped by 60% in the first month. The SLA dashboard alone is worth it."
+      </blockquote>
+      <p style="font-size: 13px; font-weight: 700; color: #0f172a;">Facility Manager</p>
+      <p style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Engineering College, South India</p>
+    </div>
+  </section>
 
-        <!-- Background glow -->
-        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div class="h-72 w-72 rounded-full bg-emerald-500/15 blur-3xl"></div>
-        </div>
 
-        <div class="relative">
-          <h2 class="text-3xl font-bold text-white sm:text-4xl">
-            Ready to transform your operations?
-          </h2>
-          <p class="mt-4 text-lg text-white/50">
-            Join facilities teams who've moved from spreadsheets and WhatsApp groups to a system that actually works.
-          </p>
-          <div class="mt-10">
-            <a href="{% url 'accounts:register' %}"
-               class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-10 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 hover:bg-emerald-400 transition-all duration-150">
-              Create Your Organization
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
-        </div>
+  <!-- ================================================================
+       CTA BANNER
+  ================================================================ -->
+  <section style="padding: 72px 24px; background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+    <div style="max-width: 680px; margin: 0 auto; text-align: center;">
+      <h2 style="font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; color: #ffffff; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 14px;">
+        Ready to modernize your facility?
+      </h2>
+      <p style="font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 36px; line-height: 1.65;">
+        Set up your organization in minutes. No credit card required.
+      </p>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <a href="{% url 'accounts:register' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 700; color: #059669; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transition: box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)'" onmouseout="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'">
+          Create your organization
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="{% url 'accounts:login' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); border: 1.5px solid rgba(255,255,255,0.35); border-radius: 10px; transition: border-color 0.15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.7)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.35)'">
+          Sign in
+        </a>
       </div>
     </div>
   </section>
@@ -426,15 +407,24 @@
   <!-- ================================================================
        FOOTER
   ================================================================ -->
-  <footer class="border-t border-white/5 py-10 px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm text-white/30">&copy; 2026 MaintenanceHub. All rights reserved.</p>
-      <nav class="flex items-center gap-6">
-        <a href="{% url 'accounts:login' %}" class="text-sm text-white/30 hover:text-white/60 transition-colors">Sign In</a>
-        <a href="{% url 'accounts:register' %}" class="text-sm text-white/30 hover:text-white/60 transition-colors">Register</a>
-      </nav>
+  <footer style="padding: 40px 24px; background-color: #f8fafc; border-top: 1px solid #e8edf2;">
+    <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 28px; height: 28px; background-color: #059669; border-radius: 7px; display: flex; align-items: center; justify-content: center;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#ffffff" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <span style="font-size: 13px; font-weight: 700; color: #0f172a;">MaintenanceHub</span>
+      </div>
+      <p style="font-size: 12px; color: #94a3b8;">&copy; {% now "Y" %} MaintenanceHub. All rights reserved.</p>
+      <div style="display: flex; gap: 20px;">
+        <a href="{% url 'accounts:login' %}" style="font-size: 12px; color: #64748b;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Sign in</a>
+        <a href="{% url 'accounts:register' %}" style="font-size: 12px; color: #64748b;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Get started</a>
+      </div>
     </div>
   </footer>
 
-</div>
-{% endblock %}
+</body>
+</html>
