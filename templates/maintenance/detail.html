@@ -4,69 +4,123 @@
 {% block title %}{{ schedule.title }} — Maintenance{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div class="page-header-content">
-    <nav class="breadcrumb mb-1">
+<div class="content-wide mx-auto space-y-6 fade-in">
+
+  {# Page header #}
+  <div>
+    <nav class="breadcrumb mb-3">
       <a href="{% url 'maintenance:list' %}" class="breadcrumb-link">Maintenance</a>
       <span class="breadcrumb-sep">›</span>
-      <span>{{ schedule.title }}</span>
+      <span class="truncate">{{ schedule.title }}</span>
     </nav>
-    <h1 class="page-title">{{ schedule.title }}</h1>
-    <p class="page-subtitle">{{ schedule.get_frequency_display }} maintenance schedule</p>
-  </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <div class="lg:col-span-2 space-y-6">
-    <div class="card">
-      <div class="card-header">Schedule Details</div>
-      <div class="card-body">
-        {% if schedule.description %}
-        <p class="text-sm mb-4" style="color: var(--text-secondary);">{{ schedule.description }}</p>
-        {% endif %}
-        <dl class="detail-grid">
-          <dt>Status</dt>
-          <dd>
-            <span class="badge {% if schedule.status == 'active' %}badge-success{% elif schedule.status == 'overdue' %}badge-danger{% else %}badge-neutral{% endif %}">
-              {{ schedule.get_status_display }}
-            </span>
-          </dd>
-          <dt>Frequency</dt><dd>{{ schedule.get_frequency_display }}</dd>
-          <dt>Asset</dt><dd>{{ schedule.asset.name|default:"—" }}</dd>
-          <dt>Location</dt><dd>{{ schedule.location.full_path|default:"—" }}</dd>
-          <dt>Team</dt><dd>{{ schedule.assigned_team.name|default:"Unassigned" }}</dd>
-          <dt>Next Due</dt><dd>{{ schedule.next_due_at|date:"M d, Y H:i"|default:"Not set" }}</dd>
-          <dt>Last Done</dt><dd>{{ schedule.last_done_at|date:"M d, Y H:i"|default:"Never" }}</dd>
-          <dt>Est. Duration</dt><dd>{{ schedule.estimated_duration_hours|default:"—" }}{% if schedule.estimated_duration_hours %} hours{% endif %}</dd>
-        </dl>
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <span class="badge {% if schedule.status == 'active' %}badge-success{% elif schedule.status == 'overdue' %}badge-danger{% else %}badge-neutral{% endif %}">
+            {{ schedule.get_status_display }}
+          </span>
+          <span class="badge badge-neutral">{{ schedule.get_frequency_display }}</span>
+        </div>
+        <h1 class="text-xl font-bold mb-1" style="color: var(--text-primary); letter-spacing: -0.02em;">{{ schedule.title }}</h1>
       </div>
-    </div>
-
-    {% if schedule.checklist_items %}
-    <div class="card">
-      <div class="card-header">Checklist ({{ schedule.checklist_items|length }} items)</div>
-      <div class="card-body">
-        <ul class="space-y-2">
-          {% for item in schedule.checklist_items %}
-          <li class="flex items-start gap-2 text-sm">
-            <input type="checkbox" class="mt-0.5 rounded" disabled>
-            <span>{{ item }}</span>
-          </li>
-          {% endfor %}
-        </ul>
+      {% if request.user.can_manage %}
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <a href="{% url 'maintenance:edit' schedule.pk %}" class="btn btn-secondary btn-sm">Edit</a>
       </div>
-    </div>
-    {% endif %}
-  </div>
-
-  <div class="space-y-4">
-    <div class="card">
-      <div class="card-header">Actions</div>
-      <div class="card-body space-y-2">
-        <p class="text-xs" style="color: var(--text-secondary);">Created {{ schedule.created_at|date:"M d, Y" }}</p>
-        <p class="text-xs" style="color: var(--text-secondary);">By {{ schedule.created_by.full_name|default:"System" }}</p>
-      </div>
+      {% endif %}
     </div>
   </div>
+
+  {# Main grid #}
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    {# Left: details #}
+    <div class="lg:col-span-2 space-y-5">
+
+      {# Schedule details card #}
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Schedule Details</p>
+        </div>
+        <div class="card-body">
+          {% if schedule.description %}
+          <p class="text-sm mb-5 leading-relaxed" style="color: var(--text-secondary);">{{ schedule.description }}</p>
+          {% endif %}
+          <dl class="detail-grid">
+            <dt>Status</dt>
+            <dd>
+              <span class="badge {% if schedule.status == 'active' %}badge-success{% elif schedule.status == 'overdue' %}badge-danger{% else %}badge-neutral{% endif %}">
+                {{ schedule.get_status_display }}
+              </span>
+            </dd>
+            <dt>Frequency</dt><dd>{{ schedule.get_frequency_display }}</dd>
+            <dt>Asset</dt><dd>{{ schedule.asset.name|default:"—" }}</dd>
+            <dt>Location</dt><dd>{{ schedule.location.full_path|default:"—" }}</dd>
+            <dt>Team</dt><dd>{{ schedule.assigned_team.name|default:"Unassigned" }}</dd>
+            <dt>Next Due</dt><dd>{{ schedule.next_due_at|date:"M d, Y H:i"|default:"Not set" }}</dd>
+            <dt>Last Done</dt><dd>{{ schedule.last_done_at|date:"M d, Y H:i"|default:"Never" }}</dd>
+            <dt>Est. Duration</dt>
+            <dd>{% if schedule.estimated_duration_hours %}{{ schedule.estimated_duration_hours }} hour{{ schedule.estimated_duration_hours|floatformat:0|add:"0"|default:1|pluralize }}{% else %}—{% endif %}</dd>
+          </dl>
+        </div>
+      </div>
+
+      {# Checklist #}
+      {% if schedule.checklist_items %}
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Checklist</p>
+          <span class="badge badge-neutral">{{ schedule.checklist_items|length }} item{{ schedule.checklist_items|length|pluralize }}</span>
+        </div>
+        <div class="card-body">
+          <ul class="space-y-3">
+            {% for item in schedule.checklist_items %}
+            <li class="flex items-start gap-3 text-sm" style="color: var(--text-primary);">
+              <div class="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5"
+                   style="border: 1.5px solid var(--border-default);">
+              </div>
+              <span>{{ item }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {# Right sidebar #}
+    <div class="space-y-4">
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Info</p>
+        </div>
+        <div class="card-body">
+          <dl class="space-y-0">
+            <div class="flex items-center justify-between py-2.5" style="border-bottom: 1px solid var(--border-subtle);">
+              <dt style="font-size: 13px; color: var(--text-muted);">Created</dt>
+              <dd style="font-size: 13px; color: var(--text-primary);">{{ schedule.created_at|date:"M d, Y" }}</dd>
+            </div>
+            <div class="flex items-center justify-between py-2.5">
+              <dt style="font-size: 13px; color: var(--text-muted);">Created by</dt>
+              <dd style="font-size: 13px; color: var(--text-primary);">{{ schedule.created_by.display_name|default:"System" }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      {% if request.user.can_manage %}
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Actions</p>
+        </div>
+        <div class="card-body space-y-2">
+          <a href="{% url 'maintenance:edit' schedule.pk %}" class="btn btn-secondary w-full justify-center">Edit Schedule</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
 </div>
 {% endblock %}

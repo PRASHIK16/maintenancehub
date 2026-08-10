@@ -4,89 +4,136 @@
 {% block title %}{{ asset.name }} — Assets{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div class="page-header-content">
-    <nav class="breadcrumb mb-1">
+<div class="content-wide mx-auto space-y-6 fade-in">
+
+  {# Page header #}
+  <div>
+    <nav class="breadcrumb mb-3">
       <a href="{% url 'assets:list' %}" class="breadcrumb-link">Assets</a>
       <span class="breadcrumb-sep">›</span>
-      <span>{{ asset.name }}</span>
+      <span class="truncate">{{ asset.name }}</span>
     </nav>
-    <h1 class="page-title">{{ asset.name }}</h1>
-    <p class="page-subtitle">
-      <code class="text-xs font-mono px-2 py-0.5 rounded mr-2"
-            style="background-color: var(--bg-subtle); color: var(--text-secondary);">{{ asset.asset_code }}</code>
-      {{ asset.asset_type }}
-    </p>
-  </div>
-  {% if request.user.role in "admin manager" %}
-  <div class="page-header-actions">
-    <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-secondary">Edit</a>
-    {% if asset.status != 'retired' %}
-    <form method="post" action="{% url 'assets:retire' asset.pk %}" class="inline">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-danger"
-              onclick="return confirm('Retire this asset?')">Retire</button>
-    </form>
-    {% endif %}
-  </div>
-  {% endif %}
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  {# Main info #}
-  <div class="lg:col-span-2 space-y-6">
-    <div class="card">
-      <div class="card-header">Asset Information</div>
-      <div class="card-body">
-        <dl class="detail-grid">
-          <dt>Status</dt>
-          <dd>
-            <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
-              {{ asset.get_status_display }}
-            </span>
-          </dd>
-          <dt>Brand</dt><dd>{{ asset.brand|default:"—" }}</dd>
-          <dt>Model</dt><dd>{{ asset.model_number|default:"—" }}</dd>
-          <dt>Serial Number</dt><dd><code class="text-sm font-mono">{{ asset.serial_number|default:"—" }}</code></dd>
-          <dt>Location</dt><dd>{{ asset.location.full_path|default:"—" }}</dd>
-          <dt>Purchase Date</dt><dd>{{ asset.purchase_date|date:"M d, Y"|default:"—" }}</dd>
-          <dt>Warranty Expiry</dt>
-          <dd>
-            {% if asset.warranty_expiry %}
-            <span {% if asset.warranty_expiry < today %}style="color: #dc2626; font-weight: 600;"{% endif %}>
-              {{ asset.warranty_expiry|date:"M d, Y" }}
-              {% if asset.warranty_expiry < today %}<span class="text-xs ml-1">(expired)</span>{% endif %}
-            </span>
-            {% else %}—{% endif %}
-          </dd>
-          <dt>Last Maintenance</dt><dd>{{ asset.last_maintenance_date|date:"M d, Y"|default:"Never" }}</dd>
-          <dt>Next Maintenance</dt><dd>{{ asset.next_maintenance_date|date:"M d, Y"|default:"Not scheduled" }}</dd>
-        </dl>
-        {% if asset.notes %}
-        <div class="mt-4 pt-4" style="border-top: 1px solid var(--border-subtle);">
-          <h4 class="text-sm font-medium mb-2">Notes</h4>
-          <p class="text-sm" style="color: var(--text-secondary);">{{ asset.notes }}</p>
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <code class="text-xs font-mono px-2 py-0.5 rounded"
+                style="background-color: var(--bg-subtle); color: var(--text-secondary);">{{ asset.asset_code }}</code>
+          <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
+            {{ asset.get_status_display }}
+          </span>
         </div>
+        <h1 class="text-xl font-bold mb-1" style="color: var(--text-primary); letter-spacing: -0.02em;">{{ asset.name }}</h1>
+        <p class="text-sm" style="color: var(--text-muted);">{{ asset.asset_type }}</p>
+      </div>
+      {% if request.user.role in "admin manager" %}
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+        {% if asset.status != 'retired' %}
+        <form method="post" action="{% url 'assets:retire' asset.pk %}" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm"
+                  style="background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;"
+                  onclick="return confirm('Retire this asset? This action cannot be undone.')">Retire</button>
+        </form>
         {% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
 
-  {# Sidebar #}
-  <div class="space-y-4">
-    <div class="card">
-      <div class="card-header">Quick Facts</div>
-      <div class="card-body space-y-3">
-        <div class="flex justify-between text-sm">
-          <span style="color: var(--text-secondary);">Added</span>
-          <span>{{ asset.created_at|date:"M d, Y" }}</span>
+  {# Main grid #}
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    {# Left: main info #}
+    <div class="lg:col-span-2 space-y-5">
+
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Asset Information</p>
         </div>
-        <div class="flex justify-between text-sm">
-          <span style="color: var(--text-secondary);">Last Updated</span>
-          <span>{{ asset.updated_at|date:"M d, Y" }}</span>
+        <div class="card-body">
+          <dl class="detail-grid">
+            <dt>Status</dt>
+            <dd>
+              <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
+                {{ asset.get_status_display }}
+              </span>
+            </dd>
+            <dt>Asset Type</dt><dd>{{ asset.asset_type|default:"—" }}</dd>
+            <dt>Brand</dt><dd>{{ asset.brand|default:"—" }}</dd>
+            <dt>Model</dt><dd>{{ asset.model_number|default:"—" }}</dd>
+            <dt>Serial Number</dt>
+            <dd>{% if asset.serial_number %}<code class="text-sm font-mono">{{ asset.serial_number }}</code>{% else %}—{% endif %}</dd>
+            <dt>Location</dt><dd>{{ asset.location.full_path|default:"—" }}</dd>
+            <dt>Purchase Date</dt><dd>{{ asset.purchase_date|date:"M d, Y"|default:"—" }}</dd>
+            <dt>Warranty Expiry</dt>
+            <dd>
+              {% if asset.warranty_expiry %}
+              <span {% if asset.warranty_expiry < today %}style="color: #dc2626; font-weight: 600;"{% endif %}>
+                {{ asset.warranty_expiry|date:"M d, Y" }}
+                {% if asset.warranty_expiry < today %}<span class="text-xs ml-1">(expired)</span>{% endif %}
+              </span>
+              {% else %}—{% endif %}
+            </dd>
+            <dt>Last Maintenance</dt><dd>{{ asset.last_maintenance_date|date:"M d, Y"|default:"Never" }}</dd>
+            <dt>Next Maintenance</dt><dd>{{ asset.next_maintenance_date|date:"M d, Y"|default:"Not scheduled" }}</dd>
+          </dl>
+
+          {% if asset.notes %}
+          <div class="mt-5 pt-5" style="border-top: 1px solid var(--border-subtle);">
+            <p class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Notes</p>
+            <p class="text-sm leading-relaxed" style="color: var(--text-secondary);">{{ asset.notes }}</p>
+          </div>
+          {% endif %}
         </div>
       </div>
+
+    </div>
+
+    {# Right: sidebar #}
+    <div class="space-y-4">
+
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Quick Facts</p>
+        </div>
+        <div class="card-body">
+          <dl class="space-y-0">
+            <div class="flex items-center justify-between py-2.5" style="border-bottom: 1px solid var(--border-subtle);">
+              <dt style="font-size: 13px; color: var(--text-muted);">Added</dt>
+              <dd style="font-size: 13px; color: var(--text-primary);">{{ asset.created_at|date:"M d, Y" }}</dd>
+            </div>
+            <div class="flex items-center justify-between py-2.5">
+              <dt style="font-size: 13px; color: var(--text-muted);">Last updated</dt>
+              <dd style="font-size: 13px; color: var(--text-primary);">{{ asset.updated_at|date:"M d, Y" }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      {% if request.user.role in "admin manager" %}
+      <div class="card">
+        <div class="card-header">
+          <p class="card-title">Actions</p>
+        </div>
+        <div class="card-body space-y-2">
+          <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-secondary w-full justify-center">Edit Asset</a>
+          {% if asset.status != 'retired' %}
+          <form method="post" action="{% url 'assets:retire' asset.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn w-full justify-center"
+                    style="background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;"
+                    onclick="return confirm('Retire this asset? This action cannot be undone.')">
+              Retire Asset
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
     </div>
   </div>
+
 </div>
 {% endblock %}

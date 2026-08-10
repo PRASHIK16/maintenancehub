@@ -20,7 +20,7 @@
       {% if form.name.errors %}<p class="form-error">{{ form.name.errors.0 }}</p>{% endif %}
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="form-group">
         <label class="form-label">Location type <span style="color: #f87171;">*</span></label>
         {{ form.location_type }}

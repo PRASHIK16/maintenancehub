@@ -4,26 +4,26 @@
 {% block title %}{{ action }} Asset{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div class="page-header-content">
-    <nav class="breadcrumb mb-1">
+<div class="content-medium mx-auto slide-up">
+
+  {# Page header #}
+  <div class="mb-6">
+    <nav class="breadcrumb mb-3">
       <a href="{% url 'assets:list' %}" class="breadcrumb-link">Assets</a>
       <span class="breadcrumb-sep">›</span>
       {% if asset %}<a href="{% url 'assets:detail' asset.pk %}" class="breadcrumb-link">{{ asset.name }}</a>
       <span class="breadcrumb-sep">›</span>{% endif %}
       <span>{{ action }}</span>
     </nav>
-    <h1 class="page-title">{{ action }} Asset</h1>
+    <h1 class="page-intro-title">{{ action }} Asset</h1>
   </div>
-</div>
 
-<div class="max-w-2xl">
   <div class="card">
     <div class="card-body">
       <form method="post" class="space-y-5">
         {% csrf_token %}
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
             <label class="form-label required">Asset Code</label>
             <input type="text" name="asset_code" value="{{ asset.asset_code|default:post_data.asset_code }}"
@@ -42,7 +42,7 @@
                  class="form-input" placeholder="Descriptive name" required>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
             <label class="form-label">Brand</label>
             <input type="text" name="brand" value="{{ asset.brand|default:post_data.brand }}"
@@ -55,7 +55,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
             <label class="form-label">Serial Number</label>
             <input type="text" name="serial_number" value="{{ asset.serial_number|default:post_data.serial_number }}"
@@ -83,7 +83,7 @@
           </select>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
             <label class="form-label">Purchase Date</label>
             <input type="date" name="purchase_date"
@@ -102,7 +102,7 @@
                     placeholder="Any additional notes about this asset…">{{ asset.notes|default:'' }}</textarea>
         </div>
 
-        <div class="flex gap-3 pt-2">
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
           <button type="submit" class="btn btn-primary">{{ action }} Asset</button>
           {% if asset %}
           <a href="{% url 'assets:detail' asset.pk %}" class="btn btn-secondary">Cancel</a>

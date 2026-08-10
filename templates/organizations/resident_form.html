@@ -49,7 +49,7 @@
         <p class="text-xs mt-1" style="color: var(--text-muted);">Select the user account to link with this resident profile.</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="form-label" for="{{ form.gender.id_for_label }}">Gender</label>
           {{ form.gender }}
@@ -78,7 +78,7 @@
         <p class="text-xs mt-1" style="color: var(--text-muted);">Link to a hostel room defined in Locations settings.</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="form-label" for="{{ form.room_number.id_for_label }}">Room Number Label</label>
           {{ form.room_number }}
@@ -98,7 +98,7 @@
     <div class="card px-5 py-5 space-y-4">
       <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-primary);">Stay Period</h3>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="form-label" for="{{ form.check_in_date.id_for_label }}">Check-in Date</label>
           {{ form.check_in_date }}
@@ -116,7 +116,7 @@
     <div class="card px-5 py-5 space-y-4">
       <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-primary);">Emergency Contact</h3>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="form-label" for="{{ form.emergency_contact_name.id_for_label }}">Contact Name</label>
           {{ form.emergency_contact_name }}
