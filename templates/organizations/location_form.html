@@ -15,26 +15,26 @@
     {% csrf_token %}
 
     <div class="form-group">
-      <label class="form-label">Name <span style="color: #f87171;">*</span></label>
+      <label for="{{ form.name.id_for_label }}" class="form-label">Name <span style="color: #f87171;">*</span></label>
       {{ form.name }}
       {% if form.name.errors %}<p class="form-error">{{ form.name.errors.0 }}</p>{% endif %}
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="form-group">
-        <label class="form-label">Location type <span style="color: #f87171;">*</span></label>
+        <label for="{{ form.location_type.id_for_label }}" class="form-label">Location type <span style="color: #f87171;">*</span></label>
         {{ form.location_type }}
         {% if form.location_type.errors %}<p class="form-error">{{ form.location_type.errors.0 }}</p>{% endif %}
       </div>
 
       <div class="form-group">
-        <label class="form-label">Parent location</label>
+        <label for="{{ form.parent.id_for_label }}" class="form-label">Parent location</label>
         {{ form.parent }}
       </div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Description</label>
+      <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
       {{ form.description }}
     </div>
 
