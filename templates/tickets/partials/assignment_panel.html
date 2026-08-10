@@ -4,19 +4,19 @@
   <div class="card-header">Assignment</div>
   <div class="card-body">
     {% if ticket.assigned_to %}
-    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-[var(--surface-border)]">
-      <div class="w-9 h-9 rounded-full bg-[#059669]/15 flex items-center justify-center text-sm font-700 text-[#059669]">
+    <div class="flex items-center gap-3 mb-4 pb-4" style="border-bottom: 1px solid var(--border-subtle);">
+      <div class="avatar-emerald" style="width: 36px; height: 36px; font-size: 13px;">
         {{ ticket.assigned_to.initials }}
       </div>
       <div>
-        <p class="text-sm font-600 text-[var(--text-primary)]">{{ ticket.assigned_to.display_name }}</p>
-        <p class="text-xs text-[var(--text-tertiary)]">{{ ticket.assigned_to.get_role_display }}</p>
+        <p class="text-sm font-semibold" style="color: var(--text-primary);">{{ ticket.assigned_to.display_name }}</p>
+        <p class="text-xs" style="color: var(--text-muted);">{{ ticket.assigned_to.get_role_display }}</p>
       </div>
     </div>
     {% else %}
-    <p class="text-sm text-[var(--text-tertiary)] mb-4">Not yet assigned</p>
+    <p class="text-sm mb-4" style="color: var(--text-muted);">Not yet assigned</p>
     {% endif %}
 
-    <p class="text-sm text-green-600 font-500 mb-3">✓ Assignment updated</p>
+    <p class="text-sm font-medium" style="color: var(--color-emerald-600);">✓ Assignment updated</p>
   </div>
 </div>

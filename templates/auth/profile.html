@@ -4,41 +4,50 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto space-y-6 fade-in">
+<div class="content-narrow mx-auto space-y-6 fade-in">
 
-  {# Header #}
-  <div>
-    <h1 class="text-2xl font-700 text-[var(--text-primary)]">Profile Settings</h1>
-    <p class="text-[var(--text-secondary)] text-sm mt-1">Manage your account and preferences</p>
+  {# Page intro #}
+  <div class="page-intro">
+    <h1 class="page-intro-title">Profile Settings</h1>
+    <p class="page-intro-sub">Manage your account details, preferences, and security</p>
   </div>
 
   {# Avatar + name hero #}
   <div class="card">
     <div class="card-body flex items-center gap-5">
-      <div class="relative">
+      <div class="flex-shrink-0">
         {% if request.user.avatar %}
         <img src="{{ request.user.avatar.url }}" alt="{{ request.user.display_name }}"
-             class="w-20 h-20 rounded-full object-cover border-2 border-[var(--surface-border)]">
+             class="w-20 h-20 rounded-full object-cover"
+             style="border: 2px solid var(--border-default);">
         {% else %}
-        <div class="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-700 text-indigo-700 border-2 border-[var(--surface-border)]">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold"
+             style="background: linear-gradient(135deg, var(--color-emerald-500), var(--color-emerald-700)); color: #ffffff; border: 2px solid var(--border-default);">
           {{ request.user.initials }}
         </div>
         {% endif %}
       </div>
-      <div>
-        <h2 class="text-xl font-700 text-[var(--text-primary)]">{{ request.user.display_name }}</h2>
-        <p class="text-sm text-[var(--text-secondary)]">{{ request.user.email }}</p>
-        <p class="text-xs text-[var(--text-tertiary)] mt-1">
-          {{ request.user.get_role_display }}
-          {% if request.user.organization %} · {{ request.user.organization.name }}{% endif %}
-        </p>
+      <div class="flex-1 min-w-0">
+        <p class="text-lg font-bold truncate" style="color: var(--text-primary); letter-spacing: -0.02em;">{{ request.user.display_name }}</p>
+        <p class="text-sm truncate" style="color: var(--text-secondary);">{{ request.user.email }}</p>
+        <div class="flex items-center gap-2 mt-2 flex-wrap">
+          <span class="badge badge-emerald">{{ request.user.get_role_display }}</span>
+          {% if request.user.organization %}
+          <span class="text-xs" style="color: var(--text-muted);">{{ request.user.organization.name }}</span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
 
   {# Profile form #}
   <div class="card">
-    <div class="card-header">Personal Information</div>
+    <div class="card-header">
+      <div>
+        <p class="card-title">Personal Information</p>
+        <p class="card-subtitle">Update your name, contact details and bio</p>
+      </div>
+    </div>
     <div class="card-body">
       <form method="post" enctype="multipart/form-data" class="space-y-5">
         {% csrf_token %}
@@ -46,7 +55,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
-            <label class="form-label">Full Name <span class="text-red-500">*</span></label>
+            <label class="form-label required">Full Name</label>
             {{ profile_form.full_name }}
             {% if profile_form.full_name.errors %}<p class="form-error">{{ profile_form.full_name.errors.0 }}</p>{% endif %}
           </div>
@@ -75,42 +84,45 @@
           <label class="form-label">Profile Photo</label>
           <div class="flex items-center gap-4">
             {% if request.user.avatar %}
-            <img src="{{ request.user.avatar.url }}" class="w-12 h-12 rounded-full object-cover">
+            <img src="{{ request.user.avatar.url }}" class="w-12 h-12 rounded-full object-cover"
+                 style="border: 1px solid var(--border-default);">
             {% endif %}
             {{ profile_form.avatar }}
           </div>
         </div>
 
-        <div class="border-t border-[var(--surface-border)] pt-5">
-          <h4 class="text-sm font-600 text-[var(--text-primary)] mb-4">Preferences</h4>
+        {# Notifications #}
+        <div class="pt-4" style="border-top: 1px solid var(--border-subtle);">
+          <p class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Notifications</p>
           <div class="space-y-3">
             <label class="flex items-center gap-3 cursor-pointer">
               {{ profile_form.email_notifications }}
               <div>
-                <p class="text-sm font-500 text-[var(--text-primary)]">Email notifications</p>
-                <p class="text-xs text-[var(--text-tertiary)]">Receive updates via email</p>
+                <p class="text-sm font-medium" style="color: var(--text-primary);">Email notifications</p>
+                <p class="text-xs" style="color: var(--text-muted);">Receive ticket updates via email</p>
               </div>
             </label>
             <label class="flex items-center gap-3 cursor-pointer">
               {{ profile_form.push_notifications }}
               <div>
-                <p class="text-sm font-500 text-[var(--text-primary)]">Push notifications</p>
-                <p class="text-xs text-[var(--text-tertiary)]">In-app notification alerts</p>
+                <p class="text-sm font-medium" style="color: var(--text-primary);">In-app notifications</p>
+                <p class="text-xs" style="color: var(--text-muted);">Real-time alerts inside the app</p>
               </div>
             </label>
           </div>
         </div>
 
+        {# Theme #}
         <div class="form-group">
-          <label class="form-label">Theme</label>
+          <label class="form-label">Colour theme</label>
           <div class="grid grid-cols-3 gap-2">
             {% for value, label in profile_form.theme_preference.field.choices %}
-            <label class="flex items-center gap-2 border border-[var(--surface-border)] rounded-xl px-4 py-3 cursor-pointer hover:border-indigo-300 transition-colors
-                          {% if profile_form.theme_preference.value == value %}border-indigo-500 bg-indigo-50{% endif %}">
+            <label class="flex items-center gap-2 rounded-lg px-4 py-3 cursor-pointer transition-colors"
+                   style="border: 1px solid {% if profile_form.theme_preference.value == value %}var(--color-emerald-500){% else %}var(--border-default){% endif %}; background-color: {% if profile_form.theme_preference.value == value %}rgba(5,150,105,0.05){% else %}var(--bg-card){% endif %};">
               <input type="radio" name="theme_preference" value="{{ value }}"
                      {% if profile_form.theme_preference.value == value %}checked{% endif %}
-                     class="text-indigo-600">
-              <span class="text-sm font-500">
+                     style="accent-color: var(--color-emerald-600);">
+              <span class="text-sm font-medium" style="color: var(--text-secondary);">
                 {% if value == 'system' %}🖥 System{% elif value == 'light' %}☀️ Light{% else %}🌙 Dark{% endif %}
               </span>
             </label>
@@ -118,8 +130,8 @@
           </div>
         </div>
 
-        <div class="flex justify-end">
-          <button type="submit" class="btn btn-primary">Save Changes</button>
+        <div class="flex justify-end pt-2">
+          <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </form>
     </div>
@@ -127,7 +139,12 @@
 
   {# Change password #}
   <div class="card">
-    <div class="card-header">Change Password</div>
+    <div class="card-header">
+      <div>
+        <p class="card-title">Change Password</p>
+        <p class="card-subtitle">Use a strong, unique password</p>
+      </div>
+    </div>
     <div class="card-body">
       <form method="post" class="space-y-4">
         {% csrf_token %}
@@ -137,34 +154,34 @@
           <label class="form-label">Current Password</label>
           <input type="password" name="current_password" class="form-input" autocomplete="current-password">
         </div>
-        <div class="form-group">
-          <label class="form-label">New Password</label>
-          <input type="password" name="new_password" class="form-input" autocomplete="new-password">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Confirm New Password</label>
-          <input type="password" name="confirm_password" class="form-input" autocomplete="new-password">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="new_password" class="form-input" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" name="confirm_password" class="form-input" autocomplete="new-password">
+          </div>
         </div>
         <div class="flex justify-end">
-          <button type="submit" class="btn btn-secondary">Update Password</button>
+          <button type="submit" class="btn btn-secondary">Update password</button>
         </div>
       </form>
     </div>
   </div>
 
-  {# Danger zone #}
-  <div class="card border border-red-200">
-    <div class="card-header text-red-600">Account</div>
+  {# Account section #}
+  <div class="card" style="border-color: #fecaca;">
+    <div class="card-header" style="border-color: #fecaca;">
+      <p class="card-title" style="color: #dc2626;">Account</p>
+    </div>
     <div class="card-body">
-      <p class="text-sm text-[var(--text-secondary)] mb-3">
-        Your account is linked to <strong>{{ request.user.organization.name }}</strong>.
-        Contact your organization admin to make changes.
+      <p class="text-sm mb-4" style="color: var(--text-secondary);">
+        Your account is linked to <strong style="color: var(--text-primary);">{{ request.user.organization.name }}</strong>.
+        Contact your organization admin to make structural changes.
       </p>
-      <a href="{% url 'accounts:logout' %}"
-         class="btn btn-danger btn-sm"
-         data-confirm="Are you sure you want to sign out?">
-        Sign Out
-      </a>
+      <a href="{% url 'accounts:logout' %}" class="btn btn-danger btn-sm">Sign out</a>
     </div>
   </div>
 

@@ -3,9 +3,9 @@
 
 {% block settings_content %}
 <div class="card max-w-lg">
-  <div class="px-6 py-4 border-b border-[var(--border-default)]">
-    <h2 class="text-base font-semibold text-[var(--text-primary)]">{{ action }} Team</h2>
-    <p class="text-xs text-[var(--text-secondary)] mt-0.5">
+  <div class="px-6 py-4" style="border-bottom: 1px solid var(--border-subtle);">
+    <h2 class="text-base font-semibold" style="color: var(--text-primary);">{{ action }} Team</h2>
+    <p class="text-xs mt-0.5" style="color: var(--text-secondary);">
       {% if action == "Add" %}Create a new maintenance team.{% else %}Update this team's details.{% endif %}
     </p>
   </div>
@@ -14,7 +14,7 @@
     {% csrf_token %}
 
     <div class="form-group">
-      <label class="form-label">Team name <span class="text-red-400">*</span></label>
+      <label class="form-label">Team name <span style="color: #f87171;">*</span></label>
       {{ form.name }}
       {% if form.name.errors %}<p class="form-error">{{ form.name.errors.0 }}</p>{% endif %}
     </div>
@@ -28,18 +28,18 @@
       <label class="form-label">Team colour</label>
       <div class="flex items-center gap-3">
         {{ form.color }}
-        <span class="text-xs text-[var(--text-secondary)]">Displayed on team cards and member avatars</span>
+        <span class="text-xs" style="color: var(--text-secondary);">Displayed on team cards and member avatars</span>
       </div>
     </div>
 
     <div class="flex items-center gap-3">
       {{ form.is_active }}
-      <label for="{{ form.is_active.id_for_label }}" class="text-sm text-[var(--text-secondary)] cursor-pointer">
+      <label for="{{ form.is_active.id_for_label }}" class="text-sm cursor-pointer" style="color: var(--text-secondary);">
         Active
       </label>
     </div>
 
-    <div class="pt-4 border-t border-[var(--border-default)] flex items-center gap-3 justify-end">
+    <div class="pt-4 flex items-center gap-3 justify-end" style="border-top: 1px solid var(--border-subtle);">
       <a href="{% url 'organizations:teams' %}" class="btn btn-secondary">Cancel</a>
       <button type="submit" class="btn btn-primary">{{ action }} Team</button>
     </div>

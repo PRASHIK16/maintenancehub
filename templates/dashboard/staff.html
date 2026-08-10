@@ -6,112 +6,122 @@
 {% block content %}
 <div class="space-y-6 fade-in">
 
-  {# Header #}
+  {# Page header #}
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-700 text-[var(--text-primary)]">My Workload</h1>
-      <p class="text-[var(--text-secondary)] text-sm mt-1">
-        {% now "l, d F Y" %} · Your assigned tasks
-      </p>
+    <div class="page-intro" style="margin-bottom: 0;">
+      <h1 class="page-intro-title">My Workload</h1>
+      <p class="page-intro-sub">{% now "l, d F Y" %} &middot; Your assigned tasks</p>
     </div>
-    <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-secondary btn-sm">
-      + Report Issue
+    <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-secondary btn-sm flex-shrink-0">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      Report Issue
     </a>
   </div>
 
-  {# Workload stats — sticky on mobile #}
+  {# KPI strip #}
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-    <div class="stat-card text-center">
-      <div class="value text-[var(--text-primary)]">{{ stats.assigned_today }}</div>
-      <div class="label">Assigned to Me</div>
+    <div class="stat-card">
+      <div class="stat-card-label">Assigned to Me</div>
+      <div class="stat-card-value tabular-nums">{{ stats.assigned_today }}</div>
+      <div class="stat-card-meta">Active tasks</div>
     </div>
-    <div class="stat-card text-center border-l-4 {% if stats.critical %}border-l-red-500{% else %}border-l-transparent{% endif %}">
-      <div class="value text-red-600">{{ stats.critical }}</div>
-      <div class="label">Critical</div>
+    <div class="stat-card" style="{% if stats.critical %}border-left: 3px solid #ef4444;{% endif %}">
+      <div class="stat-card-label">Critical</div>
+      <div class="stat-card-value tabular-nums" style="{% if stats.critical %}color: #dc2626;{% endif %}">{{ stats.critical }}</div>
+      <div class="stat-card-meta">Immediate action needed</div>
     </div>
-    <div class="stat-card text-center border-l-4 {% if stats.overdue %}border-l-orange-500{% else %}border-l-transparent{% endif %}">
-      <div class="value text-orange-600">{{ stats.overdue }}</div>
-      <div class="label">Overdue</div>
+    <div class="stat-card" style="{% if stats.overdue %}border-left: 3px solid #f97316;{% endif %}">
+      <div class="stat-card-label">Overdue</div>
+      <div class="stat-card-value tabular-nums" style="{% if stats.overdue %}color: #ea580c;{% endif %}">{{ stats.overdue }}</div>
+      <div class="stat-card-meta">Past SLA deadline</div>
     </div>
-    <div class="stat-card text-center">
-      <div class="value text-amber-600">{{ stats.in_progress }}</div>
-      <div class="label">In Progress</div>
+    <div class="stat-card">
+      <div class="stat-card-label">In Progress</div>
+      <div class="stat-card-value tabular-nums" style="color: #d97706;">{{ stats.in_progress }}</div>
+      <div class="stat-card-meta">Currently working</div>
     </div>
   </div>
 
   {# Assigned tickets #}
-  <div class="space-y-3">
-    {% for ticket in assigned_tickets %}
-    <div class="card hover:shadow-md transition-shadow">
-      <div class="card-body">
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 flex-wrap mb-1">
-              <span class="font-mono text-xs text-[var(--text-tertiary)]">{{ ticket.ticket_number }}</span>
-              <span class="badge-priority badge-priority-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span>
-              <span class="badge-status badge-status-{{ ticket.status|cut:'_' }}">{{ ticket.get_status_display }}</span>
-              {% if ticket.is_overdue %}
-              <span class="text-xs text-red-600 font-600 flex items-center gap-1">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                OVERDUE
-              </span>
-              {% endif %}
-            </div>
-            <h3 class="font-500 text-[var(--text-primary)] text-sm">{{ ticket.title }}</h3>
-            <div class="flex items-center gap-3 mt-1 text-xs text-[var(--text-tertiary)] flex-wrap">
-              {% if ticket.location %}<span>📍 {{ ticket.location.full_path }}</span>{% endif %}
-              {% if ticket.category %}<span>{{ ticket.category.name }}</span>{% endif %}
-              <span>Reported by {{ ticket.created_by.display_name }}</span>
-              <span>{{ ticket.created_at|naturaltime }}</span>
-            </div>
-            {% if ticket.sla_resolution_due %}
-            <div class="mt-1.5 text-xs sla-{{ ticket.sla_status }}">
-              SLA: Due {{ ticket.sla_resolution_due|date:"d M, g:i A" }}
-            </div>
+  <div class="card">
+    <div class="card-header">
+      <p class="card-title">Assigned Tickets</p>
+      <span class="badge badge-neutral">{{ assigned_tickets|length }} ticket{{ assigned_tickets|length|pluralize }}</span>
+    </div>
+
+    {% if assigned_tickets %}
+    <div style="divide-y: 1px solid var(--border-subtle);">
+      {% for ticket in assigned_tickets %}
+      <div class="flex items-start justify-between gap-4 px-5 py-4"
+           style="border-bottom: 1px solid var(--border-subtle);">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap mb-1.5">
+            <span class="ticket-num">{{ ticket.ticket_number }}</span>
+            <span class="badge badge-priority-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span>
+            <span class="badge badge-{{ ticket.status|cut:'_' }}">{{ ticket.get_status_display }}</span>
+            {% if ticket.is_overdue %}
+            <span class="badge badge-danger flex items-center gap-1">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Overdue
+            </span>
             {% endif %}
           </div>
-
-          {# Quick actions — optimized for mobile use #}
-          <div class="flex flex-col gap-2 flex-shrink-0">
-            <a href="{% url 'dashboard:ticket-detail' ticket.pk %}" class="btn btn-secondary btn-sm">
-              View
-            </a>
-
-            {# Contextual quick action based on status #}
-            {% if ticket.status == 'assigned' %}
-            <form method="post" action="{% url 'dashboard:ticket-transition' ticket.pk %}">
-              {% csrf_token %}
-              <input type="hidden" name="status" value="in_progress">
-              <button type="submit" class="btn btn-primary btn-sm w-full">
-                Start Work
-              </button>
-            </form>
-            {% elif ticket.status == 'in_progress' %}
-            <form method="post" action="{% url 'dashboard:ticket-transition' ticket.pk %}">
-              {% csrf_token %}
-              <input type="hidden" name="status" value="resolved">
-              <button type="submit" class="btn btn-sm w-full" style="background:#22c55e;color:white;">
-                Mark Resolved
-              </button>
-            </form>
-            {% endif %}
+          <p class="font-semibold text-sm mb-1" style="color: var(--text-primary);">{{ ticket.title }}</p>
+          <div class="flex items-center gap-3 flex-wrap" style="color: var(--text-muted); font-size: 12px;">
+            {% if ticket.location %}<span>📍 {{ ticket.location.full_path }}</span>{% endif %}
+            {% if ticket.category %}<span>{{ ticket.category.name }}</span>{% endif %}
+            <span>{{ ticket.created_by.display_name }}</span>
+            <span>{{ ticket.created_at|naturaltime }}</span>
           </div>
+          {% if ticket.sla_resolution_due %}
+          <div class="mt-2">
+            <span class="sla-timer sla-{{ ticket.sla_status }}">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              SLA: {{ ticket.sla_resolution_due|date:"d M, g:i A" }}
+            </span>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="flex flex-col gap-2 flex-shrink-0">
+          <a href="{% url 'dashboard:ticket-detail' ticket.pk %}" class="btn btn-secondary btn-sm">View</a>
+          {% if ticket.status == 'assigned' %}
+          <form method="post" action="{% url 'dashboard:ticket-transition' ticket.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="in_progress">
+            <button type="submit" class="btn btn-primary btn-sm w-full">Start Work</button>
+          </form>
+          {% elif ticket.status == 'in_progress' %}
+          <form method="post" action="{% url 'dashboard:ticket-transition' ticket.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="resolved">
+            <button type="submit" class="btn btn-sm w-full" style="background-color: var(--color-emerald-600); color: #ffffff; border-color: var(--color-emerald-600);">
+              Mark Resolved
+            </button>
+          </form>
+          {% endif %}
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% empty %}
-    <div class="empty-state card">
+
+    {% else %}
+    <div class="empty-state">
       <div class="empty-state-icon">
-        <svg class="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
-      <h3 class="font-500 text-[var(--text-primary)] mt-3">All done!</h3>
-      <p class="text-sm mt-1 text-[var(--text-secondary)]">No tickets currently assigned to you.</p>
+      <p class="empty-state-title">All clear!</p>
+      <p class="empty-state-desc">No tickets are currently assigned to you. Check back later.</p>
     </div>
-    {% endfor %}
+    {% endif %}
   </div>
 
 </div>

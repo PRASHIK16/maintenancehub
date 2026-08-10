@@ -2,19 +2,18 @@
 
 {% block title %}Page Not Found — MaintenanceHub{% endblock %}
 
-{% block content %}
-<div class="min-h-screen flex items-center justify-center p-6">
-  <div class="text-center max-w-sm">
-    <div class="text-8xl font-800 text-[var(--text-tertiary)] opacity-20 select-none mb-4">404</div>
-    <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-      <svg class="w-8 h-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+{% block body %}
+<div class="error-page">
+  <div class="error-page-inner">
+    <div class="error-code">404</div>
+    <div class="flex items-center justify-center w-16 h-16 rounded-2xl mx-auto mb-6"
+         style="background-color: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.2);">
+      <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="color: #059669;">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
     </div>
-    <h1 class="text-2xl font-700 text-[var(--text-primary)] mb-2">Page not found</h1>
-    <p class="text-[var(--text-secondary)] mb-8">
-      The page you're looking for doesn't exist or has been moved.
-    </p>
+    <h1 class="error-title">Page not found</h1>
+    <p class="error-desc">The page you're looking for doesn't exist or has been moved.</p>
     <div class="flex flex-col sm:flex-row gap-3 justify-center">
       <a href="/" class="btn btn-primary">Go to Dashboard</a>
       <button onclick="history.back()" class="btn btn-secondary">Go Back</button>

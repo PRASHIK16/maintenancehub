@@ -4,16 +4,16 @@
 {% block title %}Notifications{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto space-y-6 fade-in">
+<div class="content-narrow mx-auto space-y-6 fade-in">
 
-  {# Header #}
+  {# Page header #}
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-700 text-[var(--text-primary)]">Notifications</h1>
-      <p class="text-[var(--text-secondary)] text-sm mt-1">Your activity feed</p>
+    <div class="page-intro" style="margin-bottom: 0;">
+      <h1 class="page-intro-title">Notifications</h1>
+      <p class="page-intro-sub">Your activity feed</p>
     </div>
     {% if unread_count %}
-    <form method="post" action="{% url 'notifications:mark-all-read' %}">
+    <form method="post" action="{% url 'notifications:mark-all-read' %}" class="flex-shrink-0">
       {% csrf_token %}
       <button type="submit" class="btn btn-secondary btn-sm">
         Mark all read ({{ unread_count }})
@@ -23,39 +23,35 @@
   </div>
 
   {# Tab filters #}
-  <div class="flex gap-1 border-b border-[var(--surface-border)]">
-    <a href="?tab=all"
-       class="px-4 py-2 text-sm rounded-t-lg font-500 transition-colors
-              {% if tab == 'all' or not tab %}border-b-2 border-indigo-600 text-indigo-700{% else %}text-[var(--text-secondary)] hover:text-[var(--text-primary)]{% endif %}">
-      All
+  <div class="tab-bar">
+    <a href="?tab=all" class="tab-bar-item {% if tab == 'all' or not tab %}active{% endif %}">All</a>
+    <a href="?tab=unread" class="tab-bar-item {% if tab == 'unread' %}active{% endif %}">
+      Unread
+      {% if unread_count %}
+      <span class="badge badge-danger" style="margin-left: 4px; padding: 1px 6px; font-size: 11px;">{{ unread_count }}</span>
+      {% endif %}
     </a>
-    <a href="?tab=unread"
-       class="px-4 py-2 text-sm rounded-t-lg font-500 transition-colors
-              {% if tab == 'unread' %}border-b-2 border-indigo-600 text-indigo-700{% else %}text-[var(--text-secondary)] hover:text-[var(--text-primary)]{% endif %}">
-      Unread {% if unread_count %}<span class="ml-1 text-xs bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full">{{ unread_count }}</span>{% endif %}
-    </a>
-    <a href="?tab=read"
-       class="px-4 py-2 text-sm rounded-t-lg font-500 transition-colors
-              {% if tab == 'read' %}border-b-2 border-indigo-600 text-indigo-700{% else %}text-[var(--text-secondary)] hover:text-[var(--text-primary)]{% endif %}">
-      Read
-    </a>
+    <a href="?tab=read" class="tab-bar-item {% if tab == 'read' %}active{% endif %}">Read</a>
   </div>
 
   {# Notifications list #}
   {% if notifications %}
-  <div class="card divide-y divide-[var(--surface-border)]">
+  <div class="card">
     {% for notif in notifications %}
-    <div class="flex items-start gap-4 p-4 {% if not notif.is_read %}bg-indigo-50{% endif %} hover:bg-[var(--color-neutral-50)] transition-colors">
+    <div class="flex items-start gap-4 px-5 py-4"
+         style="border-bottom: 1px solid var(--border-subtle);
+                {% if not notif.is_read %}background-color: rgba(5,150,105,0.03);{% endif %}">
 
       {# Icon #}
-      <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
-        {% if 'created' in notif.notification_type %}bg-blue-100 text-blue-600
-        {% elif 'assigned' in notif.notification_type %}bg-indigo-100 text-indigo-600
-        {% elif 'resolved' in notif.notification_type or 'closed' in notif.notification_type %}bg-green-100 text-green-600
-        {% elif 'sla' in notif.notification_type %}bg-red-100 text-red-600
-        {% elif 'comment' in notif.notification_type %}bg-amber-100 text-amber-600
-        {% else %}bg-[var(--surface-secondary)] text-[var(--text-tertiary)]
-        {% endif %}">
+      <div class="flex items-center justify-center flex-shrink-0 rounded-full"
+           style="width: 40px; height: 40px;
+                  {% if 'created' in notif.notification_type %}background-color: #dbeafe; color: #2563eb;
+                  {% elif 'assigned' in notif.notification_type %}background-color: rgba(5,150,105,0.12); color: #059669;
+                  {% elif 'resolved' in notif.notification_type or 'closed' in notif.notification_type %}background-color: #dcfce7; color: #16a34a;
+                  {% elif 'sla' in notif.notification_type %}background-color: #fee2e2; color: #dc2626;
+                  {% elif 'comment' in notif.notification_type %}background-color: #fef3c7; color: #d97706;
+                  {% else %}background-color: var(--bg-subtle); color: var(--text-muted);
+                  {% endif %}">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           {% if 'created' in notif.notification_type %}
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -73,28 +69,23 @@
 
       {# Content #}
       <div class="flex-1 min-w-0">
-        {% if notif.link %}
-        <a href="{{ notif.link }}" class="block group">
-        {% endif %}
-          <p class="text-sm font-600 text-[var(--text-primary)] {% if notif.link %}group-hover:text-indigo-600{% endif %}">
-            {{ notif.title }}
-            {% if not notif.is_read %}
-            <span class="inline-block w-2 h-2 rounded-full bg-indigo-500 ml-1 align-middle"></span>
-            {% endif %}
-          </p>
-          <p class="text-sm text-[var(--text-secondary)] mt-0.5">{{ notif.message }}</p>
-          <p class="text-xs text-[var(--text-tertiary)] mt-1">{{ notif.created_at|naturaltime }}</p>
-        {% if notif.link %}
-        </a>
-        {% endif %}
+        {% if notif.link %}<a href="{{ notif.link }}" style="text-decoration: none; display: block;">{% endif %}
+        <div class="flex items-center gap-2 mb-0.5">
+          <p class="text-sm font-semibold" style="color: var(--text-primary);">{{ notif.title }}</p>
+          {% if not notif.is_read %}
+          <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background-color: var(--color-emerald-500); flex-shrink: 0;"></span>
+          {% endif %}
+        </div>
+        <p class="text-sm" style="color: var(--text-secondary);">{{ notif.message }}</p>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">{{ notif.created_at|naturaltime }}</p>
+        {% if notif.link %}</a>{% endif %}
       </div>
 
       {# Mark read button #}
       {% if not notif.is_read %}
-      <form method="post" action="{% url 'notifications:mark-read' notif.pk %}">
+      <form method="post" action="{% url 'notifications:mark-read' notif.pk %}" class="flex-shrink-0">
         {% csrf_token %}
-        <button type="submit" class="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors flex-shrink-0"
-                title="Mark as read">
+        <button type="submit" title="Mark as read" style="color: var(--text-muted); background: none; border: none; cursor: pointer; padding: 4px;">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
           </svg>
@@ -109,7 +100,7 @@
   {# Pagination #}
   {% if page_obj.has_other_pages %}
   <div class="flex items-center justify-between">
-    <span class="text-sm text-[var(--text-tertiary)]">
+    <span style="font-size: 13px; color: var(--text-muted);">
       {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }}
     </span>
     <div class="flex gap-2">
@@ -128,12 +119,12 @@
   {% else %}
   <div class="empty-state card">
     <div class="empty-state-icon">
-      <svg class="w-8 h-8 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
       </svg>
     </div>
-    <h3 class="font-500 text-[var(--text-primary)] mt-3">No notifications</h3>
-    <p class="text-sm mt-1 text-[var(--text-secondary)]">
+    <p class="empty-state-title">No notifications</p>
+    <p class="empty-state-desc">
       {% if tab == 'unread' %}All caught up! No unread notifications.
       {% elif tab == 'read' %}No read notifications yet.
       {% else %}You'll see updates about your tickets here.{% endif %}

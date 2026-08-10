@@ -22,16 +22,16 @@
 {# KPI Cards #}
 <div class="grid grid-cols-3 gap-4 mb-6">
   <div class="stat-card">
-    <div class="stat-value">{{ total_count }}</div>
-    <div class="stat-label">Total Assets</div>
+    <div class="stat-card-value">{{ total_count }}</div>
+    <div class="stat-card-label">Total Assets</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value text-green-600">{{ active_count }}</div>
-    <div class="stat-label">Active</div>
+    <div class="stat-card-value" style="color: var(--color-emerald-600);">{{ active_count }}</div>
+    <div class="stat-card-label">Active</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value text-amber-600">{{ maintenance_count }}</div>
-    <div class="stat-label">Under Maintenance</div>
+    <div class="stat-card-value" style="color: #d97706;">{{ maintenance_count }}</div>
+    <div class="stat-card-label">Under Maintenance</div>
   </div>
 </div>
 
@@ -48,7 +48,7 @@
         {% endfor %}
       </select>
       <button type="submit" class="btn btn-secondary">Filter</button>
-      <a href="{% url 'assets:list' %}" class="btn btn-ghost">Clear</a>
+      <a href="{% url 'assets:list' %}" class="btn btn-secondary">Clear</a>
     </form>
   </div>
 </div>
@@ -72,12 +72,18 @@
       <tbody>
         {% for asset in assets %}
         <tr>
-          <td><code class="text-xs font-mono bg-[var(--surface-card)] px-2 py-0.5 rounded">{{ asset.asset_code }}</code></td>
           <td>
-            <a href="{% url 'assets:detail' asset.pk %}" class="font-medium text-[var(--color-primary)] hover:underline">
+            <code class="text-xs font-mono px-2 py-0.5 rounded"
+                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">{{ asset.asset_code }}</code>
+          </td>
+          <td>
+            <a href="{% url 'assets:detail' asset.pk %}" class="font-medium"
+               style="color: var(--color-primary); text-decoration: none;">
               {{ asset.name }}
             </a>
-            {% if asset.brand %}<div class="text-xs text-[var(--text-secondary)]">{{ asset.brand }}</div>{% endif %}
+            {% if asset.brand %}
+            <div class="text-xs" style="color: var(--text-secondary);">{{ asset.brand }}</div>
+            {% endif %}
           </td>
           <td class="text-sm">{{ asset.asset_type }}</td>
           <td class="text-sm">{{ asset.location.name|default:"—" }}</td>
@@ -88,14 +94,14 @@
           </td>
           <td class="text-sm">
             {% if asset.warranty_expiry %}
-            <span class="{% if asset.warranty_expiry < today %}text-red-600{% endif %}">
+            <span {% if asset.warranty_expiry < today %}style="color: #dc2626;"{% endif %}>
               {{ asset.warranty_expiry|date:"M d, Y" }}
             </span>
             {% else %}—{% endif %}
           </td>
           <td>
             {% if request.user.role in "admin manager" %}
-            <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-ghost btn-xs">Edit</a>
+            <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-secondary btn-xs">Edit</a>
             {% endif %}
           </td>
         </tr>
@@ -105,17 +111,17 @@
 
     {# Pagination #}
     {% if is_paginated %}
-    <div class="px-6 py-4 border-t border-[var(--surface-border)]">
+    <div class="px-6 py-4" style="border-top: 1px solid var(--border-subtle);">
       <div class="flex items-center justify-between">
-        <p class="text-sm text-[var(--text-secondary)]">
+        <p class="text-sm" style="color: var(--text-secondary);">
           Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }}
         </p>
         <div class="flex gap-1">
           {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="btn btn-ghost btn-sm">Previous</a>
+          <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="btn btn-secondary btn-sm">Previous</a>
           {% endif %}
           {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="btn btn-ghost btn-sm">Next</a>
+          <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="btn btn-secondary btn-sm">Next</a>
           {% endif %}
         </div>
       </div>

@@ -6,16 +6,14 @@
 {% block content %}
 <div class="space-y-6 fade-in">
 
-  {# Header #}
+  {# Page header #}
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-700 text-[var(--text-primary)]">Analytics</h1>
-      <p class="text-[var(--text-secondary)] text-sm mt-1">
-        Operational insights for the last {{ period }} days
-      </p>
+    <div class="page-intro" style="margin-bottom: 0;">
+      <h1 class="page-intro-title">Analytics</h1>
+      <p class="page-intro-sub">Operational insights for the last {{ period }} days</p>
     </div>
-    <div class="flex items-center gap-3">
-      <select class="form-select text-sm py-1.5" id="period-select"
+    <div class="flex-shrink-0">
+      <select class="form-select" id="period-select"
               onchange="window.location.href='?period='+this.value">
         <option value="7" {% if period == 7 %}selected{% endif %}>Last 7 days</option>
         <option value="30" {% if period == 30 %}selected{% endif %}>Last 30 days</option>
@@ -24,68 +22,78 @@
     </div>
   </div>
 
-  {# KPI row #}
+  {# KPI strip #}
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
 
-    <div class="stat-card text-center">
-      <div class="value text-[var(--text-primary)]">{{ stats.total|intcomma }}</div>
-      <div class="label">Total</div>
+    <div class="stat-card">
+      <div class="stat-card-label">Total</div>
+      <div class="stat-card-value tabular-nums">{{ stats.total|intcomma }}</div>
+      <div class="stat-card-meta">All tickets</div>
     </div>
-    <div class="stat-card text-center">
-      <div class="value text-green-600">{{ stats.closed|intcomma }}</div>
-      <div class="label">Resolved</div>
+    <div class="stat-card">
+      <div class="stat-card-label">Resolved</div>
+      <div class="stat-card-value tabular-nums" style="color: var(--color-emerald-600);">{{ stats.closed|intcomma }}</div>
+      <div class="stat-card-meta">Closed tickets</div>
     </div>
-    <div class="stat-card text-center">
-      <div class="value text-indigo-600">{{ stats.resolution_rate }}%</div>
-      <div class="label">Resolution Rate</div>
+    <div class="stat-card">
+      <div class="stat-card-label">Resolution Rate</div>
+      <div class="stat-card-value tabular-nums" style="color: #2563eb;">{{ stats.resolution_rate }}%</div>
+      <div class="stat-card-meta">Of all tickets</div>
     </div>
-    <div class="stat-card text-center {% if stats.overdue %}border-l-4 border-l-red-500{% endif %}">
-      <div class="value text-red-600">{{ stats.overdue|intcomma }}</div>
-      <div class="label">SLA Breached</div>
+    <div class="stat-card" style="{% if stats.overdue %}border-left: 3px solid #ef4444;{% endif %}">
+      <div class="stat-card-label">SLA Breached</div>
+      <div class="stat-card-value tabular-nums" style="{% if stats.overdue %}color: #dc2626;{% endif %}">{{ stats.overdue|intcomma }}</div>
+      <div class="stat-card-meta">Overdue tickets</div>
     </div>
-    <div class="stat-card text-center">
-      <div class="value text-amber-600">{{ stats.sla_rate }}%</div>
-      <div class="label">SLA Compliance</div>
+    <div class="stat-card">
+      <div class="stat-card-label">SLA Compliance</div>
+      <div class="stat-card-value tabular-nums" style="color: #d97706;">{{ stats.sla_rate }}%</div>
+      <div class="stat-card-meta">Within SLA</div>
     </div>
-    <div class="stat-card text-center">
-      <div class="value text-[var(--text-primary)]">
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Resolution</div>
+      <div class="stat-card-value tabular-nums">
         {% if stats.avg_resolution_hours %}{{ stats.avg_resolution_hours }}h{% else %}—{% endif %}
       </div>
-      <div class="label">Avg Resolution</div>
+      <div class="stat-card-meta">Time to resolve</div>
     </div>
 
   </div>
 
   {# Charts row #}
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-    {# Daily trend #}
     <div class="card">
-      <div class="card-header">Tickets Created (Last 14 Days)</div>
+      <div class="card-header">
+        <p class="card-title">Tickets Created (Last 14 Days)</p>
+      </div>
       <div class="card-body">
         <canvas id="trend-chart" height="200"></canvas>
       </div>
     </div>
 
-    {# By priority #}
     <div class="card">
-      <div class="card-header">By Priority</div>
+      <div class="card-header">
+        <p class="card-title">By Priority</p>
+      </div>
       <div class="card-body flex items-center justify-center">
         <canvas id="priority-chart" height="200"></canvas>
       </div>
     </div>
 
-    {# By status #}
     <div class="card">
-      <div class="card-header">By Status</div>
+      <div class="card-header">
+        <p class="card-title">By Status</p>
+      </div>
       <div class="card-body">
         <canvas id="status-chart" height="200"></canvas>
       </div>
     </div>
 
-    {# By category #}
     <div class="card">
-      <div class="card-header">Top Categories</div>
+      <div class="card-header">
+        <p class="card-title">Top Categories</p>
+      </div>
       <div class="card-body">
         <canvas id="category-chart" height="200"></canvas>
       </div>
@@ -96,7 +104,9 @@
   {# Staff performance #}
   {% if staff_performance %}
   <div class="card">
-    <div class="card-header">Staff Performance</div>
+    <div class="card-header">
+      <p class="card-title">Staff Performance</p>
+    </div>
     <div class="overflow-x-auto">
       <table class="data-table">
         <thead>
@@ -113,33 +123,30 @@
           <tr>
             <td>
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-sm font-700 text-indigo-700">
-                  {{ staff.initials }}
-                </div>
+                <div class="avatar-emerald">{{ staff.initials }}</div>
                 <div>
-                  <p class="font-500 text-sm text-[var(--text-primary)]">{{ staff.display_name }}</p>
-                  <p class="text-xs text-[var(--text-tertiary)]">{{ staff.get_role_display }}</p>
+                  <p class="text-sm font-medium" style="color: var(--text-primary);">{{ staff.display_name }}</p>
+                  <p style="font-size: 11px; color: var(--text-muted);">{{ staff.get_role_display }}</p>
                 </div>
               </div>
             </td>
-            <td class="text-center font-mono text-sm">{{ staff.assigned }}</td>
-            <td class="text-center font-mono text-sm text-green-600">{{ staff.resolved }}</td>
+            <td class="text-center tabular-nums text-sm">{{ staff.assigned }}</td>
+            <td class="text-center tabular-nums text-sm" style="color: var(--color-emerald-600);">{{ staff.resolved }}</td>
             <td class="text-center">
               {% if staff.assigned > 0 %}
               {% widthratio staff.resolved staff.assigned 100 as rate %}
-              <span class="text-sm font-600 {% if rate >= 80 %}text-green-600{% elif rate >= 50 %}text-amber-600{% else %}text-red-600{% endif %}">
+              <span class="text-sm font-semibold" style="color: {% if rate >= 80 %}#16a34a{% elif rate >= 50 %}#d97706{% else %}#dc2626{% endif %};">
                 {{ rate }}%
               </span>
               {% else %}
-              <span class="text-[var(--text-tertiary)]">—</span>
+              <span style="color: var(--text-muted);">—</span>
               {% endif %}
             </td>
             <td>
               {% if staff.assigned > 0 %}
               {% widthratio staff.resolved staff.assigned 100 as rate %}
-              <div class="w-full bg-[var(--surface-secondary)] rounded-full h-2">
-                <div class="h-2 rounded-full {% if rate >= 80 %}bg-green-500{% elif rate >= 50 %}bg-amber-500{% else %}bg-red-500{% endif %}"
-                     style="width: {{ rate }}%"></div>
+              <div class="w-full h-2 rounded-full" style="background-color: var(--bg-subtle);">
+                <div class="h-2 rounded-full" style="width: {{ rate }}%; background-color: {% if rate >= 80 %}#22c55e{% elif rate >= 50 %}#f59e0b{% else %}#ef4444{% endif %};"></div>
               </div>
               {% endif %}
             </td>
@@ -165,7 +172,7 @@
   Chart.defaults.borderColor = gridColor;
   Chart.defaults.font.family = 'Inter, sans-serif';
 
-  // ── Daily trend ──
+  // Daily trend
   const trendData = {{ daily_trend|safe }};
   new Chart(document.getElementById('trend-chart'), {
     type: 'line',
@@ -175,10 +182,10 @@
         label: 'Tickets Created',
         data: trendData.map(d => d.count),
         fill: true,
-        borderColor: '#6366f1',
-        backgroundColor: 'rgba(99,102,241,0.1)',
+        borderColor: '#059669',
+        backgroundColor: 'rgba(5,150,105,0.08)',
         tension: 0.4,
-        pointBackgroundColor: '#6366f1',
+        pointBackgroundColor: '#059669',
         pointRadius: 3,
       }]
     },
@@ -192,7 +199,7 @@
     }
   });
 
-  // ── Priority donut ──
+  // Priority donut
   const priorityData = {{ by_priority|safe }};
   const priorityColors = { low: '#22c55e', medium: '#f59e0b', high: '#f97316', critical: '#ef4444' };
   if (priorityData.length) {
@@ -214,10 +221,10 @@
     });
   }
 
-  // ── Status bar ──
+  // Status bar
   const statusData = {{ by_status|safe }};
   const statusColors = {
-    submitted: '#3b82f6', triaged: '#8b5cf6', assigned: '#6366f1',
+    submitted: '#3b82f6', triaged: '#8b5cf6', assigned: '#059669',
     in_progress: '#f59e0b', on_hold: '#94a3b8', resolved: '#22c55e',
     closed: '#10b981', reopened: '#f97316', cancelled: '#ef4444',
     verification_pending: '#7c3aed',
@@ -245,7 +252,7 @@
     });
   }
 
-  // ── Category horizontal bar ──
+  // Category horizontal bar
   const catData = {{ by_category|safe }};
   if (catData.length) {
     new Chart(document.getElementById('category-chart'), {
@@ -255,7 +262,7 @@
         datasets: [{
           label: 'Tickets',
           data: catData.map(d => d.count),
-          backgroundColor: '#6366f1',
+          backgroundColor: '#059669',
           borderRadius: 6,
         }]
       },

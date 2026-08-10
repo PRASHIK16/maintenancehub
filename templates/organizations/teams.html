@@ -6,9 +6,9 @@
 {# Toast messages #}
 {% if messages %}
 {% for msg in messages %}
-<div class="mb-4 flex items-center gap-3 px-4 py-3 rounded-xl text-sm
-            {% if 'error' in msg.tags %}bg-red-50 border border-red-200 text-red-800
-            {% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %}">
+<div class="mb-4 flex items-center gap-3 px-4 py-3 rounded-xl text-sm"
+     {% if 'error' in msg.tags %}style="background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b;"
+     {% else %}style="background-color: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46;"{% endif %}>
   <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
   </svg>
@@ -20,8 +20,8 @@
 {# Header #}
 <div class="flex items-center justify-between mb-4">
   <div>
-    <h2 class="text-base font-semibold text-[var(--text-primary)]">Maintenance Teams</h2>
-    <p class="text-xs text-[var(--text-secondary)] mt-0.5">{{ teams|length }} team{{ teams|length|pluralize }} configured.</p>
+    <h2 class="text-base font-semibold" style="color: var(--text-primary);">Maintenance Teams</h2>
+    <p class="text-xs mt-0.5" style="color: var(--text-secondary);">{{ teams|length }} team{{ teams|length|pluralize }} configured.</p>
   </div>
   <a href="{% url 'organizations:team-create' %}" class="btn btn-primary btn-sm">
     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -44,10 +44,10 @@
             <div class="w-4 h-4 rounded-full" style="background: {{ team.color }};"></div>
           </div>
           <div>
-            <p class="font-semibold text-[var(--text-primary)] text-sm">{{ team.name }}</p>
-            <p class="text-xs text-[var(--text-tertiary)] mt-0.5">
+            <p class="font-semibold text-sm" style="color: var(--text-primary);">{{ team.name }}</p>
+            <p class="text-xs mt-0.5" style="color: var(--text-muted);">
               {{ team.memberships.count }} member{{ team.memberships.count|pluralize }}
-              {% if not team.is_active %} · <span class="text-amber-600">Inactive</span>{% endif %}
+              {% if not team.is_active %} · <span style="color: #d97706;">Inactive</span>{% endif %}
             </p>
           </div>
         </div>
@@ -55,7 +55,8 @@
         {# Actions #}
         <div class="flex items-center gap-1 flex-shrink-0">
           <a href="{% url 'organizations:team-edit' team.pk %}"
-             class="p-1.5 rounded-md text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors"
+             class="p-1.5 rounded-md transition-colors"
+             style="color: var(--text-muted);"
              title="Edit">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -65,7 +66,8 @@
                 onsubmit="return confirm('Delete team {{ team.name }}?')">
             {% csrf_token %}
             <button type="submit"
-                    class="p-1.5 rounded-md text-[var(--text-tertiary)] hover:text-red-600 hover:bg-red-50 transition-colors"
+                    class="p-1.5 rounded-md transition-colors"
+                    style="color: var(--text-muted);"
                     title="Delete">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -76,12 +78,12 @@
       </div>
 
       {% if team.description %}
-      <p class="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed">{{ team.description }}</p>
+      <p class="text-xs mt-3 leading-relaxed" style="color: var(--text-secondary);">{{ team.description }}</p>
       {% endif %}
 
       {# Member avatars #}
       {% if team.memberships.all %}
-      <div class="mt-4 pt-3 border-t border-[var(--border-default)] flex items-center gap-1.5 flex-wrap">
+      <div class="mt-4 pt-3 flex items-center gap-1.5 flex-wrap" style="border-top: 1px solid var(--border-subtle);">
         {% for membership in team.memberships.all|slice:":5" %}
         <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white flex-shrink-0"
              style="background: {{ team.color }};"
@@ -90,11 +92,11 @@
         </div>
         {% endfor %}
         {% if team.memberships.count > 5 %}
-        <span class="text-xs text-[var(--text-tertiary)] ml-1">+{{ team.memberships.count|add:"-5" }} more</span>
+        <span class="text-xs ml-1" style="color: var(--text-muted);">+{{ team.memberships.count|add:"-5" }} more</span>
         {% endif %}
       </div>
       {% else %}
-      <p class="mt-3 pt-3 border-t border-[var(--border-default)] text-xs text-[var(--text-tertiary)] italic">
+      <p class="mt-3 pt-3 text-xs italic" style="border-top: 1px solid var(--border-subtle); color: var(--text-muted);">
         No members yet — assign staff via their user profile.
       </p>
       {% endif %}
@@ -104,13 +106,15 @@
 </div>
 {% else %}
 <div class="card text-center py-12">
-  <div class="w-12 h-12 rounded-xl bg-[var(--bg-subtle)] flex items-center justify-center mx-auto mb-3">
-    <svg class="w-6 h-6 text-[var(--text-tertiary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+  <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+       style="background-color: var(--bg-subtle);">
+    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"
+         style="color: var(--text-muted);">
       <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
     </svg>
   </div>
-  <h3 class="text-sm font-medium text-[var(--text-primary)]">No teams yet</h3>
-  <p class="text-xs text-[var(--text-secondary)] mt-1">Create teams like Electrical, Plumbing, or IT to route tickets efficiently.</p>
+  <h3 class="text-sm font-medium" style="color: var(--text-primary);">No teams yet</h3>
+  <p class="text-xs mt-1" style="color: var(--text-secondary);">Create teams like Electrical, Plumbing, or IT to route tickets efficiently.</p>
   <a href="{% url 'organizations:team-create' %}" class="btn btn-primary btn-sm mt-4">Add First Team</a>
 </div>
 {% endif %}

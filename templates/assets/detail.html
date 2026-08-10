@@ -13,7 +13,8 @@
     </nav>
     <h1 class="page-title">{{ asset.name }}</h1>
     <p class="page-subtitle">
-      <code class="text-xs font-mono bg-[var(--surface-card)] px-2 py-0.5 rounded mr-2">{{ asset.asset_code }}</code>
+      <code class="text-xs font-mono px-2 py-0.5 rounded mr-2"
+            style="background-color: var(--bg-subtle); color: var(--text-secondary);">{{ asset.asset_code }}</code>
       {{ asset.asset_type }}
     </p>
   </div>
@@ -52,7 +53,7 @@
           <dt>Warranty Expiry</dt>
           <dd>
             {% if asset.warranty_expiry %}
-            <span class="{% if asset.warranty_expiry < today %}text-red-600 font-medium{% endif %}">
+            <span {% if asset.warranty_expiry < today %}style="color: #dc2626; font-weight: 600;"{% endif %}>
               {{ asset.warranty_expiry|date:"M d, Y" }}
               {% if asset.warranty_expiry < today %}<span class="text-xs ml-1">(expired)</span>{% endif %}
             </span>
@@ -62,9 +63,9 @@
           <dt>Next Maintenance</dt><dd>{{ asset.next_maintenance_date|date:"M d, Y"|default:"Not scheduled" }}</dd>
         </dl>
         {% if asset.notes %}
-        <div class="mt-4 pt-4 border-t border-[var(--surface-border)]">
+        <div class="mt-4 pt-4" style="border-top: 1px solid var(--border-subtle);">
           <h4 class="text-sm font-medium mb-2">Notes</h4>
-          <p class="text-sm text-[var(--text-secondary)]">{{ asset.notes }}</p>
+          <p class="text-sm" style="color: var(--text-secondary);">{{ asset.notes }}</p>
         </div>
         {% endif %}
       </div>
@@ -77,11 +78,11 @@
       <div class="card-header">Quick Facts</div>
       <div class="card-body space-y-3">
         <div class="flex justify-between text-sm">
-          <span class="text-[var(--text-secondary)]">Added</span>
+          <span style="color: var(--text-secondary);">Added</span>
           <span>{{ asset.created_at|date:"M d, Y" }}</span>
         </div>
         <div class="flex justify-between text-sm">
-          <span class="text-[var(--text-secondary)]">Last Updated</span>
+          <span style="color: var(--text-secondary);">Last Updated</span>
           <span>{{ asset.updated_at|date:"M d, Y" }}</span>
         </div>
       </div>
