@@ -30,33 +30,33 @@
       <div class="card-body space-y-4">
 
         <div class="form-group">
-          <label class="form-label required">Issue Title</label>
+          <label for="{{ form.title.id_for_label }}" class="form-label required">Issue Title</label>
           {{ form.title }}
           {% if form.title.errors %}<p class="form-error">{{ form.title.errors.0 }}</p>{% endif %}
           <p class="form-hint">Be specific: "AC not cooling in Room 304" rather than "AC issue"</p>
         </div>
 
         <div class="form-group">
-          <label class="form-label required">Description</label>
+          <label for="{{ form.description.id_for_label }}" class="form-label required">Description</label>
           {{ form.description }}
           {% if form.description.errors %}<p class="form-error">{{ form.description.errors.0 }}</p>{% endif %}
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="form-group">
-            <label class="form-label">Category</label>
+            <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
             {{ form.category }}
             {% if form.category.errors %}<p class="form-error">{{ form.category.errors.0 }}</p>{% endif %}
           </div>
           <div class="form-group">
-            <label class="form-label required">Location</label>
+            <label for="{{ form.location.id_for_label }}" class="form-label required">Location</label>
             {{ form.location }}
             {% if form.location.errors %}<p class="form-error">{{ form.location.errors.0 }}</p>{% endif %}
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Priority</label>
+          <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
           {{ form.priority }}
           {% if form.priority.errors %}<p class="form-error">{{ form.priority.errors.0 }}</p>{% endif %}
           <div class="grid grid-cols-4 gap-2 mt-2 text-center" style="font-size: 11px; color: var(--text-muted);">
@@ -78,13 +78,13 @@
       </div>
       <div class="card-body space-y-4">
         <div class="form-group">
-          <label class="form-label">Preferred Visit Time</label>
+          <label for="{{ form.preferred_visit_time.id_for_label }}" class="form-label">Preferred Visit Time</label>
           {{ form.preferred_visit_time }}
           {% if form.preferred_visit_time.errors %}<p class="form-error">{{ form.preferred_visit_time.errors.0 }}</p>{% endif %}
           <p class="form-hint">Let us know when it's convenient for the team to visit.</p>
         </div>
         <div class="form-group">
-          <label class="form-label">Contact Phone</label>
+          <label for="{{ form.contact_phone.id_for_label }}" class="form-label">Contact Phone</label>
           {{ form.contact_phone }}
           {% if form.contact_phone.errors %}<p class="form-error">{{ form.contact_phone.errors.0 }}</p>{% endif %}
           <p class="form-hint">We'll call this number before visiting.</p>

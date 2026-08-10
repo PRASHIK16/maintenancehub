@@ -31,7 +31,7 @@
           </span>
           {% endif %}
         </div>
-        <h1 class="text-xl font-bold mb-1" style="color: var(--text-primary); letter-spacing: -0.02em;">{{ ticket.title }}</h1>
+        <h1 class="page-intro-title" style="margin-bottom: 2px;">{{ ticket.title }}</h1>
         <div class="flex items-center gap-3 flex-wrap" style="font-size: 13px; color: var(--text-muted);">
           <span>Reported by <strong style="color: var(--text-secondary);">{{ ticket.created_by.display_name }}</strong></span>
           <span>{{ ticket.created_at|naturaltime }}</span>
@@ -405,16 +405,16 @@
             {% csrf_token %}
             <div class="space-y-3">
               <div class="form-group">
-                <label class="form-label">Assign to</label>
+                <label for="{{ assign_form.assigned_to.id_for_label }}" class="form-label">Assign to</label>
                 {{ assign_form.assigned_to }}
               </div>
               <div class="form-group">
-                <label class="form-label">Team</label>
+                <label for="{{ assign_form.team.id_for_label }}" class="form-label">Team</label>
                 {{ assign_form.team }}
               </div>
               {% if assign_form.note %}
               <div class="form-group">
-                <label class="form-label">Note</label>
+                <label for="{{ assign_form.note.id_for_label }}" class="form-label">Note</label>
                 {{ assign_form.note }}
               </div>
               {% endif %}
