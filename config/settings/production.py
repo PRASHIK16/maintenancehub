@@ -39,14 +39,45 @@ if STORAGE_BACKEND == "s3":
     AWS_S3_SIGNATURE_VERSION = "s3v4"
     MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/"
 
-# Sentry (optional)
+# Sentry error tracking (optional — set SENTRY_DSN env var to enable)
 SENTRY_DSN = env("SENTRY_DSN", default="")
+SENTRY_ENVIRONMENT = env("SENTRY_ENVIRONMENT", default="production")
+SENTRY_RELEASE = env("SENTRY_RELEASE", default="")
+
 if SENTRY_DSN:
+    from sentry_sdk.integrations.redis import RedisIntegration
+    from sentry_sdk.integrations.logging import LoggingIntegration
+    import logging
+
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration(), CeleryIntegration()],
-        traces_sample_rate=0.1,
+        environment=SENTRY_ENVIRONMENT,
+        release=SENTRY_RELEASE or None,
+        integrations=[
+            DjangoIntegration(
+                transaction_style="url",
+                middleware_spans=True,
+                signals_spans=True,
+                cache_spans=True,
+            ),
+            CeleryIntegration(monitor_beat_tasks=True),
+            RedisIntegration(),
+            LoggingIntegration(
+                level=logging.INFO,           # Capture INFO and above as breadcrumbs
+                event_level=logging.ERROR,    # Send ERROR and above as Sentry events
+            ),
+        ],
+        # Capture 10% of transactions for performance monitoring
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.1),
+        # Do not send PII (email addresses, IPs) to Sentry
         send_default_pii=False,
+        # Attach Django request info to every event
+        request_bodies="medium",
+        # Ignore common non-actionable exceptions
+        ignore_errors=[
+            "django.security.DisallowedHost",
+            "django.http.response.Http404",
+        ],
     )
 
 # Caching — longer TTLs
