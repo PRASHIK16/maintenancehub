@@ -158,6 +158,45 @@ class AnalyticsOverviewView(ManagerRequiredMixin, View):
         })
 
 
+class RecurringIssuesView(ManagerRequiredMixin, View):
+    """
+    Identify recurring issues: tickets in the same location+category
+    that have appeared more than once in the last N days.
+    Returns JSON suitable for a chart or table.
+    """
+
+    def get(self, request):
+        org = request.org
+        period = int(request.GET.get("period", 90))
+        min_count = int(request.GET.get("min_count", 2))
+        since = timezone.now() - timedelta(days=period)
+
+        recurring = (
+            Ticket.objects.filter(
+                organization=org,
+                created_at__gte=since,
+                category__isnull=False,
+                location__isnull=False,
+            )
+            .values("category__name", "location__name")
+            .annotate(count=Count("id"))
+            .filter(count__gte=min_count)
+            .order_by("-count")[:20]
+        )
+
+        data = [
+            {
+                "category": r["category__name"],
+                "location": r["location__name"],
+                "count": r["count"],
+                "label": f"{r['category__name']} @ {r['location__name']}",
+            }
+            for r in recurring
+        ]
+
+        return JsonResponse({"recurring_issues": data, "period_days": period})
+
+
 class StatsPartialView(ManagerRequiredMixin, View):
     """HTMX partial for stat cards — responds to period selector change."""
 
