@@ -2642,6 +2642,85 @@ input[type="search"]::-webkit-search-cancel-button {
   font-size: var(--text-xs); color: var(--text-muted);
 }
 
+/* ─── 39  AUTH EXTENDED CLASSES ────────────────────────────────────────────── */
+
+/* Info box on brand panel (gray, e.g. "Didn't receive it?") */
+.auth-info-box {
+  background-color: #F8FAFC; border: 1px solid #E2E8F0;
+  border-radius: 10px; padding: 18px 20px;
+}
+.auth-info-box-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: #94A3B8; margin: 0 0 12px;
+}
+.auth-info-box-icon  { color: #64748B; }
+.auth-info-box-text  { font-size: 13px; line-height: 1.65; color: #475569; margin: 0; }
+
+/* Checklist items inside info boxes */
+.auth-checklist-text        { font-size: 13px; color: #475569; }
+.auth-checklist-icon        { color: #64748B; }
+.auth-checklist-icon-green  { color: #059669; }
+
+/* Copyright line at bottom of brand panel */
+.auth-copyright { font-size: 10px; color: #94A3B8; margin: 0; }
+
+/* Green "security note" box */
+.auth-security-note {
+  display: flex; align-items: flex-start; gap: 12px;
+  background-color: rgba(5,150,105,0.05);
+  border: 1px solid rgba(5,150,105,0.15);
+  border-radius: 10px; padding: 14px 16px;
+}
+.auth-security-note-icon { color: #059669; flex-shrink: 0; }
+.auth-security-note-text { font-size: 13px; line-height: 1.65; color: #047857; margin: 0; }
+
+/* Card container used in right panel of reset/done/confirm pages */
+.auth-card {
+  background-color: #FFFFFF; border: 1px solid #E2E8F0;
+  border-radius: 12px; padding: 32px 28px;
+}
+
+/* Icon circles in auth cards */
+.auth-card-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 12px;
+  background-color: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.2);
+  margin-bottom: 24px;
+}
+.auth-card-icon-danger {
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 12px;
+  background-color: #FEF2F2; border: 1px solid #FECACA;
+  margin-bottom: 24px;
+}
+.auth-card-icon-svg        { color: #059669; }
+.auth-card-icon-svg-danger { color: #DC2626; }
+
+/* Text inside auth cards */
+.auth-card-heading {
+  font-size: 20px; font-weight: 800; letter-spacing: -0.025em;
+  color: #0F172A; margin: 0 0 8px;
+}
+.auth-card-body {
+  font-size: 13px; line-height: 1.65; color: #64748B; margin: 0 0 24px;
+}
+
+/* Error block inside auth card (confirm form) */
+.auth-confirm-error {
+  display: flex; gap: 12px;
+  border-radius: 12px; margin-bottom: 20px;
+  background-color: #FEF2F2; border: 1px solid #FECACA; padding: 14px 16px;
+}
+.auth-confirm-error-title { font-size: 13px; font-weight: 600; color: #991B1B; margin: 0 0 2px; }
+.auth-confirm-error-item  { font-size: 12px; color: #B91C1C; margin: 0; }
+
+/* Mobile-only checklist on reset_done page */
+.auth-mobile-checklist {
+  border-radius: 8px; padding: 16px; margin-bottom: 24px;
+  background-color: #F1F5F9; border: 1px solid #E2E8F0;
+}
+.auth-mobile-tip { font-size: 12px; color: #64748B; margin: 0; }
+
 /* ─── 34  PRINT ──────────────────────────────────────────────────────────────── */
 @media print {
   .sidebar,
