@@ -1,55 +1,43 @@
 version: "3.9"
 
-# ─── MaintenanceHub — Docker Compose ──────────────────────────────────────────
-# Development stack: Django + PostgreSQL + Redis + Celery
-
 services:
-
-  # ── Database ────────────────────────────────────────────────────────────────
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: maintenancehub
+      POSTGRES_USER: mhuser
+      POSTGRES_PASSWORD: mhpassword
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-maintenancehub}
-      POSTGRES_USER: ${POSTGRES_USER:-maintenancehub}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-    ports:
-      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-maintenancehub}"]
+      test: ["CMD-SHELL", "pg_isready -U mhuser -d maintenancehub"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # ── Cache & Message Broker ───────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    command: redis-server --save 20 1 --loglevel warning
+    restart: unless-stopped
     volumes:
       - redis_data:/data
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # ── Django Application ───────────────────────────────────────────────────────
   web:
-    build:
-      context: .
-      target: production
-    env_file: .env
+    build: .
+    restart: unless-stopped
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.development
-      DATABASE_URL: postgres://${POSTGRES_USER:-maintenancehub}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-maintenancehub}
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgres://mhuser:mhpassword@db:5432/maintenancehub
       CELERY_BROKER_URL: redis://redis:6379/0
-    volumes:
-      - .:/app
-      - media_files:/app/media
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DEBUG: "false"
     ports:
       - "8000:8000"
     depends_on:
@@ -57,68 +45,41 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    volumes:
+      - media_files:/app/mediafiles
     command: >
-      sh -c "python manage.py migrate --settings=config.settings.development &&
-             python manage.py runserver 0.0.0.0:8000 --settings=config.settings.development"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      sh -c "python manage.py migrate --noinput &&
+             daphne -b 0.0.0.0 -p 8000 config.asgi:application"
 
-  # ── Celery Worker ────────────────────────────────────────────────────────────
-  celery_worker:
-    build:
-      context: .
-      target: production
-    env_file: .env
+  celery:
+    build: .
+    restart: unless-stopped
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.development
-      DATABASE_URL: postgres://${POSTGRES_USER:-maintenancehub}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-maintenancehub}
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgres://mhuser:mhpassword@db:5432/maintenancehub
       CELERY_BROKER_URL: redis://redis:6379/0
-    volumes:
-      - .:/app
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
     depends_on:
       - db
       - redis
-    command: celery -A config worker -l info --concurrency=4
+    command: celery -A config.celery_app worker --loglevel=info
 
-  # ── Celery Beat Scheduler ────────────────────────────────────────────────────
-  celery_beat:
-    build:
-      context: .
-      target: production
-    env_file: .env
+  celery-beat:
+    build: .
+    restart: unless-stopped
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.development
-      DATABASE_URL: postgres://${POSTGRES_USER:-maintenancehub}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-maintenancehub}
-      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgres://mhuser:mhpassword@db:5432/maintenancehub
       CELERY_BROKER_URL: redis://redis:6379/0
-    volumes:
-      - .:/app
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
     depends_on:
       - db
       - redis
-    command: celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-
-  # ── Nginx (Production) ───────────────────────────────────────────────────────
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
-      - media_files:/app/media:ro
-      - static_files:/app/staticfiles:ro
-    ports:
-      - "80:80"
-    depends_on:
-      - web
-    profiles:
-      - production
+    command: celery -A config.celery_app beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 
 volumes:
   postgres_data:
   redis_data:
   media_files:
-  static_files:
