@@ -23,6 +23,7 @@ class AuditAction(models.TextChoices):
     REOPEN = "reopen", "Reopened"
     CLOSE = "close", "Closed"
     VERIFY = "verify", "Verified"
+    BULK_ACTION = "bulk_action", "Bulk Action"
 
 
 class AuditLog(models.Model):
