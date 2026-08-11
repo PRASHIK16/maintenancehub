@@ -10,8 +10,8 @@
 {# ────────────────────────────────────────────────────────────────────────────
    Page Header — sticky, full-bleed, fintech command center feel
    ──────────────────────────────────────────────────────────────────────────── #}
-<header class="page-header -mx-4 md:-mx-6 -mt-4 md:-mt-6 mb-6" style="padding: 0;">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-8 py-5">
+<header class="page-header-strip mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
     <div>
       <h1 class="page-title">
@@ -108,7 +108,7 @@
   </div>
 
   {# At Risk / Overdue #}
-  <div class="stat-card" {% if stats.overdue > 0 %}style="border-left: 4px solid #ef4444;"{% endif %}>
+  <div class="stat-card {% if stats.overdue > 0 %}stat-card-accent-danger{% endif %}">
     <div class="stat-card-label">At Risk / Overdue</div>
     <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.overdue > 0 %}text-red-500{% endif %}">
       {{ stats.overdue|intcomma }}
@@ -453,7 +453,7 @@
 
     {# Critical Tickets — only rendered when tickets exist ────────────────── #}
     {% if critical_tickets %}
-    <div class="card" style="border-left: 3px solid #ef4444;">
+    <div class="card stat-card-accent-danger">
       <div class="card-header" style="border-bottom-color: rgba(239,68,68,0.12);">
         <h2 class="card-title flex items-center gap-2" style="color: #dc2626;">
           <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #ef4444;"></span>
