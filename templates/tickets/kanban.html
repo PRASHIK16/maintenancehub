@@ -10,7 +10,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div class="page-intro" style="margin-bottom: 0;">
       <h1 class="page-intro-title">Kanban Board</h1>
-      <p class="page-intro-sub">Visualize ticket flow across stages</p>
+      <p class="page-intro-sub">Drag cards between columns to update ticket status</p>
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
       <a href="{% url 'dashboard:all-tickets' %}" class="btn btn-secondary btn-sm">
@@ -28,11 +28,30 @@
     </div>
   </div>
 
+  {# Drag hint #}
+  <div id="kanban-hint" class="flex items-center gap-2 text-sm" style="color: var(--text-muted);">
+    <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/>
+    </svg>
+    Drag and drop cards to change status. Changes are saved automatically.
+  </div>
+
+  {# Toast notification area #}
+  <div id="kanban-toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium"
+         style="background: var(--color-emerald-600); color: white; min-width: 240px;">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+      </svg>
+      <span id="kanban-toast-msg">Status updated</span>
+    </div>
+  </div>
+
   {# Kanban board — horizontally scrollable #}
-  <div class="kanban-board">
+  <div class="kanban-board" id="kanban-board">
 
     {% for column in columns %}
-    <div class="kanban-column">
+    <div class="kanban-column" data-status="{{ column.status }}">
 
       {# Column header #}
       <div class="kanban-column-header">
@@ -48,59 +67,75 @@
             {% else %}#9ca3af{% endif %};"></div>
           <span class="kanban-column-title">{{ column.label }}</span>
         </div>
-        <span class="kanban-count">{{ column.count }}</span>
+        <span class="kanban-count" id="count-{{ column.status }}">{{ column.count }}</span>
       </div>
 
-      {# Cards #}
-      <div class="kanban-cards">
+      {# Cards drop zone #}
+      <div class="kanban-cards sortable-list"
+           id="col-{{ column.status }}"
+           data-status="{{ column.status }}"
+           style="min-height: 80px;">
         {% for ticket in column.tickets %}
-        <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
-           class="kanban-card" style="text-decoration: none; display: block;">
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <span class="ticket-num">{{ ticket.ticket_number }}</span>
-            <span class="badge badge-priority-{{ ticket.priority }} flex-shrink-0">
-              {{ ticket.get_priority_display }}
-            </span>
-          </div>
-          <p class="text-sm font-semibold mb-2" style="color: var(--text-primary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-            {{ ticket.title }}
-          </p>
-          <div class="space-y-0.5 mb-3">
-            {% if ticket.location %}
-            <p class="truncate" style="font-size: 11px; color: var(--text-muted);">📍 {{ ticket.location.name }}</p>
-            {% endif %}
-            {% if ticket.category %}
-            <p style="font-size: 11px; color: var(--text-muted);">{{ ticket.category.name }}</p>
-            {% endif %}
-          </div>
-          <div class="flex items-center justify-between pt-2" style="border-top: 1px solid var(--border-subtle);">
-            {% if ticket.assigned_to %}
-            <div class="flex items-center gap-1.5">
-              <div class="avatar-emerald" style="width: 20px; height: 20px; font-size: 9px;">
-                {{ ticket.assigned_to.initials }}
-              </div>
-              <span class="truncate" style="font-size: 11px; color: var(--text-muted); max-width: 80px;">{{ ticket.assigned_to.display_name }}</span>
+        <div class="kanban-card"
+             data-ticket-pk="{{ ticket.pk }}"
+             data-ticket-num="{{ ticket.ticket_number }}"
+             draggable="true">
+          <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
+             class="card-link-overlay"
+             style="text-decoration: none; display: block;"
+             onclick="return !event.defaultPrevented;">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <span class="ticket-num">{{ ticket.ticket_number }}</span>
+              <span class="badge badge-priority-{{ ticket.priority }} flex-shrink-0">
+                {{ ticket.get_priority_display }}
+              </span>
             </div>
-            {% else %}
-            <span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Unassigned</span>
+            <p class="text-sm font-semibold mb-2" style="color: var(--text-primary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              {{ ticket.title }}
+            </p>
+            <div class="space-y-0.5 mb-3">
+              {% if ticket.location %}
+              <p class="truncate" style="font-size: 11px; color: var(--text-muted);">📍 {{ ticket.location.name }}</p>
+              {% endif %}
+              {% if ticket.category %}
+              <p style="font-size: 11px; color: var(--text-muted);">{{ ticket.category.name }}</p>
+              {% endif %}
+            </div>
+            <div class="flex items-center justify-between pt-2" style="border-top: 1px solid var(--border-subtle);">
+              {% if ticket.assigned_to %}
+              <div class="flex items-center gap-1.5">
+                <div class="avatar-emerald" style="width: 20px; height: 20px; font-size: 9px;">
+                  {{ ticket.assigned_to.initials }}
+                </div>
+                <span class="truncate" style="font-size: 11px; color: var(--text-muted); max-width: 80px;">{{ ticket.assigned_to.display_name }}</span>
+              </div>
+              {% else %}
+              <span style="font-size: 11px; color: var(--text-muted); font-style: italic;">Unassigned</span>
+              {% endif %}
+              {% if ticket.sla_resolution_due %}
+              <span class="sla-timer sla-{{ ticket.sla_status }}" style="font-size: 11px;">
+                {{ ticket.sla_resolution_due|date:"d M" }}
+              </span>
+              {% endif %}
+            </div>
+            {% if ticket.is_overdue %}
+            <div class="flex items-center gap-1 mt-1.5" style="font-size: 11px; font-weight: 600; color: #dc2626;">
+              <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              OVERDUE
+            </div>
             {% endif %}
-            {% if ticket.sla_resolution_due %}
-            <span class="sla-timer sla-{{ ticket.sla_status }}" style="font-size: 11px;">
-              {{ ticket.sla_resolution_due|date:"d M" }}
-            </span>
-            {% endif %}
-          </div>
-          {% if ticket.is_overdue %}
-          <div class="flex items-center gap-1 mt-1.5" style="font-size: 11px; font-weight: 600; color: #dc2626;">
-            <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </a>
+          {# Drag handle visible on hover #}
+          <div class="drag-handle" title="Drag to move">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--text-muted);">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16"/>
             </svg>
-            OVERDUE
           </div>
-          {% endif %}
-        </a>
+        </div>
         {% empty %}
-        <div class="text-center py-8">
+        <div class="kanban-empty text-center py-8" id="empty-{{ column.status }}">
           <div class="flex items-center justify-center w-8 h-8 rounded-lg mx-auto mb-2" style="background-color: var(--bg-subtle);">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="color: var(--text-muted);">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
@@ -123,4 +158,140 @@
 
   </div>
 </div>
+
+{# CSRF token for AJAX #}
+<input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+
+{% endblock %}
+
+{% block extra_scripts %}
+{# Sortable.js for drag-and-drop #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js" integrity="sha512-OF6sEjMYoXHOdra0L/4YfNten0SnBhKMPiL7bPaFfP4R5cKwXYpgZhF0PM2k0yg6mvYBZ+g4cMHIFJbZBFCw==" crossorigin="anonymous"></script>
+
+<style>
+.kanban-card {
+  cursor: grab;
+  position: relative;
+  transition: box-shadow 0.15s, opacity 0.15s;
+}
+.kanban-card:active { cursor: grabbing; }
+.kanban-card.sortable-ghost {
+  opacity: 0.35;
+  box-shadow: 0 0 0 2px var(--color-emerald-500);
+}
+.kanban-card.sortable-drag {
+  opacity: 0.95;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  transform: rotate(1.5deg);
+  cursor: grabbing;
+}
+.sortable-list.drag-over {
+  background: rgba(16, 185, 129, 0.06);
+  border-radius: 8px;
+}
+.drag-handle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  cursor: grab;
+}
+.kanban-card:hover .drag-handle { opacity: 1; }
+.kanban-card.saving::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.6);
+  border-radius: inherit;
+}
+</style>
+
+<script>
+(function () {
+  const CSRF = document.getElementById('csrf-token').value;
+  const toast = document.getElementById('kanban-toast');
+  const toastMsg = document.getElementById('kanban-toast-msg');
+  let toastTimer;
+
+  function showToast(msg, isError = false) {
+    toastMsg.textContent = msg;
+    toast.firstElementChild.style.background = isError ? '#dc2626' : 'var(--color-emerald-600)';
+    toast.classList.remove('hidden');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.add('hidden'), 3000);
+  }
+
+  async function moveTicket(ticketPk, newStatus, cardEl) {
+    cardEl.classList.add('saving');
+    try {
+      const resp = await fetch(`/dashboard/tickets/${ticketPk}/kanban-move/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': CSRF,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `status=${encodeURIComponent(newStatus)}`,
+      });
+      const data = await resp.json();
+      if (!resp.ok || data.error) {
+        showToast(data.error || 'Move failed — check permissions', true);
+        return false;
+      }
+      showToast(`${data.ticket_number} moved to ${newStatus.replace('_', ' ')}`);
+      // Update column counts (simple +1/-1)
+      return true;
+    } catch (e) {
+      showToast('Network error — changes may not have saved', true);
+      return false;
+    } finally {
+      cardEl.classList.remove('saving');
+    }
+  }
+
+  // Initialise Sortable on every column
+  document.querySelectorAll('.sortable-list').forEach(list => {
+    Sortable.create(list, {
+      group: 'kanban-board',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      dragClass: 'sortable-drag',
+      handle: '.kanban-card',
+      draggable: '.kanban-card',
+      onStart(evt) {
+        document.querySelectorAll('.sortable-list').forEach(el => el.classList.add('drag-over'));
+      },
+      onEnd(evt) {
+        document.querySelectorAll('.sortable-list').forEach(el => el.classList.remove('drag-over'));
+        const fromStatus = evt.from.dataset.status;
+        const toStatus = evt.to.dataset.status;
+        const cardEl = evt.item;
+
+        if (fromStatus === toStatus) return; // same column — reorder only (no backend call)
+
+        const ticketPk = cardEl.dataset.ticketPk;
+        moveTicket(ticketPk, toStatus, cardEl).then(ok => {
+          if (!ok) {
+            // Revert: move card back to original column
+            const fromList = document.getElementById(`col-${fromStatus}`);
+            if (fromList) {
+              const ref = fromList.children[evt.oldIndex] || null;
+              fromList.insertBefore(cardEl, ref);
+            }
+          } else {
+            // Update count badges
+            const fromCount = document.getElementById(`count-${fromStatus}`);
+            const toCount = document.getElementById(`count-${toStatus}`);
+            if (fromCount) fromCount.textContent = Math.max(0, parseInt(fromCount.textContent) - 1);
+            if (toCount) toCount.textContent = parseInt(toCount.textContent) + 1;
+            // Hide empty placeholder if column now has cards
+            const emptyEl = document.getElementById(`empty-${toStatus}`);
+            if (emptyEl) emptyEl.style.display = 'none';
+          }
+        });
+      },
+    });
+  });
+})();
+</script>
 {% endblock %}
