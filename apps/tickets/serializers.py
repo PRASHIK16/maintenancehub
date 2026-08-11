@@ -1,6 +1,6 @@
 """DRF Serializers for the tickets app."""
 from rest_framework import serializers
-from .models import Ticket, TicketComment, Category, SLARule
+from .models import Ticket, TicketComment, TicketActivity, Category, SLARule
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -68,9 +68,23 @@ class TicketCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TicketComment
-        fields = ["id", "ticket", "author", "author_name", "body", "is_internal", "created_at"]
-        read_only_fields = ["id", "author", "author_name", "created_at"]
+        fields = ["id", "ticket", "author", "author_name", "body",
+                  "is_internal", "is_deleted", "created_at"]
+        read_only_fields = ["id", "author", "author_name", "is_deleted", "created_at"]
 
     def create(self, validated_data):
         validated_data["author"] = self.context["request"].user
         return super().create(validated_data)
+
+
+class TicketActivitySerializer(serializers.ModelSerializer):
+    """Read-only serializer for the ticket activity / timeline."""
+    actor_name = serializers.CharField(source="actor.full_name", read_only=True, default=None)
+
+    class Meta:
+        model = TicketActivity
+        fields = [
+            "id", "activity_type", "actor", "actor_name",
+            "description", "metadata", "created_at",
+        ]
+        read_only_fields = fields
