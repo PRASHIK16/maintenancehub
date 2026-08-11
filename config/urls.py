@@ -28,6 +28,7 @@ urlpatterns = [
     path("analytics/", include("apps.analytics.urls")),
     path("assets/", include("apps.assets.urls")),
     path("maintenance/", include("apps.maintenance.urls")),
+    path("audit/", include("apps.audit.urls")),
 
     # REST API
     path("api/", include("apps.tickets.api_urls")),

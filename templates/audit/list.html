@@ -1,0 +1,114 @@
+{% extends "layout/app.html" %}
+{% load static %}
+
+{% block title %}Audit Log — MaintenanceHub{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Audit Log</h1>
+    <p class="page-subtitle">Immutable record of all actions in your organization</p>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-6">
+  <form method="get" class="flex flex-wrap gap-3 items-end">
+    <div class="form-group" style="flex: 1; min-width: 140px;">
+      <label class="form-label">Action Type</label>
+      <select name="action" class="form-select">
+        <option value="">All actions</option>
+        {% for value, label in action_choices %}
+          <option value="{{ value }}" {% if filter_action == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group" style="flex: 1; min-width: 160px;">
+      <label class="form-label">User (email)</label>
+      <input type="text" name="user" class="form-input" placeholder="e.g. user@example.com" value="{{ filter_user }}">
+    </div>
+    <div class="form-group" style="min-width: 130px;">
+      <label class="form-label">From</label>
+      <input type="date" name="from" class="form-input" value="{{ filter_from }}">
+    </div>
+    <div class="form-group" style="min-width: 130px;">
+      <label class="form-label">To</label>
+      <input type="date" name="to" class="form-input" value="{{ filter_to }}">
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{% url 'audit:list' %}" class="btn btn-secondary ml-2">Reset</a>
+    </div>
+  </form>
+</div>
+
+<!-- Log Table -->
+<div class="card" style="padding: 0; overflow: hidden;">
+  {% if logs %}
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 1px solid var(--border-default); background-color: var(--bg-subtle);">
+          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Timestamp</th>
+          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">User</th>
+          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Action</th>
+          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Object</th>
+          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr style="border-bottom: 1px solid var(--border-subtle);">
+          <td style="padding: 10px 16px; font-size: 12px; color: var(--text-secondary); white-space: nowrap; font-variant-numeric: tabular-nums;">
+            {{ log.timestamp|date:"M j, Y H:i:s" }}
+          </td>
+          <td style="padding: 10px 16px; font-size: 13px; color: var(--text-primary);">
+            {{ log.user.email|default:"System" }}
+          </td>
+          <td style="padding: 10px 16px;">
+            <span class="badge badge-secondary" style="font-size: 11px;">{{ log.get_action_display }}</span>
+          </td>
+          <td style="padding: 10px 16px; font-size: 13px; color: var(--text-secondary); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            {{ log.object_repr|default:"—" }}
+            {% if log.message %}
+              <span style="color: var(--text-muted); font-size: 12px;"> — {{ log.message|truncatechars:80 }}</span>
+            {% endif %}
+          </td>
+          <td style="padding: 10px 16px; font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+            {{ log.ip_address|default:"—" }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <div class="flex items-center justify-between" style="padding: 14px 16px; border-top: 1px solid var(--border-subtle);">
+    <span style="font-size: 13px; color: var(--text-secondary);">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+    <div class="flex gap-2">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&action={{ filter_action }}&user={{ filter_user }}&from={{ filter_from }}&to={{ filter_to }}"
+           class="btn btn-secondary btn-sm">← Previous</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&action={{ filter_action }}&user={{ filter_user }}&from={{ filter_from }}&to={{ filter_to }}"
+           class="btn btn-primary btn-sm">Next →</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="empty-state" style="padding: 48px 32px;">
+    <svg class="h-10 w-10 mx-auto mb-3" style="color: var(--text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+    <p style="font-size: 14px; color: var(--text-muted);">No audit logs found for the selected filters.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
