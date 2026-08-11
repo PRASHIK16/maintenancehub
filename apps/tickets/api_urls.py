@@ -1,11 +1,25 @@
 """REST API URLs for tickets — v1."""
 from django.urls import path
+from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Ticket, TicketComment
 from .serializers import TicketListSerializer, TicketDetailSerializer, TicketCommentSerializer
+
+# Valid sort fields exposed via the API
+TICKET_SORT_FIELDS = {
+    "created_at": "created_at",
+    "-created_at": "-created_at",
+    "priority": "priority",
+    "-priority": "-priority",
+    "sla_resolution_due": "sla_resolution_due",
+    "-sla_resolution_due": "-sla_resolution_due",
+    "status": "status",
+}
+
+PAGE_SIZE_MAX = 100
 
 
 @api_view(["GET", "POST"])
@@ -14,21 +28,52 @@ def ticket_list_create(request):
     """
     GET  /api/tickets/       → paginated ticket list (org-scoped)
     POST /api/tickets/       → create a new ticket
+
+    Query params (GET):
+      status      Filter by ticket status (exact)
+      priority    Filter by priority (exact)
+      category    Filter by category ID
+      assigned_to Filter by assignee user ID
+      q           Full-text search in ticket_number, title, description
+      ordering    Sort field (see TICKET_SORT_FIELDS); default: -created_at
+      page        Page number (1-based, default 1)
+      page_size   Results per page (default 25, max 100)
     """
     if request.method == "GET":
         qs = Ticket.objects.filter(
             organization=request.user.organization
         ).select_related("created_by", "assigned_to", "category").order_by("-created_at")
 
-        # Filter by status or priority
+        # --- Filters ---
         if s := request.GET.get("status"):
             qs = qs.filter(status=s)
         if p := request.GET.get("priority"):
             qs = qs.filter(priority=p)
+        if cat := request.GET.get("category"):
+            qs = qs.filter(category_id=cat)
+        if assignee := request.GET.get("assigned_to"):
+            qs = qs.filter(assigned_to_id=assignee)
 
-        # Simple pagination
-        page = int(request.GET.get("page", 1))
-        page_size = int(request.GET.get("page_size", 25))
+        # --- Full-text search ---
+        if q := request.GET.get("q", "").strip():
+            qs = qs.filter(
+                Q(ticket_number__icontains=q) |
+                Q(title__icontains=q) |
+                Q(description__icontains=q)
+            )
+
+        # --- Ordering ---
+        ordering_param = request.GET.get("ordering", "-created_at")
+        ordering = TICKET_SORT_FIELDS.get(ordering_param, "-created_at")
+        qs = qs.order_by(ordering)
+
+        # --- Pagination ---
+        try:
+            page = max(1, int(request.GET.get("page", 1)))
+            page_size = min(PAGE_SIZE_MAX, max(1, int(request.GET.get("page_size", 25))))
+        except (ValueError, TypeError):
+            page, page_size = 1, 25
+
         start = (page - 1) * page_size
         total = qs.count()
         tickets = qs[start:start + page_size]
@@ -38,6 +83,7 @@ def ticket_list_create(request):
             "count": total,
             "page": page,
             "page_size": page_size,
+            "total_pages": max(1, (total + page_size - 1) // page_size),
             "results": serializer.data,
         })
 
