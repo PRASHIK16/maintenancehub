@@ -18,6 +18,7 @@ class NotificationType(models.TextChoices):
     TICKET_REOPENED = "ticket_reopened", "Ticket Reopened"
     TICKET_CLOSED = "ticket_closed", "Ticket Closed"
     MAINTENANCE_SCHEDULED = "maintenance_scheduled", "Maintenance Scheduled"
+    TICKET_RATED = "ticket_rated", "Ticket Rated"
 
 
 class Notification(TimeStampedModel):
