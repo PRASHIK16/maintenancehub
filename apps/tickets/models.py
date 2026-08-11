@@ -7,7 +7,7 @@ import uuid
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from apps.core.models import TimeStampedModel
+from apps.core.models import TimeStampedModel, SoftDeleteModel
 
 
 # ── Priority ──────────────────────────────────────────────────────────────────
@@ -429,10 +429,11 @@ class TicketStatusHistory(models.Model):
 
 # ── Comment ───────────────────────────────────────────────────────────────────
 
-class TicketComment(TimeStampedModel):
+class TicketComment(TimeStampedModel, SoftDeleteModel):
     """
     Comment on a ticket.
     Can be public (visible to user) or internal (staff/managers only).
+    Supports soft deletion so moderation history is preserved.
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")
     author = models.ForeignKey("accounts.User", on_delete=models.SET_NULL, null=True, related_name="ticket_comments")
