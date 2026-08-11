@@ -138,24 +138,75 @@
         <div class="card-body">
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {% for att in ticket.attachments.all %}
+            {% if att.is_image %}
+            {# Image — clickable lightbox preview #}
+            <button type="button"
+                    onclick="openLightbox('{{ att.file.url }}', '{{ att.original_filename|escapejs }}')"
+                    class="flex flex-col items-center gap-2 p-3 rounded-xl transition-colors text-left w-full"
+                    style="border: 1px solid var(--border-default); cursor: zoom-in; background: none;">
+              <img src="{{ att.file.url }}" alt="{{ att.original_filename }}"
+                   class="w-full h-20 object-cover rounded-lg"
+                   loading="lazy">
+              <span class="text-xs truncate w-full text-center" style="color: var(--text-secondary);">{{ att.original_filename }}</span>
+              <span style="font-size: 11px; color: var(--text-muted);">{{ att.file_size_display }}</span>
+            </button>
+            {% else %}
+            {# Non-image — direct download link #}
             <a href="{{ att.file.url }}" target="_blank"
                class="flex flex-col items-center gap-2 p-3 rounded-xl transition-colors"
                style="border: 1px solid var(--border-default); text-decoration: none;">
-              {% if att.is_image %}
-              <img src="{{ att.file.url }}" alt="{{ att.original_filename }}"
-                   class="w-full h-20 object-cover rounded-lg">
-              {% else %}
               <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: var(--bg-subtle);">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="color: var(--text-muted);">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
               </div>
-              {% endif %}
               <span class="text-xs truncate w-full text-center" style="color: var(--text-secondary);">{{ att.original_filename }}</span>
               <span style="font-size: 11px; color: var(--text-muted);">{{ att.file_size_display }}</span>
             </a>
+            {% endif %}
             {% endfor %}
           </div>
+
+          {# Lightbox overlay #}
+          <div id="lightbox" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+               style="background: rgba(0,0,0,0.85);" onclick="closeLightbox()">
+            <div class="relative max-w-5xl w-full" onclick="event.stopPropagation()">
+              <button onclick="closeLightbox()"
+                      class="absolute -top-10 right-0 text-white text-sm font-medium flex items-center gap-1 opacity-80 hover:opacity-100">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Close
+              </button>
+              <img id="lightbox-img" src="" alt=""
+                   class="w-full max-h-[80vh] object-contain rounded-xl shadow-2xl">
+              <p id="lightbox-caption" class="text-center text-white text-sm mt-3 opacity-70"></p>
+              <a id="lightbox-download" href="" target="_blank"
+                 class="absolute bottom-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium"
+                 style="background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(4px);">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Download
+              </a>
+            </div>
+          </div>
+          <script>
+          function openLightbox(url, name) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox-img').alt = name;
+            document.getElementById('lightbox-caption').textContent = name;
+            document.getElementById('lightbox-download').href = url;
+            document.getElementById('lightbox').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          }
+          function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+            document.getElementById('lightbox-img').src = '';
+            document.body.style.overflow = '';
+          }
+          document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+          </script>
         </div>
       </div>
       {% endif %}
