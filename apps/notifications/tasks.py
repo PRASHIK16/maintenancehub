@@ -4,8 +4,28 @@ All notification processing is asynchronous.
 """
 from celery import shared_task
 import logging
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
+
+
+def _send_email(subject, template, context, recipient_email):
+    """Helper: render an email template and send it."""
+    try:
+        html_body = render_to_string(template, context)
+        text_body = render_to_string(template.replace(".html", ".txt"), context) if False else html_body
+        send_mail(
+            subject=subject,
+            message="",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[recipient_email],
+            html_message=html_body,
+            fail_silently=False,
+        )
+    except Exception as exc:
+        logger.warning(f"Failed to send email to {recipient_email}: {exc}")
 
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
@@ -36,6 +56,12 @@ def notify_ticket_created(self, ticket_id):
                 link=f"/dashboard/tickets/{ticket.pk}/",
                 ticket=ticket,
             )
+            _send_email(
+                subject=f"[MaintenanceHub] New ticket: {ticket.ticket_number}",
+                template="emails/ticket_created.html",
+                context={"ticket": ticket, "recipient": user, "site_url": settings.SITE_URL},
+                recipient_email=user.email,
+            )
 
         logger.info(f"Ticket created notifications sent for {ticket.ticket_number}")
 
@@ -64,6 +90,13 @@ def notify_ticket_assigned(self, ticket_id, assignee_id, assigner_id):
             link=f"/dashboard/tickets/{ticket.pk}/",
             ticket=ticket,
         )
+        if assignee.email_notifications:
+            _send_email(
+                subject=f"[MaintenanceHub] Ticket assigned to you: {ticket.ticket_number}",
+                template="emails/ticket_assigned.html",
+                context={"ticket": ticket, "assignee": assignee, "assigner": assigner, "site_url": settings.SITE_URL},
+                recipient_email=assignee.email,
+            )
 
         # Also notify the requester
         if ticket.created_by and ticket.created_by != assignee:
@@ -108,6 +141,17 @@ def notify_ticket_status_change(self, ticket_id, new_status, actor_id):
                 link=f"/dashboard/tickets/{ticket.pk}/",
                 ticket=ticket,
             )
+            if recipient.email_notifications:
+                _send_email(
+                    subject=f"[MaintenanceHub] Ticket {ticket.ticket_number} status updated",
+                    template="emails/ticket_status_change.html",
+                    context={
+                        "ticket": ticket, "recipient": recipient, "actor": actor,
+                        "new_status": status_labels.get(new_status, new_status),
+                        "site_url": settings.SITE_URL,
+                    },
+                    recipient_email=recipient.email,
+                )
 
     except Exception as exc:
         logger.error(f"notify_ticket_status_change failed: {exc}")
@@ -144,10 +188,69 @@ def notify_comment_added(self, ticket_id, comment_id, author_id):
                 link=f"/dashboard/tickets/{ticket.pk}/",
                 ticket=ticket,
             )
+            if recipient.email_notifications:
+                _send_email(
+                    subject=f"[MaintenanceHub] New comment on {ticket.ticket_number}",
+                    template="emails/comment_added.html",
+                    context={
+                        "ticket": ticket, "comment": comment, "author": author,
+                        "recipient": recipient, "site_url": settings.SITE_URL,
+                    },
+                    recipient_email=recipient.email,
+                )
 
     except Exception as exc:
         logger.error(f"notify_comment_added failed: {exc}")
         raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def notify_ticket_rated(self, ticket_id):
+    """Notify the assigned staff member when a ticket is rated."""
+    try:
+        from apps.tickets.models import Ticket
+        from .models import Notification, NotificationType
+
+        ticket = Ticket.objects.select_related("assigned_to", "created_by").get(pk=ticket_id)
+        if not ticket.assigned_to:
+            return
+
+        Notification.objects.create(
+            recipient=ticket.assigned_to,
+            notification_type=NotificationType.TICKET_RATED,
+            title=f"Ticket {ticket.ticket_number} rated",
+            message=f"Your work was rated {ticket.rating}/5 by {ticket.created_by.display_name}",
+            link=f"/dashboard/tickets/{ticket.pk}/",
+            ticket=ticket,
+        )
+        if ticket.assigned_to.email_notifications:
+            _send_email(
+                subject=f"[MaintenanceHub] You received a rating on {ticket.ticket_number}",
+                template="emails/ticket_rated.html",
+                context={"ticket": ticket, "site_url": settings.SITE_URL},
+                recipient_email=ticket.assigned_to.email,
+            )
+
+    except Exception as exc:
+        logger.error(f"notify_ticket_rated failed: {exc}")
+        raise self.retry(exc=exc)
+
+
+@shared_task
+def send_welcome_email(user_id):
+    """Send a welcome email to a newly registered user."""
+    try:
+        from apps.accounts.models import User
+        user = User.objects.get(pk=user_id)
+        _send_email(
+            subject="Welcome to MaintenanceHub!",
+            template="emails/welcome.html",
+            context={"user": user, "site_url": settings.SITE_URL},
+            recipient_email=user.email,
+        )
+        logger.info(f"Welcome email sent to {user.email}")
+    except Exception as exc:
+        logger.error(f"send_welcome_email failed: {exc}")
 
 
 @shared_task
@@ -191,5 +294,12 @@ def check_sla_breaches():
                     link=f"/dashboard/tickets/{ticket.pk}/",
                     ticket=ticket,
                 )
+                if manager.email_notifications:
+                    _send_email(
+                        subject=f"[MaintenanceHub] SLA BREACH: {ticket.ticket_number}",
+                        template="emails/sla_breach.html",
+                        context={"ticket": ticket, "manager": manager, "site_url": settings.SITE_URL},
+                        recipient_email=manager.email,
+                    )
 
     logger.info(f"SLA check complete. {overdue.count()} tickets breached.")
