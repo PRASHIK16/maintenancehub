@@ -2727,6 +2727,63 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .auth-mobile-tip { font-size: 12px; color: #64748B; margin: 0; }
 
+/* ─── 40  PROFILE PAGE ────────────────────────────────────────────────────────── */
+
+/* Hero avatar */
+.profile-avatar-img {
+  border: 2px solid var(--border-default);
+}
+.profile-avatar-default {
+  background: linear-gradient(135deg, var(--color-emerald-500), var(--color-emerald-700));
+  color: #ffffff;
+  border: 2px solid var(--border-default);
+}
+.profile-avatar-preview { border: 1px solid var(--border-default); }
+
+/* Hero name / email / org */
+.profile-hero-name  { color: var(--text-primary); letter-spacing: -0.02em; }
+.profile-hero-email { color: var(--text-secondary); }
+.profile-hero-org   { color: var(--text-muted); font-size: var(--text-xs); }
+
+/* Notifications section divider */
+.profile-section-divider {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 16px;
+}
+.profile-section-title {
+  font-size: var(--text-sm); font-weight: 600;
+  color: var(--text-primary); margin: 0 0 12px;
+}
+
+/* Notification label / hint */
+.profile-notif-label { font-size: var(--text-sm); font-weight: 500; color: var(--text-primary); }
+.profile-notif-hint  { font-size: var(--text-xs); color: var(--text-muted); }
+
+/* Theme option cards */
+.theme-option {
+  border: 1px solid var(--border-default);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; transition: border-color var(--t-fast), background-color var(--t-fast);
+}
+.theme-option-active {
+  border: 1px solid var(--color-emerald-500);
+  background-color: rgba(5,150,105,0.05);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer;
+}
+.theme-option-label { font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); }
+.radio-emerald { accent-color: var(--color-emerald-600); }
+
+/* Danger account card */
+.card-danger        { border-color: #FECACA !important; }
+.card-danger-header { border-color: #FECACA !important; }
+.card-danger-title  { color: #DC2626; }
+
 /* ─── 34  PRINT ──────────────────────────────────────────────────────────────── */
 @media print {
   .sidebar,

@@ -18,22 +18,20 @@
       <div class="flex-shrink-0">
         {% if request.user.avatar %}
         <img src="{{ request.user.avatar.url }}" alt="{{ request.user.display_name }}"
-             class="w-20 h-20 rounded-full object-cover"
-             style="border: 2px solid var(--border-default);">
+             class="w-20 h-20 rounded-full object-cover profile-avatar-img">
         {% else %}
-        <div class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold"
-             style="background: linear-gradient(135deg, var(--color-emerald-500), var(--color-emerald-700)); color: #ffffff; border: 2px solid var(--border-default);">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold profile-avatar-default">
           {{ request.user.initials }}
         </div>
         {% endif %}
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-lg font-bold truncate" style="color: var(--text-primary); letter-spacing: -0.02em;">{{ request.user.display_name }}</p>
-        <p class="text-sm truncate" style="color: var(--text-secondary);">{{ request.user.email }}</p>
+        <p class="text-lg font-bold truncate profile-hero-name">{{ request.user.display_name }}</p>
+        <p class="text-sm truncate profile-hero-email">{{ request.user.email }}</p>
         <div class="flex items-center gap-2 mt-2 flex-wrap">
           <span class="badge badge-emerald">{{ request.user.get_role_display }}</span>
           {% if request.user.organization %}
-          <span class="text-xs" style="color: var(--text-muted);">{{ request.user.organization.name }}</span>
+          <span class="profile-hero-org">{{ request.user.organization.name }}</span>
           {% endif %}
         </div>
       </div>
@@ -84,29 +82,28 @@
           <label for="{{ profile_form.avatar.id_for_label }}" class="form-label">Profile Photo</label>
           <div class="flex items-center gap-4">
             {% if request.user.avatar %}
-            <img src="{{ request.user.avatar.url }}" class="w-12 h-12 rounded-full object-cover"
-                 style="border: 1px solid var(--border-default);">
+            <img src="{{ request.user.avatar.url }}" class="w-12 h-12 rounded-full object-cover profile-avatar-preview">
             {% endif %}
             {{ profile_form.avatar }}
           </div>
         </div>
 
         {# Notifications #}
-        <div class="pt-4" style="border-top: 1px solid var(--border-subtle);">
-          <p class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Notifications</p>
+        <div class="profile-section-divider">
+          <p class="profile-section-title">Notifications</p>
           <div class="space-y-3">
             <label class="flex items-center gap-3 cursor-pointer">
               {{ profile_form.email_notifications }}
               <div>
-                <p class="text-sm font-medium" style="color: var(--text-primary);">Email notifications</p>
-                <p class="text-xs" style="color: var(--text-muted);">Receive ticket updates via email</p>
+                <p class="profile-notif-label">Email notifications</p>
+                <p class="profile-notif-hint">Receive ticket updates via email</p>
               </div>
             </label>
             <label class="flex items-center gap-3 cursor-pointer">
               {{ profile_form.push_notifications }}
               <div>
-                <p class="text-sm font-medium" style="color: var(--text-primary);">In-app notifications</p>
-                <p class="text-xs" style="color: var(--text-muted);">Real-time alerts inside the app</p>
+                <p class="profile-notif-label">In-app notifications</p>
+                <p class="profile-notif-hint">Real-time alerts inside the app</p>
               </div>
             </label>
           </div>
@@ -117,12 +114,11 @@
           <label class="form-label">Colour theme</label>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {% for value, label in profile_form.theme_preference.field.choices %}
-            <label class="flex items-center gap-2 rounded-lg px-4 py-3 cursor-pointer transition-colors"
-                   style="border: 1px solid {% if profile_form.theme_preference.value == value %}var(--color-emerald-500){% else %}var(--border-default){% endif %}; background-color: {% if profile_form.theme_preference.value == value %}rgba(5,150,105,0.05){% else %}var(--bg-card){% endif %};">
+            <label class="{% if profile_form.theme_preference.value == value %}theme-option-active{% else %}theme-option{% endif %}">
               <input type="radio" name="theme_preference" value="{{ value }}"
                      {% if profile_form.theme_preference.value == value %}checked{% endif %}
-                     style="accent-color: var(--color-emerald-600);">
-              <span class="text-sm font-medium" style="color: var(--text-secondary);">
+                     class="radio-emerald">
+              <span class="theme-option-label">
                 {% if value == 'system' %}🖥 System{% elif value == 'light' %}☀️ Light{% else %}🌙 Dark{% endif %}
               </span>
             </label>
@@ -172,13 +168,13 @@
   </div>
 
   {# Account section #}
-  <div class="card" style="border-color: #fecaca;">
-    <div class="card-header" style="border-color: #fecaca;">
-      <p class="card-title" style="color: #dc2626;">Account</p>
+  <div class="card card-danger">
+    <div class="card-header card-danger-header">
+      <p class="card-title card-danger-title">Account</p>
     </div>
     <div class="card-body">
-      <p class="text-sm mb-4" style="color: var(--text-secondary);">
-        Your account is linked to <strong style="color: var(--text-primary);">{{ request.user.organization.name }}</strong>.
+      <p class="text-sm mb-4 profile-hero-email">
+        Your account is linked to <strong class="profile-hero-name">{{ request.user.organization.name }}</strong>.
         Contact your organization admin to make structural changes.
       </p>
       <a href="{% url 'accounts:logout' %}" class="btn btn-danger btn-sm">Sign out</a>
