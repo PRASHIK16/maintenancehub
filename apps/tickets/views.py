@@ -670,6 +670,13 @@ class RateTicketView(OrgRequiredMixin, View):
                 metadata={"rating": rating, "comment": comment},
             )
 
+            # Notify assigned staff member of the rating
+            try:
+                from apps.notifications.tasks import notify_ticket_rated
+                notify_ticket_rated.delay(ticket.pk, rating, comment)
+            except Exception:
+                pass  # Never let notification failure break the rating flow
+
             messages.success(request, "Thank you for your feedback!")
 
         return redirect("dashboard:ticket-detail", pk=pk)
