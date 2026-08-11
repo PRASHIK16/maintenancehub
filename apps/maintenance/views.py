@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from apps.accounts.mixins import OrgRequiredMixin, ManagerRequiredMixin
 from .models import PreventiveMaintenance, MaintenanceStatus, MaintenanceFrequency
+from .forms import PreventiveMaintenanceForm
 
 
 class MaintenanceListView(OrgRequiredMixin, ListView):
@@ -38,47 +39,26 @@ class MaintenanceListView(OrgRequiredMixin, ListView):
 
 
 class MaintenanceCreateView(ManagerRequiredMixin, View):
-    """Create a new preventive maintenance schedule."""
+    """Create a new preventive maintenance schedule using PreventiveMaintenanceForm."""
     template_name = "maintenance/form.html"
 
     def get(self, request):
-        from apps.assets.models import Asset
-        from apps.organizations.models import Location, Team
-        return render(request, self.template_name, {
-            "action": "Create",
-            "frequency_choices": MaintenanceFrequency.choices,
-            "assets": Asset.objects.filter(
-                organization=request.user.organization, status="active"
-            ),
-            "locations": Location.objects.filter(
-                organization=request.user.organization, is_active=True
-            ),
-            "teams": Team.objects.filter(
-                organization=request.user.organization, is_active=True
-            ),
-        })
+        form = PreventiveMaintenanceForm(
+            organization=request.user.organization, user=request.user
+        )
+        return render(request, self.template_name, {"form": form, "action": "Create"})
 
     def post(self, request):
-        try:
-            pm = PreventiveMaintenance.objects.create(
-                organization=request.user.organization,
-                title=request.POST["title"],
-                description=request.POST.get("description", ""),
-                asset_id=request.POST.get("asset") or None,
-                location_id=request.POST.get("location") or None,
-                assigned_team_id=request.POST.get("assigned_team") or None,
-                frequency=request.POST.get("frequency", MaintenanceFrequency.MONTHLY),
-                interval_days=request.POST.get("interval_days") or None,
-                next_due_at=request.POST.get("next_due_at") or None,
-                estimated_duration_hours=request.POST.get("estimated_duration_hours") or None,
-                checklist=request.POST.get("checklist", ""),
-                created_by=request.user,
-            )
+        form = PreventiveMaintenanceForm(
+            request.POST,
+            organization=request.user.organization,
+            user=request.user,
+        )
+        if form.is_valid():
+            pm = form.save()
             messages.success(request, f"Maintenance schedule '{pm.title}' created.")
             return redirect("maintenance:list")
-        except Exception as e:
-            messages.error(request, f"Error creating schedule: {e}")
-            return redirect("maintenance:create")
+        return render(request, self.template_name, {"form": form, "action": "Create"})
 
 
 class MaintenanceDetailView(OrgRequiredMixin, View):
