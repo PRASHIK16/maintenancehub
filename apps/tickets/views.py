@@ -706,3 +706,87 @@ class SearchView(OrgRequiredMixin, View):
 
         results = [{"id": t.pk, "number": t.ticket_number, "title": t.title} for t in tickets]
         return JsonResponse({"results": results})
+
+
+class BulkTicketActionView(ManagerRequiredMixin, View):
+    """
+    Bulk action endpoint for the ticket list.
+    Supports: assign, close, change-priority.
+    Expects POST with ticket_ids (comma-separated) and action.
+    """
+
+    ALLOWED_ACTIONS = {"assign", "close", "set_priority"}
+
+    def post(self, request):
+        action = request.POST.get("action", "").strip()
+        raw_ids = request.POST.get("ticket_ids", "")
+        try:
+            ids = [int(i) for i in raw_ids.split(",") if i.strip().isdigit()]
+        except ValueError:
+            return JsonResponse({"error": "Invalid ticket IDs"}, status=400)
+
+        if not ids:
+            return JsonResponse({"error": "No tickets selected"}, status=400)
+        if action not in self.ALLOWED_ACTIONS:
+            return JsonResponse({"error": "Unknown action"}, status=400)
+
+        tickets = Ticket.objects.filter(pk__in=ids, organization=request.org)
+        affected = tickets.count()
+
+        if action == "close":
+            from django.utils import timezone as tz
+            for ticket in tickets.exclude(status=TicketStatus.CLOSED):
+                try:
+                    ticket.transition_to(TicketStatus.CLOSED, user=request.user)
+                    TicketActivity.create(
+                        ticket=ticket, actor=request.user,
+                        activity_type=ActivityType.CLOSED,
+                        description="Bulk closed",
+                        metadata={"via": "bulk_action"},
+                    )
+                except Exception:
+                    pass
+
+        elif action == "assign":
+            from apps.accounts.models import User
+            assignee_id = request.POST.get("assignee_id")
+            try:
+                assignee = User.objects.get(pk=assignee_id, organization=request.org)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "Assignee not found"}, status=400)
+            for ticket in tickets:
+                old_assignee = ticket.assigned_to
+                ticket.assigned_to = assignee
+                ticket.save(update_fields=["assigned_to"])
+                TicketActivity.create(
+                    ticket=ticket, actor=request.user,
+                    activity_type=ActivityType.ASSIGNED,
+                    description=f"Bulk assigned to {assignee.display_name}",
+                    metadata={"assignee": assignee.pk, "via": "bulk_action"},
+                )
+
+        elif action == "set_priority":
+            new_priority = request.POST.get("priority", "")
+            valid_priorities = {p for p, _ in Priority.choices}
+            if new_priority not in valid_priorities:
+                return JsonResponse({"error": "Invalid priority"}, status=400)
+            tickets.update(priority=new_priority)
+            for ticket in tickets:
+                TicketActivity.create(
+                    ticket=ticket, actor=request.user,
+                    activity_type=ActivityType.PRIORITY_CHANGED,
+                    description=f"Bulk priority set to {new_priority}",
+                    metadata={"priority": new_priority, "via": "bulk_action"},
+                )
+
+        AuditLog.log(request, AuditAction.BULK_ACTION, None,
+                     new_value={"action": action, "ticket_ids": ids, "affected": affected})
+
+        if request.headers.get("HX-Request"):
+            messages.success(request, f"Bulk action '{action}' applied to {affected} ticket(s).")
+            return HttpResponse(
+                '<div class="text-green-600 text-sm font-medium">'
+                f'✓ Applied to {affected} ticket(s) — <a href="" class="underline">Refresh</a></div>'
+            )
+
+        return JsonResponse({"ok": True, "affected": affected})
