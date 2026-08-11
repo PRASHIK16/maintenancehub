@@ -271,6 +271,46 @@ class KanbanView(ManagerRequiredMixin, View):
         return render(request, "tickets/kanban.html", {"columns": columns})
 
 
+class KanbanMoveView(ManagerRequiredMixin, View):
+    """HTMX endpoint — drag-and-drop a ticket to a new Kanban column."""
+
+    def post(self, request, pk):
+        ticket = get_object_or_404(Ticket, pk=pk, organization=request.org)
+        new_status = request.POST.get("status")
+
+        allowed_statuses = {s for s, _ in TicketStatus.choices}
+        if new_status not in allowed_statuses:
+            return JsonResponse({"error": "Invalid status"}, status=400)
+
+        # Only managers+ can move via kanban; apply same transition rules
+        allowed_transitions = VALID_TRANSITIONS.get(ticket.status, set())
+        if new_status not in allowed_transitions and new_status != ticket.status:
+            return JsonResponse({"error": "Transition not allowed"}, status=400)
+
+        if new_status != ticket.status:
+            old_status = ticket.status
+            ticket.transition_to(new_status, user=request.user)
+            status_labels = dict(TicketStatus.choices)
+            TicketActivity.create(
+                ticket=ticket,
+                actor=request.user,
+                activity_type=ActivityType.STATUS_CHANGED,
+                description=f"Moved on Kanban from {status_labels.get(old_status, old_status)} "
+                            f"to {status_labels.get(new_status, new_status)}",
+                metadata={"from": old_status, "to": new_status, "via": "kanban"},
+            )
+            AuditLog.log(request, AuditAction.STATUS_CHANGE, ticket,
+                         old_value={"status": old_status},
+                         new_value={"status": new_status})
+
+            from apps.core.ws_utils import broadcast_ticket_update
+            broadcast_ticket_update(ticket, event_type="kanban_move",
+                                    extra={"from": old_status, "to": new_status})
+
+        return JsonResponse({"ok": True, "ticket_number": ticket.ticket_number,
+                             "new_status": ticket.status})
+
+
 # ── Ticket CRUD ────────────────────────────────────────────────────────────────
 
 class CreateTicketView(OrgRequiredMixin, View):
