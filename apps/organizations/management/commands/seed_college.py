@@ -244,17 +244,6 @@ class Command(BaseCommand):
             "Housekeeping": "hk.lead@rit.edu",
         }
         team_map = {}
-        for team_name, desc_text, color in [(n, d, c) for n, c, d in TEAMS]:
-            team = Team.objects.create(
-                organization=org,
-                name=team_name,
-                description=color,  # swapped — fix below
-                color=desc_text,
-            )
-            team_map[team_name] = team
-
-        # Redo with correct fields
-        Team.objects.filter(organization=org).delete()
         for team_name, color, description in TEAMS:
             team = Team.objects.create(
                 organization=org, name=team_name, color=color, description=description,
