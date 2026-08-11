@@ -28,7 +28,7 @@
     <a href="?tab=unread" class="tab-bar-item {% if tab == 'unread' %}active{% endif %}">
       Unread
       {% if unread_count %}
-      <span class="badge badge-danger" style="margin-left: 4px; padding: 1px 6px; font-size: 11px;">{{ unread_count }}</span>
+      <span class="badge badge-danger badge-sm">{{ unread_count }}</span>
       {% endif %}
     </a>
     <a href="?tab=read" class="tab-bar-item {% if tab == 'read' %}active{% endif %}">Read</a>
@@ -38,20 +38,16 @@
   {% if notifications %}
   <div class="card">
     {% for notif in notifications %}
-    <div class="flex items-start gap-4 px-5 py-4"
-         style="border-bottom: 1px solid var(--border-subtle);
-                {% if not notif.is_read %}background-color: rgba(5,150,105,0.03);{% endif %}">
+    <div class="notif-row {% if not notif.is_read %}notif-row-unread{% endif %}">
 
       {# Icon #}
-      <div class="flex items-center justify-center flex-shrink-0 rounded-full"
-           style="width: 40px; height: 40px;
-                  {% if 'created' in notif.notification_type %}background-color: #dbeafe; color: #2563eb;
-                  {% elif 'assigned' in notif.notification_type %}background-color: rgba(5,150,105,0.12); color: #059669;
-                  {% elif 'resolved' in notif.notification_type or 'closed' in notif.notification_type %}background-color: #dcfce7; color: #16a34a;
-                  {% elif 'sla' in notif.notification_type %}background-color: #fee2e2; color: #dc2626;
-                  {% elif 'comment' in notif.notification_type %}background-color: #fef3c7; color: #d97706;
-                  {% else %}background-color: var(--bg-subtle); color: var(--text-muted);
-                  {% endif %}">
+      <div class="notif-icon
+        {% if 'created' in notif.notification_type %}notif-icon-created
+        {% elif 'assigned' in notif.notification_type %}notif-icon-assigned
+        {% elif 'resolved' in notif.notification_type or 'closed' in notif.notification_type %}notif-icon-resolved
+        {% elif 'sla' in notif.notification_type %}notif-icon-sla
+        {% elif 'comment' in notif.notification_type %}notif-icon-comment
+        {% else %}notif-icon-default{% endif %}">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           {% if 'created' in notif.notification_type %}
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -69,15 +65,15 @@
 
       {# Content #}
       <div class="flex-1 min-w-0">
-        {% if notif.link %}<a href="{{ notif.link }}" style="text-decoration: none; display: block;">{% endif %}
+        {% if notif.link %}<a href="{{ notif.link }}" class="notif-link">{% endif %}
         <div class="flex items-center gap-2 mb-0.5">
-          <p class="text-sm font-semibold" style="color: var(--text-primary);">{{ notif.title }}</p>
+          <p class="notif-title">{{ notif.title }}</p>
           {% if not notif.is_read %}
-          <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background-color: var(--color-emerald-500); flex-shrink: 0;"></span>
+          <span class="notif-dot" aria-label="Unread"></span>
           {% endif %}
         </div>
-        <p class="text-sm" style="color: var(--text-secondary);">{{ notif.message }}</p>
-        <p style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">{{ notif.created_at|naturaltime }}</p>
+        <p class="notif-message">{{ notif.message }}</p>
+        <p class="notif-time">{{ notif.created_at|naturaltime }}</p>
         {% if notif.link %}</a>{% endif %}
       </div>
 
@@ -85,7 +81,7 @@
       {% if not notif.is_read %}
       <form method="post" action="{% url 'notifications:mark-read' notif.pk %}" class="flex-shrink-0">
         {% csrf_token %}
-        <button type="submit" title="Mark as read" style="color: var(--text-muted); background: none; border: none; cursor: pointer; padding: 4px;">
+        <button type="submit" class="notif-mark-btn" title="Mark as read" aria-label="Mark as read">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
           </svg>
@@ -100,7 +96,7 @@
   {# Pagination #}
   {% if page_obj.has_other_pages %}
   <div class="flex items-center justify-between">
-    <span style="font-size: 13px; color: var(--text-muted);">
+    <span class="td-sub">
       {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }}
     </span>
     <div class="flex gap-2">
