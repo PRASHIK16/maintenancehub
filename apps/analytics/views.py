@@ -20,10 +20,28 @@ class AnalyticsOverviewView(ManagerRequiredMixin, View):
 
     def get(self, request):
         org = request.org
-        period = int(request.GET.get("period", 30))  # days
-        since = timezone.now() - timedelta(days=period)
 
-        base_qs = Ticket.objects.filter(organization=org, created_at__gte=since)
+        # Support custom date range OR period preset
+        date_from = request.GET.get("date_from")
+        date_to = request.GET.get("date_to")
+        if date_from and date_to:
+            try:
+                from datetime import datetime
+                since = timezone.make_aware(datetime.strptime(date_from, "%Y-%m-%d"))
+                until = timezone.make_aware(datetime.strptime(date_to, "%Y-%m-%d").replace(
+                    hour=23, minute=59, second=59
+                ))
+                period = None
+            except ValueError:
+                since = timezone.now() - timedelta(days=30)
+                until = timezone.now()
+                period = 30
+        else:
+            period = int(request.GET.get("period", 30))  # days
+            since = timezone.now() - timedelta(days=period)
+            until = timezone.now()
+
+        base_qs = Ticket.objects.filter(organization=org, created_at__gte=since, created_at__lte=until)
 
         # ── Summary metrics ──
         total = base_qs.count()
@@ -107,6 +125,16 @@ class AnalyticsOverviewView(ManagerRequiredMixin, View):
             ).filter(assigned__gt=0).order_by("-resolved")[:10]
         )
 
+        # ── Per-location breakdown ──
+        from apps.organizations.models import Location
+        location_breakdown = list(
+            base_qs.values("location__name")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:10]
+        )
+        location_names = [r["location__name"] or "Unknown" for r in location_breakdown]
+        location_counts = [r["count"] for r in location_breakdown]
+
         return render(request, "analytics/overview.html", {
             "period": period,
             "stats": {
@@ -124,6 +152,9 @@ class AnalyticsOverviewView(ManagerRequiredMixin, View):
             "by_category": json.dumps(by_category),
             "daily_trend": json.dumps(daily_trend),
             "staff_performance": staff_performance,
+            "by_location": json.dumps({"labels": location_names, "counts": location_counts}),
+            "filter_date_from": date_from or "",
+            "filter_date_to": date_to or "",
         })
 
 
