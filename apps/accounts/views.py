@@ -41,6 +41,11 @@ class LoginView(View):
             user = authenticate(request, email=email, password=password)
             if user is not None and user.is_active:
                 login(request, user)
+                # Extend session if "remember me" was checked (30 days)
+                if form.cleaned_data.get("remember_me"):
+                    request.session.set_expiry(60 * 60 * 24 * 30)
+                else:
+                    request.session.set_expiry(0)  # expires on browser close
                 next_url = request.GET.get("next", "")
                 if next_url and next_url.startswith("/"):
                     return redirect(next_url)
