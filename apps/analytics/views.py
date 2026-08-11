@@ -2,10 +2,11 @@
 MaintenanceHub — Analytics Views
 Charts, metrics, SLA reports, staff performance.
 """
+import csv
 import json
 from datetime import timedelta
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.db.models import Count, Avg, Q, F, ExpressionWrapper, DurationField
 from django.utils import timezone
@@ -170,3 +171,54 @@ class StatsPartialView(ManagerRequiredMixin, View):
                 "critical": critical,
             }
         })
+
+
+class AnalyticsExportView(ManagerRequiredMixin, View):
+    """Export analytics data as CSV download."""
+
+    def get(self, request):
+        org = request.org
+        period = request.GET.get("period", "30")
+
+        if period == "today":
+            since = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            period_label = "today"
+        else:
+            since = timezone.now() - timedelta(days=int(period))
+            period_label = f"last_{period}_days"
+
+        tickets = Ticket.objects.filter(
+            organization=org,
+            created_at__gte=since,
+        ).select_related("created_by", "assigned_to", "category", "location").order_by("-created_at")
+
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="analytics_{period_label}.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            "Ticket Number", "Title", "Status", "Priority", "Category",
+            "Location", "Created By", "Assigned To",
+            "Created At", "Resolved At", "SLA Response Due", "SLA Resolution Due",
+            "SLA Response Met", "SLA Resolution Met",
+        ])
+
+        for t in tickets:
+            writer.writerow([
+                t.ticket_number,
+                t.title,
+                t.get_status_display(),
+                t.get_priority_display(),
+                str(t.category) if t.category else "",
+                str(t.location) if t.location else "",
+                t.created_by.email if t.created_by else "",
+                t.assigned_to.email if t.assigned_to else "",
+                t.created_at.strftime("%Y-%m-%d %H:%M") if t.created_at else "",
+                t.resolved_at.strftime("%Y-%m-%d %H:%M") if t.resolved_at else "",
+                t.sla_response_due.strftime("%Y-%m-%d %H:%M") if t.sla_response_due else "",
+                t.sla_resolution_due.strftime("%Y-%m-%d %H:%M") if t.sla_resolution_due else "",
+                "Yes" if t.sla_response_met else ("No" if t.sla_response_met is False else ""),
+                "Yes" if t.sla_resolution_met else ("No" if t.sla_resolution_met is False else ""),
+            ])
+
+        return response
