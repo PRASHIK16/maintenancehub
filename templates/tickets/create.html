@@ -8,8 +8,7 @@
 
   {# Page header #}
   <div class="mb-6">
-    <a href="{% url 'dashboard:home' %}" class="flex items-center gap-1.5 mb-4 font-medium"
-       style="font-size: 13px; color: var(--text-secondary); text-decoration: none;">
+    <a href="{% url 'dashboard:home' %}" class="back-link mb-4" style="display:inline-flex;">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
       </svg>
@@ -59,11 +58,29 @@
           <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
           {{ form.priority }}
           {% if form.priority.errors %}<p class="form-error">{{ form.priority.errors.0 }}</p>{% endif %}
-          <div class="grid grid-cols-4 gap-2 mt-2 text-center" style="font-size: 11px; color: var(--text-muted);">
-            <div>🟢 Low<br><span style="font-size: 10px;">72h SLA</span></div>
-            <div>🟡 Medium<br><span style="font-size: 10px;">24h SLA</span></div>
-            <div>🟠 High<br><span style="font-size: 10px;">8h SLA</span></div>
-            <div>🔴 Critical<br><span style="font-size: 10px;">4h SLA</span></div>
+
+          {# SLA reference guide — no emoji, proper visual design #}
+          <div class="sla-guide">
+            <div class="sla-guide-item">
+              <span class="sla-guide-dot" style="background:#22c55e;"></span>
+              <span class="sla-guide-label">Low</span>
+              <span class="sla-guide-time">72h SLA</span>
+            </div>
+            <div class="sla-guide-item">
+              <span class="sla-guide-dot" style="background:#f59e0b;"></span>
+              <span class="sla-guide-label">Medium</span>
+              <span class="sla-guide-time">24h SLA</span>
+            </div>
+            <div class="sla-guide-item">
+              <span class="sla-guide-dot" style="background:#f97316;"></span>
+              <span class="sla-guide-label">High</span>
+              <span class="sla-guide-time">8h SLA</span>
+            </div>
+            <div class="sla-guide-item">
+              <span class="sla-guide-dot" style="background:#ef4444;"></span>
+              <span class="sla-guide-label">Critical</span>
+              <span class="sla-guide-time">4h SLA</span>
+            </div>
           </div>
         </div>
 
@@ -101,11 +118,12 @@
       <div class="card-body">
         <div class="upload-zone" data-upload-zone="ticket-file-upload"
              onclick="document.getElementById('ticket-file-upload').click()">
-          <svg class="w-8 h-8 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="color: var(--text-muted);">
+          <svg class="w-8 h-8 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"
+               style="color:var(--text-muted);">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
-          <p class="text-sm font-medium mb-1" style="color: var(--text-secondary);">Drop files here or click to browse</p>
-          <p style="font-size: 12px; color: var(--text-muted);">Images, PDF, Word &middot; Max 10 MB each</p>
+          <p class="text-sm font-medium mb-1" style="color:var(--text-secondary);">Drop files here or click to browse</p>
+          <p class="meta-row meta-row-sm" style="justify-content:center;">Images, PDF, Word &middot; Max 10 MB each</p>
           {{ form.attachments }}
         </div>
         <div id="ticket-file-upload-preview" class="mt-3 space-y-2"></div>
