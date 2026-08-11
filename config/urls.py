@@ -33,6 +33,9 @@ urlpatterns = [
     # REST API
     path("api/", include("apps.tickets.api_urls")),
     path("api/accounts/", include("apps.accounts.api_urls")),
+
+    # JWT Auth endpoints
+    path("api/auth/token/", include("apps.accounts.jwt_urls")),
 ]
 
 # Custom error handlers
