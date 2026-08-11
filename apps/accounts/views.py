@@ -11,11 +11,13 @@ from django.views import View
 from django.views.decorators.http import require_POST
 from django.utils.decorators import method_decorator
 from django.contrib.auth.forms import PasswordChangeForm
+from django_ratelimit.decorators import ratelimit
 
 from .models import User, UserRole
 from .forms import LoginForm, RegistrationForm, UserProfileForm
 
 
+@method_decorator(ratelimit(key="ip", rate="10/m", method="POST", block=True), name="post")
 class LoginView(View):
     """Email/password login with role-based redirect."""
     template_name = "auth/login.html"
@@ -64,6 +66,7 @@ class LogoutView(View):
         return redirect("core:landing")
 
 
+@method_decorator(ratelimit(key="ip", rate="5/h", method="POST", block=True), name="post")
 class RegisterView(View):
     """User self-registration (creates USER role by default)."""
     template_name = "auth/register.html"
