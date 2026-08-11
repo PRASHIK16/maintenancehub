@@ -35,7 +35,7 @@ def user_list(request):
     GET /api/accounts/users/  → list users in the same organization
     Managers and above only.
     """
-    if request.user.role not in ("manager", "admin", "super_admin"):
+    if request.user.role not in ("manager", "org_admin", "super_admin"):
         return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
     users = User.objects.filter(
