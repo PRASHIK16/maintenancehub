@@ -165,6 +165,16 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Kolkata"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    "check-sla-breaches-every-15-min": {
+        "task": "apps.notifications.tasks.check_sla_breaches",
+        "schedule": 60 * 15,  # every 15 minutes
+    },
+    "trigger-overdue-maintenance-daily": {
+        "task": "apps.maintenance.tasks.create_overdue_maintenance_tickets",
+        "schedule": 60 * 60 * 24,  # every 24 hours
+    },
+}
 
 # Email
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
