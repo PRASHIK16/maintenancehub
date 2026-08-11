@@ -10,311 +10,280 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 14px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #ffffff; color: #0f172a; line-height: 1.6; }
-    .fade-in { animation: fadeIn 0.6s ease forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .gradient-text { background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .feature-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
-    .feature-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.09); transform: translateY(-2px); }
-    .stat-number { font-variant-numeric: tabular-nums; letter-spacing: -0.04em; }
-    a { text-decoration: none; }
-    @media (max-width: 768px) {
-      #desktop-nav { display: none; }
-      #mobile-menu-btn { display: flex; }
-      #mobile-menu { display: none; }
-      #mobile-menu.open { display: flex; flex-direction: column; }
-    }
-    #mobile-menu-btn { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; }
-    @media (max-width: 480px) {
-      #features .feature-grid { grid-template-columns: 1fr !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
-<body>
+<body class="landing-page">
 
-  <!-- ================================================================
-       NAVBAR
-  ================================================================ -->
-  <header style="background-color: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid #f0f4f8; position: sticky; top: 0; z-index: 50;">
-    <div style="max-width: 1120px; margin: 0 auto; padding: 0 24px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; height: 60px;">
-
-        <!-- Logo -->
-        <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-          <div style="width: 32px; height: 32px; background-color: #059669; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(5,150,105,0.25);">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#ffffff" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-          </div>
-          <span style="font-size: 15px; font-weight: 700; color: #0f172a; letter-spacing: -0.02em;">MaintenanceHub</span>
-        </a>
-
-        <!-- Nav links (desktop) -->
-        <nav id="desktop-nav" style="display: flex; align-items: center; gap: 4px;">
-          <a href="#features" style="padding: 6px 14px; font-size: 13px; font-weight: 500; color: #64748b; border-radius: 6px; transition: color 0.15s;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Features</a>
-          <a href="#roles" style="padding: 6px 14px; font-size: 13px; font-weight: 500; color: #64748b; border-radius: 6px;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Who it's for</a>
-          <a href="#stats" style="padding: 6px 14px; font-size: 13px; font-weight: 500; color: #64748b; border-radius: 6px;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Results</a>
-        </nav>
-
-        <!-- CTA -->
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <a href="{% url 'accounts:login' %}" style="padding: 7px 16px; font-size: 13px; font-weight: 600; color: #475569; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff; transition: border-color 0.15s, color 0.15s; white-space: nowrap;" onmouseover="this.style.borderColor='#059669';this.style.color='#059669'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#475569'">Sign in</a>
-          <a href="{% url 'accounts:register' %}" style="padding: 7px 16px; font-size: 13px; font-weight: 600; color: #ffffff; background-color: #059669; border: 1px solid #059669; border-radius: 8px; white-space: nowrap; box-shadow: 0 1px 3px rgba(5,150,105,0.3); transition: background-color 0.15s;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'">Get started</a>
-          <button id="mobile-menu-btn" onclick="document.getElementById('mobile-menu').classList.toggle('open')" aria-label="Open menu">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#475569" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          </button>
+  <!-- ── NAVBAR ─────────────────────────────────────────────── -->
+  <header>
+    <nav class="landing-nav">
+      <a href="/" class="landing-nav-logo">
+        <div class="landing-nav-logo-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#ffffff" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
         </div>
+        <span class="landing-nav-logo-text">MaintenanceHub</span>
+      </a>
+
+      <div class="landing-nav-links" id="desktop-nav">
+        <a href="#features" class="landing-nav-link">Features</a>
+        <a href="#roles"    class="landing-nav-link">Who it's for</a>
+        <a href="#stats"    class="landing-nav-link">Results</a>
       </div>
+
+      <div class="landing-nav-actions">
+        <a href="{% url 'accounts:login' %}"    class="landing-btn-ghost">Sign in</a>
+        <a href="{% url 'accounts:register' %}" class="landing-btn-primary">Get started</a>
+        <button class="landing-mobile-btn" id="mobile-menu-btn"
+                onclick="document.getElementById('mobile-menu').classList.toggle('open')"
+                aria-label="Open menu">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#475569" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="landing-mobile-menu" id="mobile-menu">
+      <a href="#features" class="landing-mobile-menu-link" onclick="document.getElementById('mobile-menu').classList.remove('open')">Features</a>
+      <a href="#roles"    class="landing-mobile-menu-link" onclick="document.getElementById('mobile-menu').classList.remove('open')">Who it's for</a>
+      <a href="#stats"    class="landing-mobile-menu-link" onclick="document.getElementById('mobile-menu').classList.remove('open')">Results</a>
+      <a href="{% url 'accounts:login' %}"    class="landing-mobile-menu-link">Sign in</a>
+      <a href="{% url 'accounts:register' %}" class="landing-mobile-menu-cta">Get started</a>
     </div>
   </header>
 
-  <div id="mobile-menu" style="display:none; flex-direction:column; background:#fff; border-bottom:1px solid #e2e8f0; padding:12px 24px; gap:4px; position:sticky; top:60px; z-index:49;">
-    <a href="#features" onclick="document.getElementById('mobile-menu').classList.remove('open')" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Features</a>
-    <a href="#roles" onclick="document.getElementById('mobile-menu').classList.remove('open')" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Who it's for</a>
-    <a href="#stats" onclick="document.getElementById('mobile-menu').classList.remove('open')" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Results</a>
-    <a href="{% url 'accounts:login' %}" style="padding:10px 0;font-size:14px;font-weight:500;color:#475569;border-bottom:1px solid #f1f5f9;">Sign in</a>
-    <a href="{% url 'accounts:register' %}" style="margin-top:8px;padding:10px 16px;font-size:14px;font-weight:600;color:#fff;background:#059669;border-radius:8px;text-align:center;">Get started</a>
-  </div>
 
-  <!-- ================================================================
-       HERO
-  ================================================================ -->
-  <section style="padding: 80px 24px 72px; background-color: #ffffff; text-align: center;">
-    <div style="max-width: 760px; margin: 0 auto;">
+  <!-- ── HERO ──────────────────────────────────────────────── -->
+  <section class="landing-section" style="padding-bottom: 72px; text-align: center;">
+    <div class="landing-container-narrow fade-in">
 
-      <!-- Badge -->
-      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px; background-color: rgba(5,150,105,0.07); border: 1px solid rgba(5,150,105,0.2); margin-bottom: 32px;">
-        <span style="width: 6px; height: 6px; border-radius: 50%; background-color: #059669;"></span>
-        <span style="font-size: 12px; font-weight: 600; color: #059669; text-transform: uppercase; letter-spacing: 0.06em;">Premium Facility Operations Platform</span>
+      <div class="landing-badge">
+        <span class="landing-badge-dot"></span>
+        <span class="landing-badge-text">Premium Facility Operations Platform</span>
       </div>
 
-      <!-- Heading -->
-      <h1 style="font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; color: #0f172a; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 20px;">
+      <h1 class="landing-hero-title">
         Maintenance operations,<br>
-        <span class="gradient-text">done right.</span>
+        <span class="landing-gradient-text">done right.</span>
       </h1>
 
-      <!-- Subheading -->
-      <p style="font-size: 17px; color: #64748b; line-height: 1.65; max-width: 540px; margin: 0 auto 40px;">
-        From the first report to the final sign-off. MaintenanceHub gives your entire facility team one place to work — requesters, technicians, and managers.
+      <p class="landing-hero-sub">
+        From the first report to the final sign-off. MaintenanceHub gives your entire facility team
+        one place to work — requesters, technicians, and managers.
       </p>
 
-      <!-- CTAs -->
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-        <a href="{% url 'accounts:register' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 700; color: #ffffff; background-color: #059669; border-radius: 10px; box-shadow: 0 4px 14px rgba(5,150,105,0.35); transition: background-color 0.15s;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'">
+      <div class="landing-hero-actions">
+        <a href="{% url 'accounts:register' %}" class="landing-cta-primary">
           Start for free
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         </a>
-        <a href="{% url 'accounts:login' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 600; color: #475569; background-color: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 10px; transition: border-color 0.15s, color 0.15s;" onmouseover="this.style.borderColor='#059669';this.style.color='#059669'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#475569'">
+        <a href="{% url 'accounts:login' %}" class="landing-cta-ghost">
           Sign in to your account
         </a>
       </div>
 
-      <p style="margin-top: 32px; font-size: 12.5px; color: #94a3b8;">
+      <p class="landing-hero-trust">
         Trusted by facility teams at engineering colleges, campuses &amp; hostels
       </p>
     </div>
   </section>
 
-  <!-- Dashboard preview mockup -->
+
+  <!-- ── DASHBOARD PREVIEW ──────────────────────────────────── -->
   <section style="padding: 0 24px 80px; background-color: #ffffff;">
     <div style="max-width: 900px; margin: 0 auto;">
       <div style="border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.08);">
-        <!-- Fake window chrome -->
-        <div style="display: flex; align-items: center; gap: 6px; padding: 12px 16px; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #fca5a5;"></span>
-          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #fde68a;"></span>
-          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #a7f3d0;"></span>
-          <div style="flex: 1; margin: 0 12px; background-color: #e2e8f0; border-radius: 4px; height: 22px; display: flex; align-items: center; padding: 0 10px;">
-            <span style="font-size: 11px; color: #94a3b8;">maintenancehub.io/dashboard</span>
+        <!-- Window chrome -->
+        <div style="display:flex; align-items:center; gap:6px; padding:12px 16px; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#fca5a5;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#fde68a;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#a7f3d0;"></span>
+          <div style="flex:1;margin:0 12px;background:#e2e8f0;border-radius:4px;height:22px;display:flex;align-items:center;padding:0 10px;">
+            <span style="font-size:11px;color:#94a3b8;">maintenancehub.io/dashboard</span>
           </div>
         </div>
-        <!-- Mock dashboard — scrollable wrapper for narrow screens -->
-        <div style="overflow-x: auto;">
-        <!-- Mock dashboard KPIs -->
-        <div style="background-color: #f8fafc; padding: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; min-width: 560px;">
-          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Total Tickets</p>
-            <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">48</p>
-            <p style="font-size: 11px; color: #10b981; margin-top: 4px; font-weight: 600;">↑ 12% vs last month</p>
+        <!-- Mock KPIs -->
+        <div style="overflow-x:auto;">
+          <div style="background:#f8fafc;padding:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;min-width:560px;">
+            {% for kpi in kpi_preview|default:"" %}{% endfor %}
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
+              <p style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Total Tickets</p>
+              <p style="font-size:1.875rem;font-weight:700;color:#0f172a;letter-spacing:-.04em;line-height:1;">48</p>
+              <p style="font-size:11px;color:#10b981;margin-top:4px;font-weight:600;">&#8593; 12% vs last month</p>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
+              <p style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Open</p>
+              <p style="font-size:1.875rem;font-weight:700;color:#0f172a;letter-spacing:-.04em;line-height:1;">12</p>
+              <p style="font-size:11px;color:#64748b;margin-top:4px;font-weight:500;">4 critical</p>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
+              <p style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">SLA Compliance</p>
+              <p style="font-size:1.875rem;font-weight:700;color:#059669;letter-spacing:-.04em;line-height:1;">96%</p>
+              <p style="font-size:11px;color:#10b981;margin-top:4px;font-weight:600;">&#8593; 3% vs last month</p>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
+              <p style="font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Avg Resolution</p>
+              <p style="font-size:1.875rem;font-weight:700;color:#0f172a;letter-spacing:-.04em;line-height:1;">4.2h</p>
+              <p style="font-size:11px;color:#10b981;margin-top:4px;font-weight:600;">&#8595; 18 min faster</p>
+            </div>
           </div>
-          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Open</p>
-            <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">12</p>
-            <p style="font-size: 11px; color: #64748b; margin-top: 4px; font-weight: 500;">4 critical</p>
-          </div>
-          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">SLA Compliance</p>
-            <p style="font-size: 1.875rem; font-weight: 700; color: #059669; letter-spacing: -0.04em; line-height: 1;">96%</p>
-            <p style="font-size: 11px; color: #10b981; margin-top: 4px; font-weight: 600;">↑ 3% vs last month</p>
-          </div>
-          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <p style="font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">Avg Resolution</p>
-            <p style="font-size: 1.875rem; font-weight: 700; color: #0f172a; letter-spacing: -0.04em; line-height: 1;">4.2h</p>
-            <p style="font-size: 11px; color: #10b981; margin-top: 4px; font-weight: 600;">↓ 18 min faster</p>
+          <!-- Recent tickets -->
+          <div style="background:#f8fafc;padding:0 24px 24px;display:grid;grid-template-columns:2fr 1fr;gap:12px;min-width:560px;">
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid #f1f5f9;">
+                <p style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.06em;">Recent Tickets</p>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #f8fafc;">
+                <span style="font-size:12.5px;color:#475569;">Broken AC in Room 204</span>
+                <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#fef3c7;color:#b45309;">In Progress</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #f8fafc;">
+                <span style="font-size:12.5px;color:#475569;">Leaking pipe — Ground floor</span>
+                <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#dbeafe;color:#1d4ed8;">Assigned</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #f8fafc;">
+                <span style="font-size:12.5px;color:#475569;">Elevator out of service</span>
+                <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#fee2e2;color:#991b1b;">Critical</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;">
+                <span style="font-size:12.5px;color:#475569;">Door lock malfunction</span>
+                <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#d1fae5;color:#065f46;">Resolved</span>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
+              <p style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">By Priority</p>
+              {% for label, color, count in priority_preview|default:"" %}{% endfor %}
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#ef4444;"></div>
+                <span style="font-size:12px;color:#64748b;flex:1;">Critical</span>
+                <span style="font-size:12px;font-weight:700;color:#0f172a;">4</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#f97316;"></div>
+                <span style="font-size:12px;color:#64748b;flex:1;">High</span>
+                <span style="font-size:12px;font-weight:700;color:#0f172a;">11</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#f59e0b;"></div>
+                <span style="font-size:12px;color:#64748b;flex:1;">Medium</span>
+                <span style="font-size:12px;font-weight:700;color:#0f172a;">22</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#10b981;"></div>
+                <span style="font-size:12px;color:#64748b;flex:1;">Low</span>
+                <span style="font-size:12px;font-weight:700;color:#0f172a;">11</span>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- Recent tickets table row -->
-        <div style="background-color: #f8fafc; padding: 0 24px 24px; display: grid; grid-template-columns: 2fr 1fr; gap: 12px; min-width: 560px;">
-          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
-            <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9;">
-              <p style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.06em;">Recent Tickets</p>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f8fafc;">
-              <span style="font-size: 12.5px; color: #475569;">Broken AC in Room 204</span>
-              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #fef3c7; color: #b45309;">In Progress</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f8fafc;">
-              <span style="font-size: 12.5px; color: #475569;">Leaking pipe — Ground floor</span>
-              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #dbeafe; color: #1d4ed8;">Assigned</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f8fafc;">
-              <span style="font-size: 12.5px; color: #475569;">Elevator out of service</span>
-              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #fee2e2; color: #991b1b;">Critical</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px;">
-              <span style="font-size: 12.5px; color: #475569;">Door lock malfunction</span>
-              <span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background-color: #d1fae5; color: #065f46;">Resolved</span>
-            </div>
-          </div>
-          <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-            <p style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">By Priority</p>
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #ef4444;"></div>
-              <span style="font-size: 12px; color: #64748b; flex: 1;">Critical</span>
-              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">4</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #f97316;"></div>
-              <span style="font-size: 12px; color: #64748b; flex: 1;">High</span>
-              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">11</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #f59e0b;"></div>
-              <span style="font-size: 12px; color: #64748b; flex: 1;">Medium</span>
-              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">22</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #10b981;"></div>
-              <span style="font-size: 12px; color: #64748b; flex: 1;">Low</span>
-              <span style="font-size: 12px; font-weight: 700; color: #0f172a;">11</span>
-            </div>
-          </div>
-        </div>
-        </div>{# end overflow-x-auto #}
       </div>
     </div>
   </section>
 
 
-  <!-- ================================================================
-       STATS STRIP
-  ================================================================ -->
-  <section id="stats" style="padding: 72px 24px; background-color: #f8fafc; border-top: 1px solid #f0f4f8; border-bottom: 1px solid #f0f4f8;">
-    <div style="max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 48px; text-align: center;">
-      <div>
-        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #059669; line-height: 1;">60%</p>
-        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Avg. faster resolution</p>
-      </div>
-      <div>
-        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #0f172a; line-height: 1;">10+</p>
-        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Ticket lifecycle states</p>
-      </div>
-      <div>
-        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #0f172a; line-height: 1;">4h</p>
-        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Critical SLA target</p>
-      </div>
-      <div>
-        <p class="stat-number" style="font-size: 2.75rem; font-weight: 800; color: #0f172a; line-height: 1;">∞</p>
-        <p style="font-size: 13px; font-weight: 500; color: #64748b; margin-top: 6px;">Locations &amp; buildings</p>
+  <!-- ── STATS STRIP ────────────────────────────────────────── -->
+  <section id="stats" class="landing-section-sm" style="background:#f8fafc; border-top:1px solid #f0f4f8; border-bottom:1px solid #f0f4f8;">
+    <div class="landing-container">
+      <div class="landing-stats-grid">
+        <div class="landing-stat-item">
+          <div class="landing-stat-value">60%</div>
+          <div class="landing-stat-label">Avg. faster resolution</div>
+        </div>
+        <div class="landing-stat-item">
+          <div class="landing-stat-value" style="color:#0f172a;">10+</div>
+          <div class="landing-stat-label">Ticket lifecycle states</div>
+        </div>
+        <div class="landing-stat-item">
+          <div class="landing-stat-value" style="color:#0f172a;">4h</div>
+          <div class="landing-stat-label">Critical SLA target</div>
+        </div>
+        <div class="landing-stat-item">
+          <div class="landing-stat-value" style="color:#0f172a;">&infin;</div>
+          <div class="landing-stat-label">Locations &amp; buildings</div>
+        </div>
       </div>
     </div>
   </section>
 
 
-  <!-- ================================================================
-       FEATURES
-  ================================================================ -->
-  <section id="features" style="padding: 96px 24px; background-color: #ffffff;">
-    <div style="max-width: 1100px; margin: 0 auto;">
-
-      <div style="text-align: center; margin-bottom: 64px;">
-        <p style="font-size: 12px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Everything in one platform</p>
-        <h2 style="font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 800; color: #0f172a; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 14px;">
+  <!-- ── FEATURES ───────────────────────────────────────────── -->
+  <section id="features" class="landing-section" style="background:#fff;">
+    <div class="landing-container">
+      <div style="text-align:center; margin-bottom:64px;">
+        <p class="landing-section-label">Everything in one platform</p>
+        <h2 class="landing-section-title">
           Built for facility teams<br>that care about results.
         </h2>
-        <p style="font-size: 15px; color: #64748b; max-width: 480px; margin: 0 auto; line-height: 1.65;">
+        <p class="landing-section-sub" style="margin:0 auto;">
           Every workflow your operations team needs — from first complaint to resolved ticket.
         </p>
       </div>
 
-      <div class="feature-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <div class="landing-feature-grid">
 
-        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
             </svg>
           </div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Smart Ticket Management</h3>
-          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Priority triage, auto-assignment, SLA enforcement, and full audit trails — from submission to closure.</p>
+          <h3 class="landing-feature-title">Smart Ticket Management</h3>
+          <p class="landing-feature-desc">Priority triage, auto-assignment, SLA enforcement, and full audit trails — from submission to closure.</p>
         </div>
 
-        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
             </svg>
           </div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Kanban Board</h3>
-          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Drag-and-drop visual workflow for your operations team. See everything in flight at a glance.</p>
+          <h3 class="landing-feature-title">Kanban Board</h3>
+          <p class="landing-feature-desc">Drag-and-drop visual workflow for your operations team. See everything in flight at a glance.</p>
         </div>
 
-        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
           </div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Operations Analytics</h3>
-          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">MTTR, SLA compliance, resolution rates, team performance — actionable data for every decision.</p>
+          <h3 class="landing-feature-title">Operations Analytics</h3>
+          <p class="landing-feature-desc">MTTR, SLA compliance, resolution rates, team performance — actionable data for every decision.</p>
         </div>
 
-        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
             </svg>
           </div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Asset Tracking</h3>
-          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Track every asset by location, status, and maintenance history. Know what needs attention before it breaks.</p>
+          <h3 class="landing-feature-title">Asset Tracking</h3>
+          <p class="landing-feature-desc">Track every asset by location, status, and maintenance history. Know what needs attention before it breaks.</p>
         </div>
 
-        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
           </div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Hostel &amp; Location Management</h3>
-          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Hierarchical building → floor → room structure with resident profiles, bed assignments, and check-in records.</p>
+          <h3 class="landing-feature-title">Hostel &amp; Location Management</h3>
+          <p class="landing-feature-desc">Hierarchical building → floor → room structure with resident profiles, bed assignments, and check-in records.</p>
         </div>
 
-        <div class="feature-card" style="border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 44px; height: 44px; border-radius: 12px; background-color: rgba(5,150,105,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="1.75">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
           </div>
-          <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.01em;">Role-Based Access</h3>
-          <p style="font-size: 13.5px; color: #64748b; line-height: 1.6;">Fine-grained permissions for requesters, technicians, managers, and admins — everyone sees only what they need.</p>
+          <h3 class="landing-feature-title">Role-Based Access</h3>
+          <p class="landing-feature-desc">Fine-grained permissions for requesters, technicians, managers, and admins — everyone sees only what they need.</p>
         </div>
 
       </div>
@@ -322,59 +291,70 @@
   </section>
 
 
-  <!-- ================================================================
-       WHO IT'S FOR
-  ================================================================ -->
-  <section id="roles" style="padding: 96px 24px; background-color: #f8fafc;">
-    <div style="max-width: 1060px; margin: 0 auto;">
-
-      <div style="text-align: center; margin-bottom: 64px;">
-        <p style="font-size: 12px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Built for every role</p>
-        <h2 style="font-size: clamp(1.75rem, 3.5vw, 2.25rem); font-weight: 800; color: #0f172a; letter-spacing: -0.03em; line-height: 1.2;">
-          One platform, every perspective.
-        </h2>
+  <!-- ── WHO IT'S FOR ───────────────────────────────────────── -->
+  <section id="roles" class="landing-section" style="background:#f8fafc;">
+    <div class="landing-container">
+      <div style="text-align:center; margin-bottom:56px;">
+        <p class="landing-section-label">Built for every role</p>
+        <h2 class="landing-section-title">One platform, every perspective.</h2>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+      <div class="landing-role-grid">
 
-        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: #dbeafe; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+        <div class="landing-role-card">
+          <div class="landing-role-icon" style="background:#dbeafe;">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
           </div>
-          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Students &amp; Residents</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">Submit requests in seconds. Track real-time status. No more chasing emails or WhatsApp messages.</p>
+          <h3 class="landing-role-title">Students &amp; Residents</h3>
+          <ul class="landing-role-items">
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Submit requests in seconds</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Track real-time status</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>No more chasing emails</li>
+          </ul>
         </div>
 
-        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: #fef3c7; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+        <div class="landing-role-card">
+          <div class="landing-role-icon" style="background:#fef3c7;">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#b45309" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
             </svg>
           </div>
-          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Technicians</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">See your assigned queue, update status on the go, and never miss a critical SLA deadline.</p>
+          <h3 class="landing-role-title">Technicians</h3>
+          <ul class="landing-role-items">
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>See your assigned queue</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Update status on the go</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Never miss an SLA</li>
+          </ul>
         </div>
 
-        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: rgba(5,150,105,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+        <div class="landing-role-card">
+          <div class="landing-role-icon" style="background:rgba(5,150,105,0.1);">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
           </div>
-          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Operations Managers</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">Kanban visibility, SLA alerts, team performance dashboards, and workload balancing in real time.</p>
+          <h3 class="landing-role-title">Operations Managers</h3>
+          <ul class="landing-role-items">
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Kanban visibility</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>SLA alerts &amp; analytics</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Real-time workload view</li>
+          </ul>
         </div>
 
-        <div style="background-color: #ffffff; border: 1px solid #e8edf2; border-radius: 16px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="width: 36px; height: 36px; border-radius: 8px; background-color: #f3e8ff; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+        <div class="landing-role-card">
+          <div class="landing-role-icon" style="background:#f3e8ff;">
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#7e22ce" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
             </svg>
           </div>
-          <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Administrators</h3>
-          <p style="font-size: 13px; color: #64748b; line-height: 1.55;">Full control over organization settings, user roles, locations, assets, and maintenance schedules.</p>
+          <h3 class="landing-role-title">Administrators</h3>
+          <ul class="landing-role-items">
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Full org control</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Manage users &amp; roles</li>
+            <li class="landing-role-item"><span class="landing-role-item-dot"></span>Asset &amp; maintenance admin</li>
+          </ul>
         </div>
 
       </div>
@@ -382,70 +362,61 @@
   </section>
 
 
-  <!-- ================================================================
-       TESTIMONIAL
-  ================================================================ -->
-  <section style="padding: 96px 24px; background-color: #ffffff;">
-    <div style="max-width: 640px; margin: 0 auto; text-align: center;">
-      <div style="width: 48px; height: 48px; border-radius: 12px; background-color: rgba(5,150,105,0.08); margin: 0 auto 28px; display: flex; align-items: center; justify-content: center;">
+  <!-- ── TESTIMONIAL ────────────────────────────────────────── -->
+  <section class="landing-section" style="background:#fff;">
+    <div class="landing-container-narrow" style="text-align:center;">
+      <div style="width:48px;height:48px;border-radius:12px;background:rgba(5,150,105,0.08);margin:0 auto 28px;display:flex;align-items:center;justify-content:center;">
         <svg width="24" height="24" fill="#059669" viewBox="0 0 24 24">
           <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
         </svg>
       </div>
-      <blockquote style="font-size: 19px; font-weight: 500; color: #1e293b; line-height: 1.55; letter-spacing: -0.01em; margin-bottom: 28px; font-style: italic;">
-        "We moved from a WhatsApp group to MaintenanceHub and our resolution time dropped by 60% in the first month. The SLA dashboard alone is worth it."
+      <blockquote style="font-size:19px;font-weight:500;color:#1e293b;line-height:1.55;letter-spacing:-.01em;margin-bottom:28px;font-style:italic;">
+        "We moved from a WhatsApp group to MaintenanceHub and our resolution time dropped by 60% in the first month.
+        The SLA dashboard alone is worth it."
       </blockquote>
-      <p style="font-size: 13px; font-weight: 700; color: #0f172a;">Facility Manager</p>
-      <p style="font-size: 12px; color: #94a3b8; margin-top: 3px;">Engineering College, South India</p>
+      <p style="font-size:13px;font-weight:700;color:#0f172a;">Facility Manager</p>
+      <p style="font-size:12px;color:#94a3b8;margin-top:3px;">Engineering College, South India</p>
     </div>
   </section>
 
 
-  <!-- ================================================================
-       CTA BANNER
-  ================================================================ -->
-  <section style="padding: 72px 24px; background: linear-gradient(135deg, #059669 0%, #047857 100%);">
-    <div style="max-width: 680px; margin: 0 auto; text-align: center;">
-      <h2 style="font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; color: #ffffff; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 14px;">
-        Ready to modernize your facility?
-      </h2>
-      <p style="font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 36px; line-height: 1.65;">
-        Set up your organization in minutes. No credit card required.
-      </p>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-        <a href="{% url 'accounts:register' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 700; color: #059669; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transition: box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)'" onmouseout="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'">
-          Create your organization
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-        <a href="{% url 'accounts:login' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); border: 1.5px solid rgba(255,255,255,0.35); border-radius: 10px; transition: border-color 0.15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.7)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.35)'">
-          Sign in
-        </a>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ================================================================
-       FOOTER
-  ================================================================ -->
-  <footer style="padding: 40px 24px; background-color: #f8fafc; border-top: 1px solid #e8edf2;">
-    <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="width: 28px; height: 28px; background-color: #059669; border-radius: 7px; display: flex; align-items: center; justify-content: center;">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#ffffff" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
+  <!-- ── CTA BANNER ────────────────────────────────────────── -->
+  <section class="landing-section-sm" style="padding-left:24px;padding-right:24px;background:#f8fafc;">
+    <div class="landing-container">
+      <div class="landing-cta-banner">
+        <h2 class="landing-cta-title">Ready to modernize your facility?</h2>
+        <p class="landing-cta-sub">Set up your organization in minutes. No credit card required.</p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <a href="{% url 'accounts:register' %}" class="landing-cta-white">
+            Create your organization
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="{% url 'accounts:login' %}" style="display:inline-flex;align-items:center;gap:8px;padding:13px 24px;font-size:15px;font-weight:600;color:rgba(255,255,255,0.85);border:1.5px solid rgba(255,255,255,0.35);border-radius:10px;transition:border-color .15s;text-decoration:none;">
+            Sign in
+          </a>
         </div>
-        <span style="font-size: 13px; font-weight: 700; color: #0f172a;">MaintenanceHub</span>
       </div>
-      <p style="font-size: 12px; color: #94a3b8;">&copy; {% now "Y" %} MaintenanceHub. All rights reserved.</p>
-      <div style="display: flex; gap: 20px;">
-        <a href="{% url 'accounts:login' %}" style="font-size: 12px; color: #64748b;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Sign in</a>
-        <a href="{% url 'accounts:register' %}" style="font-size: 12px; color: #64748b;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#64748b'">Get started</a>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer class="landing-footer">
+    <div class="landing-footer-brand">
+      <div class="landing-nav-logo-icon" style="width:28px;height:28px;border-radius:7px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#ffffff" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
       </div>
+      MaintenanceHub
+    </div>
+    <p class="landing-footer-copy">&copy; {% now "Y" %} MaintenanceHub. All rights reserved.</p>
+    <div class="landing-footer-links">
+      <a href="{% url 'accounts:login' %}"    class="landing-footer-link">Sign in</a>
+      <a href="{% url 'accounts:register' %}" class="landing-footer-link">Get started</a>
     </div>
   </footer>
 
