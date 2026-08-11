@@ -1,0 +1,22 @@
+{% extends "emails/base_email.html" %}
+{% block title %}SLA BREACH: {{ ticket.ticket_number }}{% endblock %}
+{% block content %}
+<h1 style="color: #DC2626;">⚠ SLA Breach Alert</h1>
+<p>Hi {{ manager.display_name }},</p>
+<p>The following ticket has <strong>exceeded its SLA resolution deadline</strong> and requires immediate action.</p>
+
+<div class="ticket-card" style="border-color: #FCA5A5; background-color: #FEF2F2;">
+  <div class="label">Ticket Number</div>
+  <div class="value">{{ ticket.ticket_number }}</div>
+  <div class="label">Title</div>
+  <div class="value">{{ ticket.title }}</div>
+  <div class="label">Priority</div>
+  <div class="value">{{ ticket.get_priority_display }}</div>
+  <div class="label">SLA Deadline (Passed)</div>
+  <div class="value" style="color: #DC2626;">{{ ticket.sla_resolution_due|date:"N j, Y g:i A" }}</div>
+  <div class="label">Assigned To</div>
+  <div class="value">{{ ticket.assigned_to.display_name|default:"Unassigned" }}</div>
+</div>
+
+<a href="{{ site_url }}/dashboard/tickets/{{ ticket.pk }}/" class="btn" style="background-color: #DC2626;">Take Action →</a>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "emails/base_email.html" %}
+{% block title %}You received a rating — {{ ticket.ticket_number }}{% endblock %}
+{% block content %}
+<h1>Your work was rated</h1>
+<p>Hi {{ ticket.assigned_to.display_name }},</p>
+<p>The resident has submitted a satisfaction rating for ticket <strong>{{ ticket.ticket_number }}</strong>.</p>
+
+<div class="ticket-card">
+  <div class="label">Ticket</div>
+  <div class="value">{{ ticket.title }}</div>
+  <div class="label">Rating</div>
+  <div class="value">{{ ticket.rating }} / 5 ★</div>
+  {% if ticket.rating_comment %}
+  <div class="label">Comment</div>
+  <div class="value">{{ ticket.rating_comment }}</div>
+  {% endif %}
+</div>
+
+<a href="{{ site_url }}/dashboard/tickets/{{ ticket.pk }}/" class="btn">View Ticket →</a>
+{% endblock %}

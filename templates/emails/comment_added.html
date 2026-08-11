@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+{% block title %}New Comment on {{ ticket.ticket_number }}{% endblock %}
+{% block content %}
+<h1>New comment on your ticket</h1>
+<p>Hi {{ recipient.display_name }},</p>
+<p>{{ author.display_name }} has left a comment on ticket <strong>{{ ticket.ticket_number }}</strong>.</p>
+
+<div class="ticket-card">
+  <div class="label">Ticket</div>
+  <div class="value">{{ ticket.title }}</div>
+  <div class="label">Comment</div>
+  <div class="value">{{ comment.body|truncatechars:200 }}</div>
+</div>
+
+<a href="{{ site_url }}/dashboard/tickets/{{ ticket.pk }}/" class="btn">View Full Comment →</a>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Ticket Status Updated: {{ ticket.ticket_number }}{% endblock %}
+{% block content %}
+<h1>Ticket status updated</h1>
+<p>Hi {{ recipient.display_name }},</p>
+<p>The status of ticket <strong>{{ ticket.ticket_number }}</strong> has been updated by {{ actor.display_name }}.</p>
+
+<div class="ticket-card">
+  <div class="label">Ticket</div>
+  <div class="value">{{ ticket.title }}</div>
+  <div class="label">New Status</div>
+  <div class="value">{{ new_status }}</div>
+</div>
+
+<a href="{{ site_url }}/dashboard/tickets/{{ ticket.pk }}/" class="btn">View Ticket →</a>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Ticket Assigned: {{ ticket.ticket_number }}{% endblock %}
+{% block content %}
+<h1>A ticket has been assigned to you</h1>
+<p>Hi {{ assignee.display_name }},</p>
+<p>{{ assigner.display_name }} has assigned a maintenance ticket to you.</p>
+
+<div class="ticket-card">
+  <div class="label">Ticket Number</div>
+  <div class="value">{{ ticket.ticket_number }}</div>
+  <div class="label">Title</div>
+  <div class="value">{{ ticket.title }}</div>
+  <div class="label">Priority</div>
+  <div class="value">{{ ticket.get_priority_display }}</div>
+  <div class="label">SLA Deadline</div>
+  <div class="value">{{ ticket.sla_resolution_due|date:"N j, Y g:i A" }}</div>
+</div>
+
+<a href="{{ site_url }}/dashboard/tickets/{{ ticket.pk }}/" class="btn">Open Ticket →</a>
+{% endblock %}
