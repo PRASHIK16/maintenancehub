@@ -23,4 +23,8 @@ urlpatterns = [
     path("tickets/<int:pk>/comment/", views.AddCommentView.as_view(), name="ticket-comment"),
     path("tickets/<int:pk>/attachment/", views.UploadAttachmentView.as_view(), name="ticket-attachment"),
     path("tickets/<int:pk>/rate/", views.RateTicketView.as_view(), name="ticket-rate"),
+    path("tickets/<int:pk>/kanban-move/", views.KanbanMoveView.as_view(), name="kanban-move"),
+
+    # Bulk actions
+    path("tickets/bulk-action/", views.BulkTicketActionView.as_view(), name="bulk-action"),
 ]
