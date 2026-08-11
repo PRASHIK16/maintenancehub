@@ -158,6 +158,79 @@ class AnalyticsOverviewView(ManagerRequiredMixin, View):
         })
 
 
+class SLAReportView(ManagerRequiredMixin, View):
+    """
+    Detailed SLA compliance report broken down by priority and category.
+    Useful for identifying which ticket types are missing SLA targets.
+    """
+
+    def get(self, request):
+        org = request.org
+        period = int(request.GET.get("period", 30))
+        since = timezone.now() - timedelta(days=period)
+
+        base_qs = Ticket.objects.filter(
+            organization=org,
+            created_at__gte=since,
+            sla_resolution_met__isnull=False,
+        )
+
+        # SLA compliance by priority
+        by_priority = []
+        for priority_val, priority_label in [
+            ("critical", "Critical"), ("high", "High"),
+            ("medium", "Medium"), ("low", "Low"),
+        ]:
+            qs = base_qs.filter(priority=priority_val)
+            total = qs.count()
+            met = qs.filter(sla_resolution_met=True).count()
+            by_priority.append({
+                "priority": priority_label,
+                "total": total,
+                "met": met,
+                "missed": total - met,
+                "rate": round((met / total * 100) if total else 0, 1),
+            })
+
+        # SLA compliance by category (top 10)
+        by_category = []
+        cats = (
+            base_qs.exclude(category__isnull=True)
+            .values("category__name")
+            .annotate(
+                total=Count("id"),
+                met=Count("id", filter=Q(sla_resolution_met=True)),
+            )
+            .order_by("-total")[:10]
+        )
+        for row in cats:
+            total = row["total"]
+            met = row["met"]
+            by_category.append({
+                "category": row["category__name"],
+                "total": total,
+                "met": met,
+                "missed": total - met,
+                "rate": round((met / total * 100) if total else 0, 1),
+            })
+
+        # Overall numbers
+        total_overall = base_qs.count()
+        met_overall = base_qs.filter(sla_resolution_met=True).count()
+
+        return JsonResponse({
+            "period_days": period,
+            "overall": {
+                "total": total_overall,
+                "met": met_overall,
+                "missed": total_overall - met_overall,
+                "rate": round((met_overall / total_overall * 100) if total_overall else 0, 1),
+            },
+            "by_priority": by_priority,
+            "by_category": by_category,
+        })
+
+
 class RecurringIssuesView(ManagerRequiredMixin, View):
     """
     Identify recurring issues: tickets in the same location+category

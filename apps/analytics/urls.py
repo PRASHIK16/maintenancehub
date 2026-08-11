@@ -9,4 +9,5 @@ urlpatterns = [
     path("stats/", views.StatsPartialView.as_view(), name="stats"),
     path("export/", views.AnalyticsExportView.as_view(), name="export"),
     path("recurring/", views.RecurringIssuesView.as_view(), name="recurring"),
+    path("sla-report/", views.SLAReportView.as_view(), name="sla-report"),
 ]
