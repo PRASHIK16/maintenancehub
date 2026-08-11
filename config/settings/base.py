@@ -18,6 +18,10 @@ env = environ.Env(
 # Read .env file if it exists
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
+# Application metadata — used by /version/ endpoint and Sentry release tagging
+APP_VERSION = env("APP_VERSION", default="1.0.0")
+ENVIRONMENT = env("ENVIRONMENT", default="development")
+
 # Application definition
 DJANGO_APPS = [
     "django.contrib.admin",
