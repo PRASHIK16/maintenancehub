@@ -24,6 +24,7 @@ class LocationAdmin(admin.ModelAdmin):
 class TeamAdmin(admin.ModelAdmin):
     list_display = ["name", "organization", "color", "is_active"]
     list_filter = ["organization", "is_active"]
+    search_fields = ["name"]
 
 
 @admin.register(TeamMembership)
@@ -34,7 +35,7 @@ class TeamMembershipAdmin(admin.ModelAdmin):
 
 @admin.register(ResidentProfile)
 class ResidentProfileAdmin(admin.ModelAdmin):
-    list_display = ["user", "organization", "room_number", "block", "floor"]
-    list_filter = ["organization", "block"]
+    list_display = ["user", "organization", "room_number", "bed_number", "gender", "check_in_date"]
+    list_filter = ["organization", "gender"]
     search_fields = ["user__email", "user__first_name", "user__last_name", "room_number"]
-    raw_id_fields = ["user", "organization"]
+    raw_id_fields = ["user", "organization", "room"]
