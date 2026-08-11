@@ -26,6 +26,10 @@ bleach==6.2.0
 
 # Security
 django-ratelimit==4.1.0
+sentry-sdk==2.16.0
+
+# JWT Auth
+djangorestframework-simplejwt==5.3.1
 
 # Utils
 whitenoise==6.8.2
