@@ -568,8 +568,12 @@ class UploadAttachmentView(OrgRequiredMixin, View):
         if f.size > self.MAX_SIZE:
             return JsonResponse({"error": f"File too large. Maximum is 10 MB."}, status=400)
 
-        if f.content_type not in settings.ALLOWED_UPLOAD_TYPES:
-            return JsonResponse({"error": "File type not supported."}, status=400)
+        # Validate by magic bytes (not client-supplied MIME type)
+        try:
+            from apps.core.file_utils import validate_file_magic
+            detected_type = validate_file_magic(f)
+        except ValueError as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
         attachment = TicketAttachment.objects.create(
             ticket=ticket,
@@ -577,7 +581,7 @@ class UploadAttachmentView(OrgRequiredMixin, View):
             file=f,
             original_filename=f.name,
             file_size=f.size,
-            content_type=f.content_type,
+            content_type=detected_type,  # Use validated type, not client-supplied
             is_evidence=request.POST.get("is_evidence", "false") == "true",
         )
 
