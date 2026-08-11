@@ -5,8 +5,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Ticket, TicketComment
-from .serializers import TicketListSerializer, TicketDetailSerializer, TicketCommentSerializer
+from .models import Ticket, TicketComment, TicketActivity
+from .serializers import (TicketListSerializer, TicketDetailSerializer,
+                          TicketCommentSerializer, TicketActivitySerializer)
 
 # Valid sort fields exposed via the API
 TICKET_SORT_FIELDS = {
@@ -160,8 +161,31 @@ def ticket_comments(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def ticket_activity(request, pk):
+    """
+    GET /api/tickets/<pk>/activity/
+    Returns the full activity timeline for a ticket.
+    Only accessible to staff/manager/admin or the ticket creator.
+    """
+    try:
+        ticket = Ticket.objects.get(pk=pk, organization=request.user.organization)
+    except Ticket.DoesNotExist:
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Residents can only see their own ticket's timeline
+    if request.user.role == "user" and ticket.created_by_id != request.user.pk:
+        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    activities = TicketActivity.objects.filter(ticket=ticket).order_by("created_at")
+    serializer = TicketActivitySerializer(activities, many=True)
+    return Response({"ticket_number": ticket.ticket_number, "activity": serializer.data})
+
+
 urlpatterns = [
     path("tickets/", ticket_list_create, name="api-ticket-list"),
     path("tickets/<int:pk>/", ticket_detail, name="api-ticket-detail"),
     path("tickets/<int:pk>/comments/", ticket_comments, name="api-ticket-comments"),
+    path("tickets/<int:pk>/activity/", ticket_activity, name="api-ticket-activity"),
 ]
