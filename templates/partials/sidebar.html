@@ -21,8 +21,7 @@
       <span class="sidebar-logo-name">MaintenanceHub</span>
     </div>
     {# Mobile close button #}
-    <button class="md:hidden p-1.5 rounded-md transition-colors flex items-center justify-center"
-            style="color: var(--text-muted); margin-left: auto;"
+    <button class="sidebar-close-btn md:hidden"
             onclick="document.getElementById('sidebar').classList.remove('open');
                      document.getElementById('sidebar-overlay').classList.add('hidden')"
             aria-label="Close navigation">
@@ -34,7 +33,7 @@
 
   {# ── Org name (when set) ──────────────────────────────────────── #}
   {% if user_org %}
-  <div class="px-4 py-2" style="border-bottom: 1px solid var(--border-subtle);">
+  <div class="sidebar-org-strip">
     <p class="text-xs truncate font-medium" style="color: var(--text-muted);">{{ user_org.name }}</p>
   </div>
   {% endif %}
@@ -164,9 +163,7 @@
   {# ── User Footer ───────────────────────────────────────────────── #}
   <div class="sidebar-footer">
     <div class="sidebar-user">
-      <div class="avatar-emerald flex-shrink-0 select-none"
-           style="width: 28px; height: 28px; font-size: 11px;"
-           aria-hidden="true">
+      <div class="avatar-emerald avatar-sm flex-shrink-0 select-none" aria-hidden="true">
         {{ user.initials }}
       </div>
       <div class="flex-1 min-w-0">

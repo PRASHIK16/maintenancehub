@@ -19,19 +19,13 @@
     <nav class="hidden md:flex items-center gap-1" aria-label="Breadcrumb">
       {% for crumb in breadcrumbs %}
         {% if not forloop.last %}
-          <a href="{{ crumb.url }}"
-             class="text-xs transition-colors truncate max-w-[140px]"
-             style="color: var(--text-muted); text-decoration: none;">
-            {{ crumb.label }}
-          </a>
-          <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor" stroke-width="2.5" style="color: var(--text-muted);">
+          <a href="{{ crumb.url }}" class="breadcrumb-link">{{ crumb.label }}</a>
+          <svg class="w-3 h-3 flex-shrink-0 breadcrumb-sep" fill="none" viewBox="0 0 24 24"
+               stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
         {% else %}
-          <span class="text-xs font-semibold truncate max-w-[220px]" style="color: var(--text-primary);">
-            {{ crumb.label }}
-          </span>
+          <span class="breadcrumb-current">{{ crumb.label }}</span>
         {% endif %}
       {% endfor %}
     </nav>
@@ -44,9 +38,8 @@
   {# ── CENTRE: Global search ───────────────────────────────────────── #}
   <div class="flex-1 flex justify-center px-3">
     <div class="relative w-full max-w-[480px]">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none"
-           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-           style="color: var(--text-muted);">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none topbar-search-icon"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
       </svg>
 
@@ -66,18 +59,14 @@
 
       <span id="search-spinner"
             class="htmx-indicator absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-        <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"
-             style="color: var(--text-muted);">
+        <svg class="w-3.5 h-3.5 animate-spin topbar-search-icon" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
           <path class="opacity-75" fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
         </svg>
       </span>
 
-      <div id="search-results"
-           class="absolute left-0 right-0 top-full mt-1.5 z-50 rounded-lg shadow-xl overflow-hidden empty:hidden"
-           style="background-color: var(--bg-card); border: 1px solid var(--border-card);">
-      </div>
+      <div id="search-results" class="topbar-search-results"></div>
     </div>
   </div>
 
@@ -110,20 +99,13 @@
                    .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
         </svg>
         {% if unread_notifications_count %}
-        <span class="absolute -top-0.5 -right-0.5 flex items-center justify-center rounded-full
-                     font-bold leading-none"
-              style="min-width: 16px; height: 16px; font-size: 9px; padding: 0 3px;
-                     background-color: #ef4444; color: #ffffff;">
+        <span class="notif-badge" aria-label="{{ unread_notifications_count }} unread notifications">
           {% if unread_notifications_count > 9 %}9+{% else %}{{ unread_notifications_count }}{% endif %}
         </span>
         {% endif %}
       </button>
 
-      <div id="notifications-panel"
-           class="hidden absolute right-0 mt-2 overflow-y-auto rounded-xl shadow-xl z-50"
-           style="background-color: var(--bg-card); border: 1px solid var(--border-card);
-                  width: min(384px, calc(100vw - 16px)); max-height: 480px;">
-      </div>
+      <div id="notifications-panel" class="notif-panel hidden"></div>
     </div>
 
     {# Theme toggle #}
@@ -145,8 +127,8 @@
     {# User avatar #}
     {% with user=request.user %}
     <a href="{% url 'accounts:profile' %}"
-       class="avatar-emerald flex-shrink-0 select-none"
-       style="width: 28px; height: 28px; font-size: 11px; text-decoration: none;"
+       class="avatar-emerald avatar-sm flex-shrink-0 select-none"
+       style="text-decoration: none;"
        title="{{ user.display_name }}"
        aria-label="Your profile">
       {{ user.initials }}

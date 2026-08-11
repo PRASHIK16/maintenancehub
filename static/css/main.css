@@ -2784,6 +2784,69 @@ input[type="search"]::-webkit-search-cancel-button {
 .card-danger-header { border-color: #FECACA !important; }
 .card-danger-title  { color: #DC2626; }
 
+/* ─── 41  SIDEBAR & TOPBAR UTILITIES ────────────────────────────────────────── */
+
+/* Small avatar (28×28) — used in sidebar footer and topbar */
+.avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+
+/* Sidebar mobile close button */
+.sidebar-close-btn {
+  color: var(--text-muted); margin-left: auto;
+  padding: 6px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  transition: color var(--t-fast);
+}
+.sidebar-close-btn:hover { color: var(--text-secondary); }
+
+/* Sidebar org strip */
+.sidebar-org-strip {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Breadcrumb links in topbar */
+.breadcrumb-link {
+  font-size: var(--text-xs); color: var(--text-muted);
+  text-decoration: none; transition: color var(--t-fast);
+  max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.breadcrumb-link:hover { color: var(--text-secondary); }
+.breadcrumb-sep     { color: var(--text-muted); }
+.breadcrumb-current {
+  font-size: var(--text-xs); font-weight: 600; color: var(--text-primary);
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Search input icon / spinner */
+.topbar-search-icon { color: var(--text-muted); }
+
+/* Search results dropdown */
+.topbar-search-results {
+  position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px; z-index: 50;
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); overflow: hidden;
+  background-color: var(--bg-card); border: 1px solid var(--border-card);
+}
+.topbar-search-results:empty { display: none; }
+
+/* Notification badge */
+.notif-badge {
+  position: absolute; top: -2px; right: -2px;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; border-radius: 999px;
+  font-size: 9px; font-weight: 700; line-height: 1;
+  padding: 0 3px;
+  background-color: #EF4444; color: #FFFFFF;
+}
+
+/* Notifications panel */
+.notif-panel {
+  position: absolute; right: 0; margin-top: 8px; z-index: 50;
+  width: min(384px, calc(100vw - 16px)); max-height: 480px;
+  overflow-y: auto; border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);
+  background-color: var(--bg-card); border: 1px solid var(--border-card);
+}
+
 /* ─── 34  PRINT ──────────────────────────────────────────────────────────────── */
 @media print {
   .sidebar,
