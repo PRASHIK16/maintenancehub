@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from apps.accounts.mixins import OrgRequiredMixin, ManagerRequiredMixin
 from .models import Asset, AssetStatus
+from .forms import AssetForm
 
 
 class AssetListView(OrgRequiredMixin, ListView):
@@ -65,43 +66,22 @@ class AssetDetailView(OrgRequiredMixin, View):
 
 
 class AssetCreateView(ManagerRequiredMixin, View):
-    """Create a new asset (managers and above)."""
+    """Create a new asset using AssetForm (managers and above)."""
     template_name = "assets/form.html"
 
     def get(self, request):
-        from apps.organizations.models import Location
-        locations = Location.objects.filter(
-            organization=request.user.organization, is_active=True
-        )
-        return render(request, self.template_name, {"locations": locations, "action": "Create"})
+        form = AssetForm(organization=request.user.organization)
+        return render(request, self.template_name, {"form": form, "action": "Create"})
 
     def post(self, request):
-        from apps.organizations.models import Location
-        try:
-            asset = Asset.objects.create(
-                organization=request.user.organization,
-                asset_code=request.POST["asset_code"],
-                name=request.POST["name"],
-                asset_type=request.POST["asset_type"],
-                brand=request.POST.get("brand", ""),
-                model_number=request.POST.get("model_number", ""),
-                serial_number=request.POST.get("serial_number", ""),
-                location_id=request.POST.get("location") or None,
-                status=request.POST.get("status", AssetStatus.ACTIVE),
-                purchase_date=request.POST.get("purchase_date") or None,
-                warranty_expiry=request.POST.get("warranty_expiry") or None,
-                notes=request.POST.get("notes", ""),
-            )
+        form = AssetForm(request.POST, organization=request.user.organization)
+        if form.is_valid():
+            asset = form.save(commit=False)
+            asset.organization = request.user.organization
+            asset.save()
             messages.success(request, f"Asset '{asset.name}' created successfully.")
             return redirect("assets:detail", pk=asset.pk)
-        except Exception as e:
-            messages.error(request, f"Error creating asset: {e}")
-            locations = Location.objects.filter(
-                organization=request.user.organization, is_active=True
-            )
-            return render(request, self.template_name, {
-                "locations": locations, "action": "Create", "post_data": request.POST
-            })
+        return render(request, self.template_name, {"form": form, "action": "Create"})
 
 
 class AssetEditView(ManagerRequiredMixin, View):
