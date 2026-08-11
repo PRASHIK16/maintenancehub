@@ -8,10 +8,11 @@
 <div class="space-y-6 fade-in">
 
   {# Page header #}
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div class="page-intro" style="margin-bottom: 0;">
+  <div class="page-header-strip">
+    <div class="page-intro" style="margin-bottom:0;">
       <h1 class="page-intro-title">
-        {% if current_hour < "12" %}Good morning{% elif current_hour < "18" %}Good afternoon{% else %}Good evening{% endif %}, {{ request.user.display_name }}
+        {% if current_hour < "12" %}Good morning{% elif current_hour < "18" %}Good afternoon{% else %}Good evening{% endif %},
+        {{ request.user.display_name }}
       </h1>
       <p class="page-intro-sub">Track and manage your maintenance requests.</p>
     </div>
@@ -25,93 +26,95 @@
 
   {# KPI strip #}
   <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+
     <div class="stat-card">
       <div class="stat-card-label">Open</div>
-      <div class="stat-card-value tabular-nums" style="color: #2563eb;">{{ stats.open }}</div>
+      <div class="stat-card-value tabular-nums stat-value-blue">{{ stats.open }}</div>
       <div class="stat-card-meta">Submitted</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">In Progress</div>
-      <div class="stat-card-value tabular-nums" style="color: #d97706;">{{ stats.in_progress }}</div>
+      <div class="stat-card-value tabular-nums stat-value-amber">{{ stats.in_progress }}</div>
       <div class="stat-card-meta">Being worked on</div>
     </div>
-    <div class="stat-card" style="{% if stats.awaiting_verification %}border-left: 3px solid #7c3aed;{% endif %}">
+
+    <div class="stat-card {% if stats.awaiting_verification %}stat-card-accent-purple{% endif %}">
       <div class="stat-card-label">Verify</div>
-      <div class="stat-card-value tabular-nums" style="{% if stats.awaiting_verification %}color: #7c3aed;{% endif %}">{{ stats.awaiting_verification }}</div>
+      <div class="stat-card-value tabular-nums {% if stats.awaiting_verification %}stat-value-purple{% endif %}">
+        {{ stats.awaiting_verification }}
+      </div>
       <div class="stat-card-meta">Awaiting your approval</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">Resolved</div>
-      <div class="stat-card-value tabular-nums" style="color: var(--color-emerald-600);">{{ stats.resolved }}</div>
+      <div class="stat-card-value tabular-nums stat-value-brand">{{ stats.resolved }}</div>
       <div class="stat-card-meta">Completed</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">Total</div>
       <div class="stat-card-value tabular-nums">{{ stats.total }}</div>
       <div class="stat-card-meta">All time</div>
     </div>
+
   </div>
 
   {# Active tickets #}
   <div class="card">
     <div class="card-header">
       <p class="card-title">Your Active Requests</p>
-      <a href="{% url 'dashboard:my-tickets' %}" class="text-sm font-medium" style="color: var(--color-emerald-600);">
-        All tickets →
-      </a>
+      <a href="{% url 'dashboard:my-tickets' %}" class="nav-link-brand">All tickets →</a>
     </div>
 
     {% if tickets %}
     <div>
       {% for ticket in tickets %}
-      <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
-         class="flex items-start gap-4 px-5 py-4 transition-colors"
-         style="border-bottom: 1px solid var(--border-subtle); display: flex; text-decoration: none; color: inherit;">
+      <a href="{% url 'dashboard:ticket-detail' ticket.pk %}" class="ticket-item">
 
         {# Priority colour bar #}
-        <div class="flex-shrink-0 self-stretch" style="width: 3px; border-radius: 2px; background-color:
-          {% if ticket.priority == 'critical' %}#ef4444
-          {% elif ticket.priority == 'high' %}#f97316
-          {% elif ticket.priority == 'medium' %}#f59e0b
-          {% else %}#22c55e{% endif %}; min-height: 20px;">
-        </div>
+        <div class="priority-bar priority-bar-{{ ticket.priority }}"></div>
 
         {# Content #}
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-sm mb-1" style="color: var(--text-primary);">{{ ticket.title }}</p>
-              <div class="flex items-center gap-3 flex-wrap" style="color: var(--text-muted); font-size: 12px;">
+        <div class="ticket-item-body">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+            <div style="flex:1; min-width:0;">
+              <p class="ticket-item-title">{{ ticket.title }}</p>
+              <div class="ticket-item-meta">
                 <span class="ticket-num">{{ ticket.ticket_number }}</span>
                 {% if ticket.location %}
-                <span>📍 {{ ticket.location.name }}</span>
+                <span class="meta-item">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  {{ ticket.location.name }}
+                </span>
                 {% endif %}
-                {% if ticket.category %}
-                <span>{{ ticket.category.name }}</span>
-                {% endif %}
+                {% if ticket.category %}<span>{{ ticket.category.name }}</span>{% endif %}
               </div>
             </div>
-            <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0;">
               <span class="badge badge-{{ ticket.status|cut:'_' }}">{{ ticket.get_status_display }}</span>
               <span class="badge badge-priority-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span>
             </div>
           </div>
 
-          <div class="flex items-center justify-between mt-2" style="font-size: 12px; color: var(--text-muted);">
-            <span>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
+            <span class="assignee-line">
               {% if ticket.assigned_to %}
-                Handled by <strong style="color: var(--text-secondary); font-weight: 500;">{{ ticket.assigned_to.display_name }}</strong>
+                Handled by <span class="assignee-name">{{ ticket.assigned_to.display_name }}</span>
               {% else %}
                 Awaiting assignment
               {% endif %}
             </span>
-            <span>{{ ticket.created_at|naturaltime }}</span>
+            <span class="meta-row meta-row-sm">{{ ticket.created_at|naturaltime }}</span>
           </div>
 
           {# Verification callout #}
           {% if ticket.status == 'verification_pending' %}
-          <div class="mt-2 flex items-center gap-2"
-               style="font-size: 12px; color: #6d28d9; background-color: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 6px 12px;">
+          <div class="verify-callout">
             <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
@@ -119,6 +122,7 @@
           </div>
           {% endif %}
         </div>
+
       </a>
       {% endfor %}
     </div>
@@ -132,7 +136,7 @@
       </div>
       <p class="empty-state-title">All clear!</p>
       <p class="empty-state-desc">You have no active maintenance requests right now.</p>
-      <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-primary" style="margin-top: 16px;">
+      <a href="{% url 'dashboard:create-ticket' %}" class="btn btn-primary" style="margin-top:16px;">
         Report an Issue
       </a>
     </div>
