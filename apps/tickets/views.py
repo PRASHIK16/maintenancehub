@@ -715,6 +715,41 @@ class SearchView(OrgRequiredMixin, View):
         return JsonResponse({"results": results})
 
 
+class DeleteCommentView(OrgRequiredMixin, View):
+    """Soft-delete a comment. Only the author or a manager+ can delete."""
+
+    def post(self, request, pk, comment_pk):
+        ticket = get_object_or_404(Ticket, pk=pk, organization=request.org)
+        comment = get_object_or_404(TicketComment, pk=comment_pk, ticket=ticket)
+
+        can_delete = (
+            comment.author == request.user or
+            request.user.role in (UserRole.MANAGER, UserRole.ORG_ADMIN, UserRole.SUPER_ADMIN)
+        )
+        if not can_delete:
+            if request.headers.get("HX-Request"):
+                return HttpResponse('<span class="text-red-600 text-sm">Permission denied</span>', status=403)
+            messages.error(request, "You cannot delete this comment.")
+            return redirect("dashboard:ticket-detail", pk=pk)
+
+        comment.soft_delete(user=request.user)
+        TicketActivity.create(
+            ticket=ticket,
+            actor=request.user,
+            activity_type=ActivityType.COMMENT_ADDED,
+            description="Comment deleted",
+            metadata={"comment_pk": comment_pk},
+        )
+        AuditLog.log(request, AuditAction.COMMENT_ADD, ticket,
+                     old_value={"comment_pk": comment_pk, "deleted": True})
+
+        if request.headers.get("HX-Request"):
+            return HttpResponse('<p class="text-sm italic" style="color:var(--text-muted);">[Comment deleted]</p>')
+
+        messages.success(request, "Comment deleted.")
+        return redirect("dashboard:ticket-detail", pk=pk)
+
+
 class BulkTicketActionView(ManagerRequiredMixin, View):
     """
     Bulk action endpoint for the ticket list.

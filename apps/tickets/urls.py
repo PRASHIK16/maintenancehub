@@ -24,6 +24,8 @@ urlpatterns = [
     path("tickets/<int:pk>/attachment/", views.UploadAttachmentView.as_view(), name="ticket-attachment"),
     path("tickets/<int:pk>/rate/", views.RateTicketView.as_view(), name="ticket-rate"),
     path("tickets/<int:pk>/kanban-move/", views.KanbanMoveView.as_view(), name="kanban-move"),
+    path("tickets/<int:pk>/comments/<int:comment_pk>/delete/",
+         views.DeleteCommentView.as_view(), name="comment-delete"),
 
     # Bulk actions
     path("tickets/bulk-action/", views.BulkTicketActionView.as_view(), name="bulk-action"),
