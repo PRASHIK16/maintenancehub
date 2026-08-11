@@ -30,26 +30,31 @@
       <div class="stat-card-value tabular-nums">{{ stats.total|intcomma }}</div>
       <div class="stat-card-meta">All tickets</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">Resolved</div>
-      <div class="stat-card-value tabular-nums" style="color: var(--color-emerald-600);">{{ stats.closed|intcomma }}</div>
+      <div class="stat-card-value tabular-nums stat-value-brand">{{ stats.closed|intcomma }}</div>
       <div class="stat-card-meta">Closed tickets</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">Resolution Rate</div>
-      <div class="stat-card-value tabular-nums" style="color: #2563eb;">{{ stats.resolution_rate }}%</div>
+      <div class="stat-card-value tabular-nums stat-value-blue">{{ stats.resolution_rate }}%</div>
       <div class="stat-card-meta">Of all tickets</div>
     </div>
-    <div class="stat-card" style="{% if stats.overdue %}border-left: 3px solid #ef4444;{% endif %}">
+
+    <div class="stat-card {% if stats.overdue %}stat-card-accent-danger{% endif %}">
       <div class="stat-card-label">SLA Breached</div>
-      <div class="stat-card-value tabular-nums" style="{% if stats.overdue %}color: #dc2626;{% endif %}">{{ stats.overdue|intcomma }}</div>
+      <div class="stat-card-value tabular-nums {% if stats.overdue %}stat-value-danger{% endif %}">{{ stats.overdue|intcomma }}</div>
       <div class="stat-card-meta">Overdue tickets</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">SLA Compliance</div>
-      <div class="stat-card-value tabular-nums" style="color: #d97706;">{{ stats.sla_rate }}%</div>
+      <div class="stat-card-value tabular-nums stat-value-amber">{{ stats.sla_rate }}%</div>
       <div class="stat-card-meta">Within SLA</div>
     </div>
+
     <div class="stat-card">
       <div class="stat-card-label">Avg Resolution</div>
       <div class="stat-card-value tabular-nums">
@@ -125,28 +130,28 @@
               <div class="flex items-center gap-3">
                 <div class="avatar-emerald">{{ staff.initials }}</div>
                 <div>
-                  <p class="text-sm font-medium" style="color: var(--text-primary);">{{ staff.display_name }}</p>
-                  <p style="font-size: 11px; color: var(--text-muted);">{{ staff.get_role_display }}</p>
+                  <p class="text-sm font-medium">{{ staff.display_name }}</p>
+                  <p class="td-sub">{{ staff.get_role_display }}</p>
                 </div>
               </div>
             </td>
             <td data-label="Assigned" class="text-center tabular-nums text-sm">{{ staff.assigned }}</td>
-            <td data-label="Resolved" class="text-center tabular-nums text-sm" style="color: var(--color-emerald-600);">{{ staff.resolved }}</td>
+            <td data-label="Resolved" class="text-center tabular-nums text-sm stat-value-brand">{{ staff.resolved }}</td>
             <td data-label="Rate" class="text-center">
               {% if staff.assigned > 0 %}
               {% widthratio staff.resolved staff.assigned 100 as rate %}
-              <span class="text-sm font-semibold" style="color: {% if rate >= 80 %}#16a34a{% elif rate >= 50 %}#d97706{% else %}#dc2626{% endif %};">
+              <span class="text-sm font-semibold {% if rate >= 80 %}stat-value-green{% elif rate >= 50 %}stat-value-amber{% else %}stat-value-danger{% endif %}">
                 {{ rate }}%
               </span>
               {% else %}
-              <span style="color: var(--text-muted);">—</span>
+              <span class="td-sub">—</span>
               {% endif %}
             </td>
             <td data-label="Performance">
               {% if staff.assigned > 0 %}
               {% widthratio staff.resolved staff.assigned 100 as rate %}
               <div class="w-full h-2 rounded-full" style="background-color: var(--bg-subtle);">
-                <div class="h-2 rounded-full" style="width: {{ rate }}%; background-color: {% if rate >= 80 %}#22c55e{% elif rate >= 50 %}#f59e0b{% else %}#ef4444{% endif %};"></div>
+                <div class="h-2 rounded-full {% if rate >= 80 %}perf-bar-good{% elif rate >= 50 %}perf-bar-mid{% else %}perf-bar-bad{% endif %}" style="width: {{ rate }}%;"></div>
               </div>
               {% endif %}
             </td>
