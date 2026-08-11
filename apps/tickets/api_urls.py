@@ -68,8 +68,8 @@ def ticket_detail(request, pk):
         serializer = TicketDetailSerializer(ticket, context={"request": request})
         return Response(serializer.data)
 
-    # PATCH — only staff/manager/admin
-    if request.user.role not in ("staff", "manager", "admin"):
+    # PATCH — only staff/manager/org_admin (matches UserRole values)
+    if request.user.role not in ("staff", "manager", "org_admin", "super_admin"):
         return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
     serializer = TicketDetailSerializer(
