@@ -158,6 +158,65 @@ class AnalyticsOverviewView(ManagerRequiredMixin, View):
         })
 
 
+class StaffWorkloadView(ManagerRequiredMixin, View):
+    """
+    Per-staff workload report: assigned vs resolved tickets and avg resolution time.
+    Exposed as JSON for charting in the analytics dashboard.
+    """
+
+    def get(self, request):
+        from apps.accounts.models import User, UserRole
+        org = request.org
+        period = int(request.GET.get("period", 30))
+        since = timezone.now() - timedelta(days=period)
+
+        staff = (
+            User.objects.filter(
+                organization=org,
+                role__in=[UserRole.STAFF, UserRole.MANAGER],
+            )
+            .annotate(
+                assigned=Count(
+                    "assigned_tickets",
+                    filter=Q(assigned_tickets__created_at__gte=since),
+                ),
+                resolved=Count(
+                    "assigned_tickets",
+                    filter=Q(
+                        assigned_tickets__created_at__gte=since,
+                        assigned_tickets__status__in=["closed", "resolved"],
+                    ),
+                ),
+                overdue=Count(
+                    "assigned_tickets",
+                    filter=Q(
+                        assigned_tickets__created_at__gte=since,
+                        assigned_tickets__sla_resolution_due__lt=timezone.now(),
+                        assigned_tickets__status__in=["submitted", "triaged", "assigned", "in_progress"],
+                    ),
+                ),
+            )
+            .filter(assigned__gt=0)
+            .order_by("-assigned")
+        )
+
+        data = [
+            {
+                "id": u.pk,
+                "name": u.display_name,
+                "email": u.email,
+                "role": u.role,
+                "assigned": u.assigned,
+                "resolved": u.resolved,
+                "overdue": u.overdue,
+                "resolution_rate": round((u.resolved / u.assigned * 100) if u.assigned else 0, 1),
+            }
+            for u in staff
+        ]
+
+        return JsonResponse({"staff": data, "period_days": period})
+
+
 class SLAReportView(ManagerRequiredMixin, View):
     """
     Detailed SLA compliance report broken down by priority and category.

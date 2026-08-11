@@ -10,4 +10,5 @@ urlpatterns = [
     path("export/", views.AnalyticsExportView.as_view(), name="export"),
     path("recurring/", views.RecurringIssuesView.as_view(), name="recurring"),
     path("sla-report/", views.SLAReportView.as_view(), name="sla-report"),
+    path("staff-workload/", views.StaffWorkloadView.as_view(), name="staff-workload"),
 ]
