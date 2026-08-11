@@ -435,6 +435,10 @@ class TicketTransitionView(OrgRequiredMixin, View):
             from apps.notifications.tasks import notify_ticket_status_change
             notify_ticket_status_change.delay(ticket.pk, new_status, request.user.pk)
 
+            # Broadcast real-time WebSocket update
+            from apps.core.ws_utils import broadcast_ticket_update
+            broadcast_ticket_update(ticket, event_type="status_changed", extra={"new_status": new_status})
+
             messages.success(request, f"Status updated to {status_labels.get(new_status, new_status)}.")
         except Exception as e:
             messages.error(request, str(e))
@@ -534,6 +538,10 @@ class AddCommentView(OrgRequiredMixin, View):
             # Notify
             from apps.notifications.tasks import notify_comment_added
             notify_comment_added.delay(ticket.pk, comment.pk, request.user.pk)
+
+            # Broadcast real-time WebSocket update
+            from apps.core.ws_utils import broadcast_comment_added
+            broadcast_comment_added(ticket, comment)
 
             if request.headers.get("HX-Request"):
                 return render(request, "tickets/partials/comment.html", {
