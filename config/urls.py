@@ -5,12 +5,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from apps.core.views import HealthCheckView, HealthReadyView
+from apps.core.views import HealthCheckView, HealthReadyView, VersionView
 
 urlpatterns = [
-    # Health checks
+    # Health checks and version
     path("health/", HealthCheckView.as_view(), name="health"),
     path("health/ready/", HealthReadyView.as_view(), name="health-ready"),
+    path("version/", VersionView.as_view(), name="version"),
 
     # Django admin
     path("admin/", admin.site.urls),

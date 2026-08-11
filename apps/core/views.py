@@ -1,12 +1,14 @@
 """
-Core views — landing page, health checks.
+Core views — landing page, health checks, version endpoint.
 """
 from django.shortcuts import render
 from django.views import View
 from django.http import JsonResponse
 from django.db import connection
 from django.core.cache import cache
+from django.conf import settings
 import time
+import django
 
 
 class HealthCheckView(View):
@@ -49,6 +51,26 @@ class HealthReadyView(View):
             "checks": checks,
             "timestamp": int(time.time()),
         }, status=status_code)
+
+
+class VersionView(View):
+    """
+    Version endpoint for deployment tracking.
+    Returns app version, Django version, Python version, and environment.
+    """
+
+    def get(self, request):
+        import sys
+        import platform
+        return JsonResponse({
+            "app": "MaintenanceHub",
+            "version": getattr(settings, "APP_VERSION", "0.0.0"),
+            "environment": getattr(settings, "ENVIRONMENT", "unknown"),
+            "django_version": django.get_version(),
+            "python_version": sys.version.split(" ")[0],
+            "platform": platform.system(),
+            "timestamp": int(time.time()),
+        })
 
 
 def landing_page(request):
