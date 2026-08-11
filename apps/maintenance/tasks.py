@@ -68,7 +68,6 @@ def create_overdue_maintenance_tickets():
 
             ticket = Ticket.objects.create(
                 organization=schedule.organization,
-                ticket_number=Ticket.generate_ticket_number(schedule.organization),
                 title=f"[PM] {schedule.title}",
                 description=description.strip(),
                 priority=TicketPriority.MEDIUM,
