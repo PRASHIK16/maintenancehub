@@ -84,6 +84,12 @@ class RegisterView(View):
             user.role = UserRole.USER
             user.save()
             login(request, user)
+            # Fire welcome email asynchronously — do not block registration
+            try:
+                from apps.notifications.tasks import send_welcome_email
+                send_welcome_email.delay(user.pk)
+            except Exception:
+                pass  # Email failure must never break registration
             messages.success(request, f"Welcome to MaintenanceHub, {user.display_name}!")
             return redirect("dashboard:home")
         return render(request, self.template_name, {"form": form})
