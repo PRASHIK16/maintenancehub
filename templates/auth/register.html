@@ -13,7 +13,7 @@
 
     <div>
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-2.5 mb-12" style="text-decoration: none;">
+      <a href="/" class="flex items-center gap-2.5 mb-12" style="text-decoration:none;">
         <div class="sidebar-logo-icon">
           <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -27,20 +27,20 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
         </div>
-        <span class="sidebar-logo-name" style="font-size: 14px;">MaintenanceHub</span>
+        <span class="sidebar-logo-name" style="font-size:14px;">MaintenanceHub</span>
       </a>
 
       <!-- Badge + headline -->
       <div class="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full"
-           style="background-color: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.2);">
-        <span class="w-1.5 h-1.5 rounded-full" style="background-color: #059669;"></span>
-        <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #059669;">Get started free</span>
+           style="background-color:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);">
+        <span class="w-1.5 h-1.5 rounded-full" style="background-color:#059669;"></span>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#059669;">Get started free</span>
       </div>
 
-      <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: #0F172A; margin: 0 0 10px; line-height: 1.2;">
+      <h1 class="auth-brand-headline">
         Everything your<br>facility team needs.
       </h1>
-      <p style="font-size: 13px; line-height: 1.65; color: #64748B; margin: 0 0 36px;">
+      <p class="auth-brand-sub">
         Centralised maintenance operations — from request intake to resolution — with full audit trails and SLA tracking.
       </p>
 
@@ -83,18 +83,18 @@
     </div>
 
     <!-- Bottom stat strip -->
-    <dl class="grid grid-cols-3 gap-4 mt-8 pt-6" style="border-top: 1px solid #E2E8F0;">
+    <dl class="grid grid-cols-3 gap-4 mt-8 pt-6" style="border-top:1px solid #E2E8F0;">
       <div>
-        <dd style="font-size: 18px; font-weight: 800; color: #0F172A; font-variant-numeric: tabular-nums;">10+</dd>
-        <dt style="font-size: 11px; color: #94A3B8; margin-top: 2px;">Ticket states</dt>
+        <dd style="font-size:18px;font-weight:800;color:#0F172A;font-variant-numeric:tabular-nums;">10+</dd>
+        <dt class="td-sub" style="margin-top:2px;">Ticket states</dt>
       </div>
       <div>
-        <dd style="font-size: 18px; font-weight: 800; color: #0F172A; font-variant-numeric: tabular-nums;">4h</dd>
-        <dt style="font-size: 11px; color: #94A3B8; margin-top: 2px;">Critical SLA</dt>
+        <dd style="font-size:18px;font-weight:800;color:#0F172A;font-variant-numeric:tabular-nums;">4h</dd>
+        <dt class="td-sub" style="margin-top:2px;">Critical SLA</dt>
       </div>
       <div>
-        <dd style="font-size: 18px; font-weight: 800; color: #0F172A;">Live</dd>
-        <dt style="font-size: 11px; color: #94A3B8; margin-top: 2px;">Real-time ops</dt>
+        <dd style="font-size:18px;font-weight:800;color:#0F172A;">Live</dd>
+        <dt class="td-sub" style="margin-top:2px;">Real-time ops</dt>
       </div>
     </dl>
 
@@ -116,137 +116,126 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
         </div>
-        <span style="font-size: 14px; font-weight: 700; color: #0F172A; letter-spacing: -0.01em;">MaintenanceHub</span>
+        <span class="sidebar-logo-name" style="font-size:14px;">MaintenanceHub</span>
       </div>
 
       <!-- Heading -->
-      <div style="margin-bottom: 28px;">
-        <h2 style="font-size: 22px; font-weight: 800; letter-spacing: -0.025em; color: #0F172A; margin: 0 0 6px;">
-          Create your account
-        </h2>
-        <p style="font-size: 13px; color: #64748B; margin: 0;">
-          Join your organization — your admin will assign your role.
-        </p>
+      <div class="auth-form-header">
+        <h2 class="auth-form-heading">Create your account</h2>
+        <p class="auth-form-sub">Join your organization — your admin will assign your role.</p>
       </div>
 
       <!-- Non-field errors -->
       {% if form.non_field_errors %}
-      <div class="flex items-start gap-3 rounded-xl mb-5" style="background-color: #FEF2F2; border: 1px solid #FECACA; padding: 14px 16px;" role="alert">
+      <div class="auth-error" role="alert">
         <svg class="h-4 w-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="#EF4444" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
-        <span style="font-size: 13px; color: #991B1B;">{{ form.non_field_errors.0 }}</span>
+        <span class="auth-error-item">{{ form.non_field_errors.0 }}</span>
       </div>
       {% endif %}
 
       <!-- Form card -->
-      <div class="rounded-xl" style="background-color: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 1px 3px rgba(15,23,42,0.06); padding: 28px;">
-        <form method="post" novalidate class="space-y-4">
-          {% csrf_token %}
+      <div class="card">
+        <div class="card-body">
+          <form method="post" novalidate class="space-y-4">
+            {% csrf_token %}
 
-          <!-- Full name -->
-          <div class="form-group">
-            <label for="{{ form.full_name.id_for_label }}" class="form-label required">Full name</label>
-            {{ form.full_name }}
-            {% if form.full_name.errors %}
-            <p class="form-error">{{ form.full_name.errors.0 }}</p>
-            {% endif %}
-          </div>
-
-          <!-- Email -->
-          <div class="form-group">
-            <label for="{{ form.email.id_for_label }}" class="form-label required">Email address</label>
-            {{ form.email }}
-            {% if form.email.errors %}
-            <p class="form-error">{{ form.email.errors.0 }}</p>
-            {% endif %}
-          </div>
-
-          <!-- Phone -->
-          <div class="form-group">
-            <label for="{{ form.phone.id_for_label }}" class="form-label">
-              Phone number
-              <span style="font-weight: 400; color: var(--text-muted);">(optional)</span>
-            </label>
-            {{ form.phone }}
-            {% if form.phone.errors %}
-            <p class="form-error">{{ form.phone.errors.0 }}</p>
-            {% endif %}
-          </div>
-
-          <!-- Passwords -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Full name -->
             <div class="form-group">
-              <label for="{{ form.password.id_for_label }}" class="form-label required">Password</label>
-              <div class="relative">
-                {{ form.password }}
-                <button type="button" tabindex="-1"
-                        onclick="togglePass('{{ form.password.id_for_label }}')"
-                        class="absolute inset-y-0 right-0 flex items-center px-3 transition-colors"
-                        style="color: var(--text-muted);"
-                        onmouseover="this.style.color='var(--text-secondary)'"
-                        onmouseout="this.style.color='var(--text-muted)'"
-                        aria-label="Toggle password visibility">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                  </svg>
-                </button>
-              </div>
-              <p class="form-hint">Min. 8 characters</p>
-              {% if form.password.errors %}
-              <p class="form-error">{{ form.password.errors.0 }}</p>
+              <label for="{{ form.full_name.id_for_label }}" class="form-label required">Full name</label>
+              {{ form.full_name }}
+              {% if form.full_name.errors %}
+              <p class="form-error">{{ form.full_name.errors.0 }}</p>
               {% endif %}
             </div>
 
+            <!-- Email -->
             <div class="form-group">
-              <label for="{{ form.confirm_password.id_for_label }}" class="form-label required">Confirm</label>
-              <div class="relative">
-                {{ form.confirm_password }}
-                <button type="button" tabindex="-1"
-                        onclick="togglePass('{{ form.confirm_password.id_for_label }}')"
-                        class="absolute inset-y-0 right-0 flex items-center px-3 transition-colors"
-                        style="color: var(--text-muted);"
-                        onmouseover="this.style.color='var(--text-secondary)'"
-                        onmouseout="this.style.color='var(--text-muted)'"
-                        aria-label="Toggle confirm password visibility">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                  </svg>
-                </button>
-              </div>
-              {% if form.confirm_password.errors %}
-              <p class="form-error">{{ form.confirm_password.errors.0 }}</p>
+              <label for="{{ form.email.id_for_label }}" class="form-label required">Email address</label>
+              {{ form.email }}
+              {% if form.email.errors %}
+              <p class="form-error">{{ form.email.errors.0 }}</p>
               {% endif %}
             </div>
-          </div>
 
-          <!-- Submit -->
-          <button type="submit" class="btn btn-primary w-full justify-center" style="margin-top: 4px;">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-            </svg>
-            Create Account
-          </button>
-        </form>
+            <!-- Phone -->
+            <div class="form-group">
+              <label for="{{ form.phone.id_for_label }}" class="form-label">
+                Phone number
+                <span class="form-hint" style="display:inline;">(optional)</span>
+              </label>
+              {{ form.phone }}
+              {% if form.phone.errors %}
+              <p class="form-error">{{ form.phone.errors.0 }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Passwords -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="form-group">
+                <label for="{{ form.password.id_for_label }}" class="form-label required">Password</label>
+                <div class="relative">
+                  {{ form.password }}
+                  <button type="button" tabindex="-1"
+                          onclick="togglePass('{{ form.password.id_for_label }}')"
+                          class="pw-toggle-btn"
+                          aria-label="Toggle password visibility">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                  </button>
+                </div>
+                <p class="form-hint">Min. 8 characters</p>
+                {% if form.password.errors %}
+                <p class="form-error">{{ form.password.errors.0 }}</p>
+                {% endif %}
+              </div>
+
+              <div class="form-group">
+                <label for="{{ form.confirm_password.id_for_label }}" class="form-label required">Confirm</label>
+                <div class="relative">
+                  {{ form.confirm_password }}
+                  <button type="button" tabindex="-1"
+                          onclick="togglePass('{{ form.confirm_password.id_for_label }}')"
+                          class="pw-toggle-btn"
+                          aria-label="Toggle confirm password visibility">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                  </button>
+                </div>
+                {% if form.confirm_password.errors %}
+                <p class="form-error">{{ form.confirm_password.errors.0 }}</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary w-full justify-center" style="margin-top:4px;">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+              </svg>
+              Create Account
+            </button>
+          </form>
+        </div>
       </div>
 
       <!-- Sign in link -->
-      <p class="mt-6 text-center" style="font-size: 13px; color: #64748B;">
+      <p class="mt-6 text-center" style="font-size:13px;color:#64748B;">
         Already have an account?
-        <a href="{% url 'accounts:login' %}"
-           style="font-weight: 600; color: #059669; margin-left: 2px;"
-           onmouseover="this.style.color='#047857'"
-           onmouseout="this.style.color='#059669'">Sign in →</a>
+        <a href="{% url 'accounts:login' %}" class="auth-link-brand" style="margin-left:2px;">Sign in →</a>
       </p>
 
-      <div class="mt-6 pt-5 text-center" style="border-top: 1px solid #E2E8F0;">
-        <p style="font-size: 11px; color: #94A3B8;">
+      <div class="mt-6 pt-5 text-center" style="border-top:1px solid #E2E8F0;">
+        <p class="td-sub" style="color:#94A3B8;">
           By creating an account you agree to our
-          <a href="#" style="text-decoration: underline; color: #64748B;">Terms of Service</a>
+          <a href="#" class="auth-link" style="text-decoration:underline;">Terms of Service</a>
           and
-          <a href="#" style="text-decoration: underline; color: #64748B;">Privacy Policy</a>.
+          <a href="#" class="auth-link" style="text-decoration:underline;">Privacy Policy</a>.
         </p>
       </div>
 
