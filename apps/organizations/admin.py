@@ -1,6 +1,6 @@
 """Admin registrations for the organizations app."""
 from django.contrib import admin
-from .models import Organization, Location, Team, TeamMembership
+from .models import Organization, Location, Team, TeamMembership, ResidentProfile
 
 
 @admin.register(Organization)
@@ -30,3 +30,11 @@ class TeamAdmin(admin.ModelAdmin):
 class TeamMembershipAdmin(admin.ModelAdmin):
     list_display = ["team", "user", "is_lead"]
     raw_id_fields = ["team", "user"]
+
+
+@admin.register(ResidentProfile)
+class ResidentProfileAdmin(admin.ModelAdmin):
+    list_display = ["user", "organization", "room_number", "block", "floor"]
+    list_filter = ["organization", "block"]
+    search_fields = ["user__email", "user__first_name", "user__last_name", "room_number"]
+    raw_id_fields = ["user", "organization"]
