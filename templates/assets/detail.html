@@ -16,8 +16,7 @@
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap mb-1">
-          <code class="text-xs font-mono px-2 py-0.5 rounded"
-                style="background-color: var(--bg-subtle); color: var(--text-secondary);">{{ asset.asset_code }}</code>
+          <code class="asset-code">{{ asset.asset_code }}</code>
           <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
             {{ asset.get_status_display }}
           </span>
@@ -31,8 +30,7 @@
         {% if asset.status != 'retired' %}
         <form method="post" action="{% url 'assets:retire' asset.pk %}" class="inline">
           {% csrf_token %}
-          <button type="submit" class="btn btn-sm"
-                  style="background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;"
+          <button type="submit" class="btn btn-danger btn-sm"
                   onclick="return confirm('Retire this asset? This action cannot be undone.')">Retire</button>
         </form>
         {% endif %}
@@ -63,13 +61,13 @@
             <dt>Brand</dt><dd>{{ asset.brand|default:"—" }}</dd>
             <dt>Model</dt><dd>{{ asset.model_number|default:"—" }}</dd>
             <dt>Serial Number</dt>
-            <dd>{% if asset.serial_number %}<code class="text-sm font-mono">{{ asset.serial_number }}</code>{% else %}—{% endif %}</dd>
+            <dd>{% if asset.serial_number %}<code class="asset-code">{{ asset.serial_number }}</code>{% else %}—{% endif %}</dd>
             <dt>Location</dt><dd>{{ asset.location.full_path|default:"—" }}</dd>
             <dt>Purchase Date</dt><dd>{{ asset.purchase_date|date:"M d, Y"|default:"—" }}</dd>
             <dt>Warranty Expiry</dt>
             <dd>
               {% if asset.warranty_expiry %}
-              <span {% if asset.warranty_expiry < today %}style="color: #dc2626; font-weight: 600;"{% endif %}>
+              <span class="{% if asset.warranty_expiry < today %}stat-value-danger font-semibold{% endif %}">
                 {{ asset.warranty_expiry|date:"M d, Y" }}
                 {% if asset.warranty_expiry < today %}<span class="text-xs ml-1">(expired)</span>{% endif %}
               </span>
@@ -80,9 +78,9 @@
           </dl>
 
           {% if asset.notes %}
-          <div class="mt-5 pt-5" style="border-top: 1px solid var(--border-subtle);">
-            <p class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Notes</p>
-            <p class="text-sm leading-relaxed" style="color: var(--text-secondary);">{{ asset.notes }}</p>
+          <div class="mt-5 pt-5 detail-section-divider" style="margin-top: 20px; padding-top: 20px;">
+            <p class="card-notes-label">Notes</p>
+            <p class="card-description">{{ asset.notes }}</p>
           </div>
           {% endif %}
         </div>
@@ -98,14 +96,14 @@
           <p class="card-title">Quick Facts</p>
         </div>
         <div class="card-body">
-          <dl class="space-y-0">
-            <div class="flex items-center justify-between py-2.5" style="border-bottom: 1px solid var(--border-subtle);">
-              <dt style="font-size: 13px; color: var(--text-muted);">Added</dt>
-              <dd style="font-size: 13px; color: var(--text-primary);">{{ asset.created_at|date:"M d, Y" }}</dd>
+          <dl>
+            <div class="quick-fact-row">
+              <dt class="quick-fact-label">Added</dt>
+              <dd class="quick-fact-value">{{ asset.created_at|date:"M d, Y" }}</dd>
             </div>
-            <div class="flex items-center justify-between py-2.5">
-              <dt style="font-size: 13px; color: var(--text-muted);">Last updated</dt>
-              <dd style="font-size: 13px; color: var(--text-primary);">{{ asset.updated_at|date:"M d, Y" }}</dd>
+            <div class="quick-fact-row">
+              <dt class="quick-fact-label">Last updated</dt>
+              <dd class="quick-fact-value">{{ asset.updated_at|date:"M d, Y" }}</dd>
             </div>
           </dl>
         </div>
@@ -121,8 +119,7 @@
           {% if asset.status != 'retired' %}
           <form method="post" action="{% url 'assets:retire' asset.pk %}">
             {% csrf_token %}
-            <button type="submit" class="btn w-full justify-center"
-                    style="background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;"
+            <button type="submit" class="btn btn-danger w-full justify-center"
                     onclick="return confirm('Retire this asset? This action cannot be undone.')">
               Retire Asset
             </button>

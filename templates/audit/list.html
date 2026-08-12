@@ -4,16 +4,14 @@
 {% block title %}Audit Log — MaintenanceHub{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Audit Log</h1>
-    <p class="page-subtitle">Immutable record of all actions in your organization</p>
-  </div>
+<div class="page-intro mb-6">
+  <h1 class="page-intro-title">Audit Log</h1>
+  <p class="page-intro-sub">Immutable record of all actions in your organization</p>
 </div>
 
-<!-- Filters -->
+{# Filters #}
 <div class="card mb-6">
-  <form method="get" class="flex flex-wrap gap-3 items-end">
+  <form method="get" class="flex flex-wrap gap-3 items-end" style="padding: 16px 20px;">
     <div class="form-group" style="flex: 1; min-width: 140px;">
       <label class="form-label">Action Type</label>
       <select name="action" class="form-select">
@@ -42,39 +40,39 @@
   </form>
 </div>
 
-<!-- Log Table -->
-<div class="card" style="padding: 0; overflow: hidden;">
+{# Log Table #}
+<div class="card">
   {% if logs %}
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse;">
+  <div class="overflow-x-auto">
+    <table class="data-table table-responsive-cards">
       <thead>
-        <tr style="border-bottom: 1px solid var(--border-default); background-color: var(--bg-subtle);">
-          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Timestamp</th>
-          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">User</th>
-          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Action</th>
-          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">Object</th>
-          <th style="padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">IP</th>
+        <tr>
+          <th class="admin-th">Timestamp</th>
+          <th class="admin-th">User</th>
+          <th class="admin-th">Action</th>
+          <th class="admin-th">Object</th>
+          <th class="admin-th">IP</th>
         </tr>
       </thead>
       <tbody>
         {% for log in logs %}
-        <tr style="border-bottom: 1px solid var(--border-subtle);">
-          <td style="padding: 10px 16px; font-size: 12px; color: var(--text-secondary); white-space: nowrap; font-variant-numeric: tabular-nums;">
+        <tr>
+          <td data-label="Timestamp" class="admin-td admin-td-muted tabular-nums whitespace-nowrap">
             {{ log.timestamp|date:"M j, Y H:i:s" }}
           </td>
-          <td style="padding: 10px 16px; font-size: 13px; color: var(--text-primary);">
+          <td data-label="User" class="admin-td">
             {{ log.user.email|default:"System" }}
           </td>
-          <td style="padding: 10px 16px;">
-            <span class="badge badge-secondary" style="font-size: 11px;">{{ log.get_action_display }}</span>
+          <td data-label="Action" class="admin-td">
+            <span class="badge badge-secondary">{{ log.get_action_display }}</span>
           </td>
-          <td style="padding: 10px 16px; font-size: 13px; color: var(--text-secondary); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <td data-label="Object" class="admin-td" style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
             {{ log.object_repr|default:"—" }}
             {% if log.message %}
-              <span style="color: var(--text-muted); font-size: 12px;"> — {{ log.message|truncatechars:80 }}</span>
+              <span class="admin-td-muted"> — {{ log.message|truncatechars:80 }}</span>
             {% endif %}
           </td>
-          <td style="padding: 10px 16px; font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums;">
+          <td data-label="IP" class="admin-td admin-td-muted tabular-nums">
             {{ log.ip_address|default:"—" }}
           </td>
         </tr>
@@ -83,10 +81,9 @@
     </table>
   </div>
 
-  <!-- Pagination -->
   {% if is_paginated %}
-  <div class="flex items-center justify-between" style="padding: 14px 16px; border-top: 1px solid var(--border-subtle);">
-    <span style="font-size: 13px; color: var(--text-secondary);">
+  <div class="card-pagination">
+    <span class="card-pagination-info">
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
     </span>
     <div class="flex gap-2">
@@ -103,11 +100,14 @@
   {% endif %}
 
   {% else %}
-  <div class="empty-state" style="padding: 48px 32px;">
-    <svg class="h-10 w-10 mx-auto mb-3" style="color: var(--text-muted);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-    </svg>
-    <p style="font-size: 14px; color: var(--text-muted);">No audit logs found for the selected filters.</p>
+  <div class="empty-state">
+    <div class="admin-empty-icon">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+    </div>
+    <p class="empty-state-title">No logs found</p>
+    <p class="empty-state-desc">No audit logs found for the selected filters.</p>
   </div>
   {% endif %}
 </div>

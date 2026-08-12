@@ -37,14 +37,13 @@
     {# Left: details #}
     <div class="lg:col-span-2 space-y-5">
 
-      {# Schedule details card #}
       <div class="card">
         <div class="card-header">
           <p class="card-title">Schedule Details</p>
         </div>
         <div class="card-body">
           {% if schedule.description %}
-          <p class="text-sm mb-5 leading-relaxed" style="color: var(--text-secondary);">{{ schedule.description }}</p>
+          <p class="card-description mb-5 leading-relaxed">{{ schedule.description }}</p>
           {% endif %}
           <dl class="detail-grid">
             <dt>Status</dt>
@@ -75,10 +74,8 @@
         <div class="card-body">
           <ul class="space-y-3">
             {% for item in schedule.checklist_items %}
-            <li class="flex items-start gap-3 text-sm" style="color: var(--text-primary);">
-              <div class="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5"
-                   style="border: 1.5px solid var(--border-default);">
-              </div>
+            <li class="flex items-start gap-3 text-sm">
+              <input type="checkbox" class="checklist-box mt-0.5" disabled>
               <span>{{ item }}</span>
             </li>
             {% endfor %}
@@ -86,6 +83,7 @@
         </div>
       </div>
       {% endif %}
+
     </div>
 
     {# Right sidebar #}
@@ -95,14 +93,14 @@
           <p class="card-title">Info</p>
         </div>
         <div class="card-body">
-          <dl class="space-y-0">
-            <div class="flex items-center justify-between py-2.5" style="border-bottom: 1px solid var(--border-subtle);">
-              <dt style="font-size: 13px; color: var(--text-muted);">Created</dt>
-              <dd style="font-size: 13px; color: var(--text-primary);">{{ schedule.created_at|date:"M d, Y" }}</dd>
+          <dl>
+            <div class="quick-fact-row">
+              <dt class="quick-fact-label">Created</dt>
+              <dd class="quick-fact-value">{{ schedule.created_at|date:"M d, Y" }}</dd>
             </div>
-            <div class="flex items-center justify-between py-2.5">
-              <dt style="font-size: 13px; color: var(--text-muted);">Created by</dt>
-              <dd style="font-size: 13px; color: var(--text-primary);">{{ schedule.created_by.display_name|default:"System" }}</dd>
+            <div class="quick-fact-row">
+              <dt class="quick-fact-label">Created by</dt>
+              <dd class="quick-fact-value">{{ schedule.created_by.display_name|default:"System" }}</dd>
             </div>
           </dl>
         </div>

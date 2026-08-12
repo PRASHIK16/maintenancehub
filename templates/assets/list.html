@@ -11,7 +11,9 @@
   </div>
   {% if request.user.role in "admin manager" %}
   <a href="{% url 'assets:create' %}" class="btn btn-primary flex-shrink-0 self-start">
-    <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+    </svg>
     Add Asset
   </a>
   {% endif %}
@@ -24,11 +26,11 @@
     <div class="stat-card-label">Total Assets</div>
   </div>
   <div class="stat-card">
-    <div class="stat-card-value" style="color: var(--color-emerald-600);">{{ active_count }}</div>
+    <div class="stat-card-value stat-value-brand">{{ active_count }}</div>
     <div class="stat-card-label">Active</div>
   </div>
   <div class="stat-card">
-    <div class="stat-card-value" style="color: #d97706;">{{ maintenance_count }}</div>
+    <div class="stat-card-value stat-value-amber">{{ maintenance_count }}</div>
     <div class="stat-card-label">Under Maintenance</div>
   </div>
 </div>
@@ -58,81 +60,80 @@
   <div class="card-body p-0">
     {% if assets %}
     <div class="overflow-x-auto">
-    <table class="data-table table-responsive-cards">
-      <thead>
-        <tr>
-          <th>Asset Code</th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Location</th>
-          <th>Status</th>
-          <th>Warranty Expiry</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for asset in assets %}
-        <tr>
-          <td data-label="Code">
-            <code class="text-xs font-mono px-2 py-0.5 rounded"
-                  style="background-color: var(--bg-subtle); color: var(--text-secondary);">{{ asset.asset_code }}</code>
-          </td>
-          <td data-label="Name">
-            <a href="{% url 'assets:detail' asset.pk %}" class="font-medium"
-               style="color: var(--color-primary); text-decoration: none;">
-              {{ asset.name }}
-            </a>
-            {% if asset.brand %}
-            <div class="text-xs" style="color: var(--text-secondary);">{{ asset.brand }}</div>
-            {% endif %}
-          </td>
-          <td data-label="Type" class="text-sm">{{ asset.asset_type }}</td>
-          <td data-label="Location" class="text-sm">{{ asset.location.name|default:"—" }}</td>
-          <td data-label="Status">
-            <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
-              {{ asset.get_status_display }}
-            </span>
-          </td>
-          <td data-label="Warranty" class="text-sm">
-            {% if asset.warranty_expiry %}
-            <span {% if asset.warranty_expiry < today %}style="color: #dc2626;"{% endif %}>
-              {{ asset.warranty_expiry|date:"M d, Y" }}
-            </span>
-            {% else %}—{% endif %}
-          </td>
-          <td data-label="Actions">
-            {% if request.user.role in "admin manager" %}
-            <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-secondary btn-xs">Edit</a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <table class="data-table table-responsive-cards">
+        <thead>
+          <tr>
+            <th>Asset Code</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Warranty Expiry</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for asset in assets %}
+          <tr>
+            <td data-label="Code">
+              <code class="asset-code">{{ asset.asset_code }}</code>
+            </td>
+            <td data-label="Name">
+              <a href="{% url 'assets:detail' asset.pk %}" class="font-medium link-brand">
+                {{ asset.name }}
+              </a>
+              {% if asset.brand %}
+              <div class="text-xs admin-td-muted">{{ asset.brand }}</div>
+              {% endif %}
+            </td>
+            <td data-label="Type" class="text-sm">{{ asset.asset_type }}</td>
+            <td data-label="Location" class="text-sm">{{ asset.location.name|default:"—" }}</td>
+            <td data-label="Status">
+              <span class="badge {% if asset.status == 'active' %}badge-success{% elif asset.status == 'under_maintenance' %}badge-warning{% else %}badge-neutral{% endif %}">
+                {{ asset.get_status_display }}
+              </span>
+            </td>
+            <td data-label="Warranty" class="text-sm">
+              {% if asset.warranty_expiry %}
+              <span class="{% if asset.warranty_expiry < today %}stat-value-danger{% endif %}">
+                {{ asset.warranty_expiry|date:"M d, Y" }}
+              </span>
+              {% else %}—{% endif %}
+            </td>
+            <td data-label="Actions">
+              {% if request.user.role in "admin manager" %}
+              <a href="{% url 'assets:edit' asset.pk %}" class="btn btn-secondary btn-xs">Edit</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
 
-    {# Pagination #}
     {% if is_paginated %}
-    <div class="px-6 py-4" style="border-top: 1px solid var(--border-subtle);">
-      <div class="flex items-center justify-between">
-        <p class="text-sm" style="color: var(--text-secondary);">
-          Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }}
-        </p>
-        <div class="flex gap-1">
-          {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="btn btn-secondary btn-sm">Previous</a>
-          {% endif %}
-          {% if page_obj.has_next %}
-          <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="btn btn-secondary btn-sm">Next</a>
-          {% endif %}
-        </div>
+    <div class="card-pagination">
+      <p class="card-pagination-info">
+        Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }}
+      </p>
+      <div class="flex gap-1">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="btn btn-secondary btn-sm">Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="btn btn-secondary btn-sm">Next</a>
+        {% endif %}
       </div>
     </div>
     {% endif %}
 
     {% else %}
     <div class="empty-state">
-      <div class="empty-state-icon">🔧</div>
+      <div class="empty-state-icon">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
+        </svg>
+      </div>
       <div class="empty-state-title">No assets found</div>
       <div class="empty-state-desc">
         {% if request.GET.q %}No assets match your search.{% else %}Start by adding your first asset.{% endif %}

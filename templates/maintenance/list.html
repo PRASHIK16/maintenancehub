@@ -11,7 +11,9 @@
   </div>
   {% if request.user.role in "admin manager" %}
   <a href="{% url 'maintenance:create' %}" class="btn btn-primary flex-shrink-0 self-start">
-    <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+    </svg>
     Schedule Maintenance
   </a>
   {% endif %}
@@ -20,11 +22,11 @@
 {# Stats #}
 <div class="grid grid-cols-2 gap-4 mb-6">
   <div class="stat-card">
-    <div class="stat-card-value" style="color: var(--color-emerald-600);">{{ active_count }}</div>
+    <div class="stat-card-value stat-value-brand">{{ active_count }}</div>
     <div class="stat-card-label">Active Schedules</div>
   </div>
-  <div class="stat-card">
-    <div class="stat-card-value" style="color: #dc2626;">{{ overdue_count }}</div>
+  <div class="stat-card {% if overdue_count %}stat-card-accent-danger{% endif %}">
+    <div class="stat-card-value stat-value-danger">{{ overdue_count }}</div>
     <div class="stat-card-label">Overdue</div>
   </div>
 </div>
@@ -55,16 +57,15 @@
       <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1 flex-wrap">
-            <a href="{% url 'maintenance:detail' schedule.pk %}" class="font-medium"
-               style="color: var(--color-primary); text-decoration: none;">
+            <a href="{% url 'maintenance:detail' schedule.pk %}" class="font-medium link-brand">
               {{ schedule.title }}
             </a>
             <span class="badge {% if schedule.status == 'active' %}badge-success{% elif schedule.status == 'overdue' %}badge-danger{% else %}badge-neutral{% endif %}">
               {{ schedule.get_status_display }}
             </span>
           </div>
-          <p class="text-sm mb-2" style="color: var(--text-secondary);">{{ schedule.description|truncatechars:100 }}</p>
-          <div class="flex flex-wrap gap-4 text-xs" style="color: var(--text-muted);">
+          <p class="text-sm mb-2 card-description">{{ schedule.description|truncatechars:100 }}</p>
+          <div class="flex flex-wrap gap-4 text-xs hostel-section-count">
             <span>🔄 {{ schedule.get_frequency_display }}</span>
             {% if schedule.asset %}<span>🔧 {{ schedule.asset.name }}</span>{% endif %}
             {% if schedule.location %}<span>📍 {{ schedule.location.name }}</span>{% endif %}
@@ -73,13 +74,12 @@
         </div>
         <div class="sm:text-right flex-shrink-0">
           {% if schedule.next_due_at %}
-          <div class="text-sm font-medium"
-               {% if schedule.status == 'overdue' %}style="color: #dc2626;"{% endif %}>
+          <div class="text-sm font-medium {% if schedule.status == 'overdue' %}stat-value-danger{% endif %}">
             Due: {{ schedule.next_due_at|date:"M d, Y" }}
           </div>
           {% endif %}
           {% if schedule.estimated_duration_hours %}
-          <div class="text-xs" style="color: var(--text-secondary);">~{{ schedule.estimated_duration_hours }}h</div>
+          <div class="text-xs admin-td-muted">~{{ schedule.estimated_duration_hours }}h</div>
           {% endif %}
         </div>
       </div>
@@ -88,7 +88,11 @@
   {% empty %}
   <div class="card">
     <div class="empty-state">
-      <div class="empty-state-icon">📅</div>
+      <div class="empty-state-icon">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
       <div class="empty-state-title">No maintenance schedules</div>
       <div class="empty-state-desc">Create your first preventive maintenance schedule to keep assets in top condition.</div>
       {% if request.user.role in "admin manager" %}
@@ -101,11 +105,11 @@
 
 {# Pagination #}
 {% if is_paginated %}
-<div class="mt-4 flex justify-center gap-2">
+<div class="mt-4 flex justify-center items-center gap-3">
   {% if page_obj.has_previous %}
   <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary btn-sm">← Previous</a>
   {% endif %}
-  <span class="px-4 py-2 text-sm" style="color: var(--text-secondary);">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+  <span class="text-sm card-pagination-info">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
   {% if page_obj.has_next %}
   <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary btn-sm">Next →</a>
   {% endif %}
