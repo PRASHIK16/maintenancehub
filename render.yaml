@@ -29,6 +29,7 @@ services:
   - type: worker
     name: maintenancehub-celery
     env: python
+    region: oregon
     plan: starter
     buildCommand: pip install -r requirements/production.txt
     startCommand: celery -A config.celery_app worker --loglevel=info
@@ -53,6 +54,7 @@ services:
   - type: worker
     name: maintenancehub-beat
     env: python
+    region: oregon
     plan: starter
     buildCommand: pip install -r requirements/production.txt
     startCommand: celery -A config.celery_app beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
@@ -74,12 +76,14 @@ services:
           type: redis
           property: connectionString
 
-databases:
-  - name: maintenancehub-db
+  # Redis is a service, NOT a database — this was the Blueprint error
+  - type: redis
+    name: maintenancehub-redis
     region: oregon
     plan: starter
+    ipAllowList: []   # empty = only accessible from other Render services (secure)
 
-  - name: maintenancehub-redis
-    type: redis
+databases:
+  - name: maintenancehub-db
     region: oregon
     plan: starter
