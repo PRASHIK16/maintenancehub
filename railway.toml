@@ -1,0 +1,10 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "daphne -b 0.0.0.0 -p $PORT config.asgi:application"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[[deploy.releaseCommand]]
+command = "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
