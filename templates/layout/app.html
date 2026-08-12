@@ -3,12 +3,10 @@
 
 {% block body %}
 {# Skip link — allows keyboard/screen-reader users to bypass the sidebar nav #}
-<a href="#page-content"
-   class="sr-only focus:not-sr-only focus:fixed focus:z-[9999] focus:top-3 focus:left-3 focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold"
-   style="background-color: #059669; color: #ffffff;">
+<a href="#page-content" class="skip-link">
   Skip to main content
 </a>
-<div class="flex h-screen overflow-hidden" style="background-color: var(--bg-page);">
+<div class="app-shell">
 
   {# ── Sidebar ──────────────────────────────────────────────────────────── #}
   {% include "partials/sidebar.html" %}
@@ -19,13 +17,13 @@
        onclick="closeSidebar()"></div>
 
   {# ── Main content ─────────────────────────────────────────────────────── #}
-  <div class="flex flex-col flex-1 overflow-hidden ml-0 md:ml-[220px] transition-all" id="main-content">
+  <div class="main-content" id="main-content">
 
     {# Top bar #}
     {% include "partials/topbar.html" %}
 
     {# Page content #}
-    <main class="flex-1 overflow-y-auto p-4 md:p-6" id="page-content">
+    <main class="content-area" id="page-content">
       {% block breadcrumbs %}{% endblock %}
       {% block content %}{% endblock %}
     </main>
