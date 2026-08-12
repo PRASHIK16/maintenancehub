@@ -78,8 +78,8 @@
 
         {# Content #}
         <div class="ticket-item-body">
-          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
-            <div style="flex:1; min-width:0;">
+          <div class="ticket-item-header">
+            <div class="ticket-item-info">
               <p class="ticket-item-title">{{ ticket.title }}</p>
               <div class="ticket-item-meta">
                 <span class="ticket-num">{{ ticket.ticket_number }}</span>
@@ -95,13 +95,13 @@
                 {% if ticket.category %}<span>{{ ticket.category.name }}</span>{% endif %}
               </div>
             </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0;">
+            <div class="ticket-item-badge-stack">
               <span class="badge badge-{{ ticket.status|cut:'_' }}">{{ ticket.get_status_display }}</span>
               <span class="badge badge-priority-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span>
             </div>
           </div>
 
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
+          <div class="ticket-item-footer">
             <span class="assignee-line">
               {% if ticket.assigned_to %}
                 Handled by <span class="assignee-name">{{ ticket.assigned_to.display_name }}</span>
