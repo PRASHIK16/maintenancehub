@@ -7,9 +7,7 @@
 {% now "H" as current_hour %}
 <div class="space-y-6 fade-in">
 
-{# ────────────────────────────────────────────────────────────────────────────
-   Page Header — sticky, full-bleed, fintech command center feel
-   ──────────────────────────────────────────────────────────────────────────── #}
+{# ── Page Header ──────────────────────────────────────────────────────────── #}
 <header class="page-header-strip mb-6">
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
@@ -22,33 +20,28 @@
 
     <div class="flex items-center gap-3 shrink-0 flex-wrap">
       {# Period selector — segmented control #}
-      <div class="flex items-center gap-0.5 rounded-lg border p-0.5 shrink-0"
+      <div class="period-selector-wrap"
            id="period-selector"
            role="group"
-           aria-label="Select reporting period"
-           style="background-color: var(--bg-subtle); border-color: var(--border-default);">
+           aria-label="Select reporting period">
         <button type="button"
-                class="period-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-all whitespace-nowrap"
+                class="period-btn period-btn-active whitespace-nowrap"
                 data-active="true"
-                style="background-color: var(--bg-card); color: var(--text-primary); box-shadow: var(--shadow-xs);"
                 hx-get="{% url 'analytics:stats' %}?period=today"
                 hx-target="#stat-cards"
                 hx-swap="innerHTML">Today</button>
         <button type="button"
-                class="period-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-all whitespace-nowrap"
-                style="color: var(--text-muted);"
+                class="period-btn whitespace-nowrap"
                 hx-get="{% url 'analytics:stats' %}?period=7d"
                 hx-target="#stat-cards"
                 hx-swap="innerHTML">7 days</button>
         <button type="button"
-                class="period-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-all whitespace-nowrap"
-                style="color: var(--text-muted);"
+                class="period-btn whitespace-nowrap"
                 hx-get="{% url 'analytics:stats' %}?period=30d"
                 hx-target="#stat-cards"
                 hx-swap="innerHTML">30 days</button>
         <button type="button"
-                class="period-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-all whitespace-nowrap"
-                style="color: var(--text-muted);"
+                class="period-btn whitespace-nowrap"
                 hx-get="{% url 'analytics:stats' %}?period=90d"
                 hx-target="#stat-cards"
                 hx-swap="innerHTML">90 days</button>
@@ -65,16 +58,13 @@
   </div>
 </header>
 
-{# ────────────────────────────────────────────────────────────────────────────
-   KPI Strip — 4 stat cards, auto-refreshes every 60 s via HTMX
-   ──────────────────────────────────────────────────────────────────────────── #}
+{# ── KPI Strip ────────────────────────────────────────────────────────────── #}
 <div id="stat-cards"
      class="grid grid-cols-2 xl:grid-cols-4 gap-4"
      hx-get="{% url 'analytics:stats' %}"
      hx-trigger="every 60s"
      hx-swap="innerHTML">
 
-  {# Total Requests #}
   <div class="stat-card">
     <div class="stat-card-label">Total Requests</div>
     <div class="stat-card-value tabular-nums font-bold animate-count-up">
@@ -96,10 +86,9 @@
     </div>
   </div>
 
-  {# Open #}
   <div class="stat-card">
     <div class="stat-card-label">Open</div>
-    <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.open > 0 %}text-amber-500{% endif %}">
+    <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.open > 0 %}stat-value-amber{% endif %}">
       {{ stats.open|intcomma }}
     </div>
     <div class="stat-card-meta">
@@ -107,23 +96,21 @@
     </div>
   </div>
 
-  {# At Risk / Overdue #}
   <div class="stat-card {% if stats.overdue > 0 %}stat-card-accent-danger{% endif %}">
     <div class="stat-card-label">At Risk / Overdue</div>
-    <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.overdue > 0 %}text-red-500{% endif %}">
+    <div class="stat-card-value tabular-nums font-bold animate-count-up {% if stats.overdue > 0 %}stat-value-danger{% endif %}">
       {{ stats.overdue|intcomma }}
     </div>
     <div class="stat-card-meta">
-      <span class="tabular-nums {% if stats.critical > 0 %}text-red-400{% endif %}">{{ stats.critical|intcomma }}</span>&nbsp;critical
+      <span class="tabular-nums {% if stats.critical > 0 %}stat-value-danger{% endif %}">{{ stats.critical|intcomma }}</span>&nbsp;critical
     </div>
   </div>
 
-  {# SLA Compliance #}
   {% with sla=stats.sla_rate|default:0 %}
   <div class="stat-card">
     <div class="stat-card-label">SLA Compliance</div>
     <div class="stat-card-value tabular-nums font-bold animate-count-up
-      {% if sla >= 90 %}text-emerald-500{% elif sla >= 75 %}text-amber-500{% else %}text-red-500{% endif %}">
+      {% if sla >= 90 %}stat-value-brand{% elif sla >= 75 %}stat-value-amber{% else %}stat-value-danger{% endif %}">
       {{ sla }}%
     </div>
     <div class="mt-3">
@@ -138,29 +125,26 @@
   </div>
   {% endwith %}
 
-</div>{# /#stat-cards #}
+</div>
 
-{# ────────────────────────────────────────────────────────────────────────────
-   Operations Performance Row — 3 metric panels
-   ──────────────────────────────────────────────────────────────────────────── #}
+{# ── Operations Performance Row ───────────────────────────────────────────── #}
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-  {# Resolution Rate — with progress bar #}
   {% with rate=stats.resolution_rate|default:0 %}
   <div class="card perf-metric">
     <div class="card-body">
-      <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted); letter-spacing: 0.08em;">
+      <div class="perf-metric-label text-xs font-semibold uppercase tracking-wider mb-2">
         Resolution Rate
       </div>
       <div class="flex items-end gap-1 mb-4">
-        <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-primary);">{{ rate }}</span>
-        <span class="font-semibold pb-0.5" style="font-size: 1.125rem; color: var(--text-muted);">%</span>
+        <span class="perf-metric-value tabular-nums font-bold leading-none">{{ rate }}</span>
+        <span class="perf-metric-unit font-semibold pb-0.5">%</span>
       </div>
       <div>
-        <div class="flex justify-between text-xs mb-1.5" style="color: var(--text-muted);">
+        <div class="flex justify-between text-xs mb-1.5 perf-metric-sub">
           <span>0%</span>
           <span class="tabular-nums font-semibold
-            {% if rate >= 90 %}text-emerald-500{% elif rate >= 75 %}text-amber-500{% else %}text-red-500{% endif %}">
+            {% if rate >= 90 %}stat-value-brand{% elif rate >= 75 %}stat-value-amber{% else %}stat-value-danger{% endif %}">
             Target 90%
           </span>
           <span>100%</span>
@@ -174,84 +158,80 @@
   </div>
   {% endwith %}
 
-  {# Avg Resolution Time #}
   <div class="card perf-metric">
     <div class="card-body">
-      <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted); letter-spacing: 0.08em;">
+      <div class="perf-metric-label text-xs font-semibold uppercase tracking-wider mb-2">
         Avg Resolution Time
       </div>
       <div class="flex items-end gap-1 mb-4">
         {% if stats.avg_resolution_hours %}
-          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-primary);">
+          <span class="perf-metric-value tabular-nums font-bold leading-none">
             {{ stats.avg_resolution_hours }}
           </span>
-          <span class="font-semibold pb-0.5" style="font-size: 1.125rem; color: var(--text-muted);">h</span>
+          <span class="perf-metric-unit font-semibold pb-0.5">h</span>
         {% else %}
-          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-disabled);">&mdash;</span>
+          <span class="perf-metric-value-disabled tabular-nums font-bold leading-none">&mdash;</span>
         {% endif %}
       </div>
-      <div class="text-xs" style="color: var(--text-muted);">Mean time to close a request</div>
+      <div class="perf-metric-sub text-xs">Mean time to close a request</div>
     </div>
   </div>
 
-  {# First Response #}
   <div class="card perf-metric">
     <div class="card-body">
-      <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted); letter-spacing: 0.08em;">
+      <div class="perf-metric-label text-xs font-semibold uppercase tracking-wider mb-2">
         First Response
       </div>
       <div class="flex items-end gap-1 mb-4">
         {% if stats.avg_first_response_mins %}
-          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-primary);">
+          <span class="perf-metric-value tabular-nums font-bold leading-none">
             {{ stats.avg_first_response_mins }}
           </span>
-          <span class="font-semibold pb-0.5" style="font-size: 1.125rem; color: var(--text-muted);">m</span>
+          <span class="perf-metric-unit font-semibold pb-0.5">m</span>
         {% else %}
-          <span class="tabular-nums font-bold leading-none" style="font-size: 2.25rem; color: var(--text-disabled);">&mdash;</span>
+          <span class="perf-metric-value-disabled tabular-nums font-bold leading-none">&mdash;</span>
         {% endif %}
       </div>
-      <div class="text-xs" style="color: var(--text-muted);">Median time to first reply</div>
+      <div class="perf-metric-sub text-xs">Median time to first reply</div>
     </div>
   </div>
 
 </div>
 
-{# ────────────────────────────────────────────────────────────────────────────
-   Main Content Grid — 2/3 left + 1/3 right
-   ──────────────────────────────────────────────────────────────────────────── #}
+{# ── Main Content Grid ────────────────────────────────────────────────────── #}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-  {# ── Left column (2/3) ───────────────────────────────────────────────────── #}
+  {# Left column (2/3) #}
   <div class="xl:col-span-2 space-y-6">
 
-    {# Live Operations ─────────────────────────────────────────────────────── #}
+    {# Live Operations #}
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Live Operations</h2>
-        <span class="inline-flex items-center gap-1.5 text-xs font-bold" style="color: var(--color-emerald-600);">
-          <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: var(--color-emerald-500);"></span>
+        <span class="live-badge">
+          <span class="live-dot"></span>
           LIVE
         </span>
       </div>
       <div class="card-body p-0">
-        <div class="divide-y" style="border-color: var(--border-subtle);">
+        <div class="divide-subtle">
 
-          {# Critical Issues #}
+          {# Critical #}
           <div class="flex items-center justify-between px-5 py-4">
             <div class="flex items-center gap-3">
-              <span class="w-2 h-2 rounded-full shrink-0 {% if stats.critical > 0 %}animate-pulse{% endif %}"
-                    style="background-color: {% if stats.critical > 0 %}#ef4444{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-semibold" style="color: var(--text-primary);">Critical Issues</span>
+              <span class="ops-dot flex-shrink-0
+                {% if stats.critical > 0 %}ops-dot-critical{% else %}ops-dot-neutral{% endif %}
+                {% if stats.critical > 0 %}animate-pulse{% endif %}"></span>
+              <span class="text-sm font-semibold">Critical Issues</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-bold text-xl leading-none"
-                    style="color: {% if stats.critical > 0 %}#dc2626{% else %}var(--text-disabled){% endif %};">
+              <span class="ops-value {% if stats.critical > 0 %}ops-value-danger{% else %}ops-value-disabled{% endif %}">
                 {{ stats.critical|default:0|intcomma }}
               </span>
               {% if stats.critical > 0 %}
-              <a href="{% url 'dashboard:all-tickets' %}?priority=critical"
-                 class="text-xs font-semibold transition-colors"
-                 style="color: #dc2626;">View all &rarr;</a>
+              <a href="{% url 'dashboard:all-tickets' %}?priority=critical" class="ops-link ops-link-danger">
+                View all &rarr;
+              </a>
               {% endif %}
             </div>
           </div>
@@ -259,19 +239,18 @@
           {# Overdue #}
           <div class="flex items-center justify-between px-5 py-4">
             <div class="flex items-center gap-3">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                    style="background-color: {% if stats.overdue > 0 %}#f97316{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-semibold" style="color: var(--text-primary);">Overdue</span>
+              <span class="ops-dot flex-shrink-0
+                {% if stats.overdue > 0 %}ops-dot-orange{% else %}ops-dot-neutral{% endif %}"></span>
+              <span class="text-sm font-semibold">Overdue</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-bold text-xl leading-none"
-                    style="color: {% if stats.overdue > 0 %}#ea580c{% else %}var(--text-disabled){% endif %};">
+              <span class="ops-value {% if stats.overdue > 0 %}ops-value-orange{% else %}ops-value-disabled{% endif %}">
                 {{ stats.overdue|default:0|intcomma }}
               </span>
               {% if stats.overdue > 0 %}
-              <a href="{% url 'dashboard:all-tickets' %}?overdue=1"
-                 class="text-xs font-semibold transition-colors"
-                 style="color: #f97316;">View all &rarr;</a>
+              <a href="{% url 'dashboard:all-tickets' %}?overdue=1" class="ops-link ops-link-orange">
+                View all &rarr;
+              </a>
               {% endif %}
             </div>
           </div>
@@ -279,19 +258,18 @@
           {# Unassigned #}
           <div class="flex items-center justify-between px-5 py-4">
             <div class="flex items-center gap-3">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                    style="background-color: {% if stats.unassigned > 0 %}#facc15{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-semibold" style="color: var(--text-primary);">Unassigned</span>
+              <span class="ops-dot flex-shrink-0
+                {% if stats.unassigned > 0 %}ops-dot-yellow{% else %}ops-dot-neutral{% endif %}"></span>
+              <span class="text-sm font-semibold">Unassigned</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-bold text-xl leading-none"
-                    style="color: {% if stats.unassigned > 0 %}#ca8a04{% else %}var(--text-disabled){% endif %};">
+              <span class="ops-value {% if stats.unassigned > 0 %}ops-value-warning{% else %}ops-value-disabled{% endif %}">
                 {{ stats.unassigned|default:0|intcomma }}
               </span>
               {% if stats.unassigned > 0 %}
-              <a href="{% url 'dashboard:all-tickets' %}?assigned=none"
-                 class="text-xs font-semibold transition-colors"
-                 style="color: #ca8a04;">Triage &rarr;</a>
+              <a href="{% url 'dashboard:all-tickets' %}?assigned=none" class="ops-link ops-link-warning">
+                Triage &rarr;
+              </a>
               {% endif %}
             </div>
           </div>
@@ -299,19 +277,18 @@
           {# Awaiting Verification #}
           <div class="flex items-center justify-between px-5 py-4">
             <div class="flex items-center gap-3">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                    style="background-color: {% if stats.awaiting_verification > 0 %}#60a5fa{% else %}var(--border-default){% endif %};"></span>
-              <span class="text-sm font-semibold" style="color: var(--text-primary);">Awaiting Verification</span>
+              <span class="ops-dot flex-shrink-0
+                {% if stats.awaiting_verification > 0 %}ops-dot-blue{% else %}ops-dot-neutral{% endif %}"></span>
+              <span class="text-sm font-semibold">Awaiting Verification</span>
             </div>
             <div class="flex items-center gap-5">
-              <span class="tabular-nums font-bold text-xl leading-none"
-                    style="color: {% if stats.awaiting_verification > 0 %}#2563eb{% else %}var(--text-disabled){% endif %};">
+              <span class="ops-value {% if stats.awaiting_verification > 0 %}ops-value-info{% else %}ops-value-disabled{% endif %}">
                 {{ stats.awaiting_verification|default:0|intcomma }}
               </span>
               {% if stats.awaiting_verification > 0 %}
-              <a href="{% url 'dashboard:all-tickets' %}?status=awaiting_verification"
-                 class="text-xs font-semibold transition-colors"
-                 style="color: #3b82f6;">Review &rarr;</a>
+              <a href="{% url 'dashboard:all-tickets' %}?status=awaiting_verification" class="ops-link ops-link-info">
+                Review &rarr;
+              </a>
               {% endif %}
             </div>
           </div>
@@ -320,70 +297,60 @@
       </div>
     </div>
 
-    {# Recent Activity Table ───────────────────────────────────────────────── #}
+    {# Recent Activity Table #}
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Recent Activity</h2>
-        <a href="{% url 'dashboard:all-tickets' %}"
-           class="text-xs font-semibold transition-colors"
-           style="color: var(--text-muted);">View all &rarr;</a>
+        <a href="{% url 'dashboard:all-tickets' %}" class="admin-view-all">View all &rarr;</a>
       </div>
       <div class="overflow-x-auto">
-        <table class="data-table table-responsive-cards w-full" style="border-collapse: collapse;">
+        <table class="data-table table-responsive-cards w-full">
           <thead>
-            <tr style="border-bottom: 1px solid var(--border-default);">
-              <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
-                  style="letter-spacing: 0.07em; color: var(--text-muted);">ID</th>
-              <th class="px-5 py-3 text-left text-xs font-bold uppercase"
-                  style="letter-spacing: 0.07em; color: var(--text-muted);">Title</th>
-              <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
-                  style="letter-spacing: 0.07em; color: var(--text-muted);">Priority</th>
-              <th class="px-5 py-3 text-left text-xs font-bold uppercase whitespace-nowrap"
-                  style="letter-spacing: 0.07em; color: var(--text-muted);">Status</th>
-              <th class="px-5 py-3 text-left text-xs font-bold uppercase"
-                  style="letter-spacing: 0.07em; color: var(--text-muted);">Assigned</th>
-              <th class="px-5 py-3 text-right text-xs font-bold uppercase whitespace-nowrap"
-                  style="letter-spacing: 0.07em; color: var(--text-muted);">Time</th>
+            <tr>
+              <th class="admin-th">ID</th>
+              <th class="admin-th">Title</th>
+              <th class="admin-th">Priority</th>
+              <th class="admin-th">Status</th>
+              <th class="admin-th">Assigned</th>
+              <th class="admin-th text-right">Time</th>
             </tr>
           </thead>
           <tbody>
             {% for ticket in recent_tickets %}
-            <tr class="group cursor-pointer transition-colors data-table-row"
-                style="border-bottom: 1px solid var(--border-subtle);"
+            <tr class="data-table-row cursor-pointer"
                 onclick="location.href='{% url 'dashboard:ticket-detail' ticket.pk %}'">
-              <td data-label="ID" class="px-5 py-3.5">
-                <span class="mono tabular-nums" style="color: var(--text-muted);">{{ ticket.ticket_number }}</span>
+              <td data-label="ID" class="admin-td">
+                <span class="ticket-num">{{ ticket.ticket_number }}</span>
               </td>
-              <td data-label="Title" class="px-5 py-3.5 max-w-xs">
+              <td data-label="Title" class="admin-td max-w-xs">
                 <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
-                   class="text-sm font-semibold truncate block transition-colors"
-                   style="color: var(--text-primary);"
+                   class="text-sm font-semibold truncate block link-primary"
                    onclick="event.stopPropagation()">
                   {{ ticket.title|truncatechars:52 }}
                 </a>
                 {% if ticket.location %}
-                <span class="text-xs" style="color: var(--text-muted);">{{ ticket.location.name }}</span>
+                <span class="admin-td-muted text-xs">{{ ticket.location.name }}</span>
                 {% endif %}
               </td>
-              <td data-label="Priority" class="px-5 py-3.5">
+              <td data-label="Priority" class="admin-td">
                 <span class="badge badge-priority-{{ ticket.priority }}">
                   {{ ticket.get_priority_display }}
                 </span>
               </td>
-              <td data-label="Status" class="px-5 py-3.5">
+              <td data-label="Status" class="admin-td">
                 <span class="badge badge-{{ ticket.status|cut:'_' }}">
                   {{ ticket.get_status_display }}
                 </span>
               </td>
-              <td data-label="Assigned" class="px-5 py-3.5">
+              <td data-label="Assigned" class="admin-td">
                 {% if ticket.assigned_to %}
-                  <span class="text-sm" style="color: var(--text-secondary);">{{ ticket.assigned_to.display_name }}</span>
+                  <span class="text-sm admin-td-muted">{{ ticket.assigned_to.display_name }}</span>
                 {% else %}
-                  <span class="text-xs italic" style="color: var(--text-muted);">Unassigned</span>
+                  <span class="text-xs italic admin-td-muted">Unassigned</span>
                 {% endif %}
               </td>
-              <td data-label="Time" class="px-5 py-3.5 text-right">
-                <span class="tabular-nums text-xs whitespace-nowrap" style="color: var(--text-muted);">
+              <td data-label="Time" class="admin-td text-right">
+                <span class="tabular-nums text-xs whitespace-nowrap admin-td-muted">
                   {{ ticket.created_at|timesince }} ago
                 </span>
               </td>
@@ -391,13 +358,13 @@
             {% empty %}
             <tr>
               <td colspan="6" class="px-5 py-14 text-center">
-                <div class="empty-state-icon mx-auto mb-3" style="width: 44px; height: 44px;">
+                <div class="admin-empty-icon">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                   </svg>
                 </div>
-                <p class="text-sm" style="color: var(--text-muted);">No recent activity</p>
+                <p class="text-sm admin-td-muted">No recent activity</p>
               </td>
             </tr>
             {% endfor %}
@@ -406,12 +373,12 @@
       </div>
     </div>
 
-  </div>{# /left column #}
+  </div>
 
-  {# ── Right column (1/3) ──────────────────────────────────────────────────── #}
+  {# Right column (1/3) #}
   <div class="space-y-6">
 
-    {# Quick Actions ──────────────────────────────────────────────────────── #}
+    {# Quick Actions #}
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Quick Actions</h2>
@@ -428,13 +395,11 @@
         <a href="{% url 'dashboard:all-tickets' %}?status=open&assigned=none"
            class="btn btn-secondary w-full justify-center">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 4h18M3 10h10M3 16h6"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M3 10h10M3 16h6"/>
           </svg>
           Triage Queue
           {% if stats.unassigned > 0 %}
-          <span class="ml-auto tabular-nums text-xs font-bold px-1.5 py-0.5 rounded"
-                style="background-color: rgba(245,158,11,0.15); color: #b45309;">
+          <span class="ml-auto triage-badge triage-badge-warning tabular-nums">
             {{ stats.unassigned }}
           </span>
           {% endif %}
@@ -451,33 +416,33 @@
       </div>
     </div>
 
-    {# Critical Tickets — only rendered when tickets exist ────────────────── #}
+    {# Critical Tickets #}
     {% if critical_tickets %}
     <div class="card stat-card-accent-danger">
-      <div class="card-header" style="border-bottom-color: rgba(239,68,68,0.12);">
-        <h2 class="card-title flex items-center gap-2" style="color: #dc2626;">
-          <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: #ef4444;"></span>
+      <div class="card-header critical-card-header">
+        <h2 class="card-title critical-card-title flex items-center gap-2">
+          <span class="live-dot-danger"></span>
           Critical Tickets
         </h2>
-        <span class="tabular-nums text-xs font-bold" style="color: #ef4444;">
+        <span class="critical-card-count">
           {{ critical_tickets|length }} active
         </span>
       </div>
-      <ul class="divide-y" style="border-color: var(--border-subtle);">
+      <ul class="divide-subtle">
         {% for ticket in critical_tickets %}
         <li>
           <a href="{% url 'dashboard:ticket-detail' ticket.pk %}"
-             class="block px-4 py-3.5 transition-colors critical-ticket-item">
+             class="block px-4 py-3.5 critical-ticket-item">
             <div class="flex items-start gap-3">
               <div class="min-w-0 flex-1">
-                <div class="mono text-xs mb-1" style="color: #ef4444;">{{ ticket.ticket_number }}</div>
-                <p class="text-sm font-semibold truncate leading-snug" style="color: var(--text-primary);">
+                <div class="ticket-num critical-ticket-num">{{ ticket.ticket_number }}</div>
+                <p class="critical-ticket-title truncate leading-snug">
                   {{ ticket.title|truncatechars:40 }}
                 </p>
               </div>
               {% if ticket.sla_resolution_due %}
               <div class="shrink-0 text-right">
-                <div class="text-xs mb-0.5" style="color: var(--text-muted);">SLA</div>
+                <div class="perf-metric-label mb-0.5">SLA</div>
                 <div class="tabular-nums text-xs font-bold
                   {% if ticket.is_overdue %}sla-breached{% else %}sla-warn{% endif %}"
                      style="background: none; padding: 0;">
@@ -493,44 +458,31 @@
     </div>
     {% endif %}
 
-  </div>{# /right column #}
+  </div>
 
-</div>{# /main grid #}
+</div>
 
-</div>{# /space-y-6 #}
+</div>
 
-{# ────────────────────────────────────────────────────────────────────────────
-   Scoped styles — period selector active states + table row hover + critical
-   ticket hover (cannot be expressed as Tailwind/inline on anchor elements)
-   ──────────────────────────────────────────────────────────────────────────── #}
+{# Scoped component styles — hover states and JS-driven state transitions #}
 <style>
-  .period-btn { cursor: pointer; border: none; background: transparent; }
-  .period-btn:hover:not([data-active="true"]) {
-    background-color: var(--bg-card);
-    color: var(--text-secondary);
-  }
   .data-table-row:hover td { background-color: var(--bg-subtle); }
-  .data-table-row:hover td a { color: var(--text-link); }
-  .critical-ticket-item:hover { background-color: rgba(239, 68, 68, 0.04); }
-  [data-theme="dark"] .critical-ticket-item:hover { background-color: rgba(239, 68, 68, 0.07); }
+  .critical-ticket-item:hover { background-color: rgba(239,68,68,0.04); }
+  [data-theme="dark"] .critical-ticket-item:hover { background-color: rgba(239,68,68,0.07); }
+  .critical-ticket-item { transition: background-color var(--t-fast); text-decoration: none; }
 </style>
 
-{# ────────────────────────────────────────────────────────────────────────────
-   Period selector — manages active state across button clicks and HTMX swaps
-   ──────────────────────────────────────────────────────────────────────────── #}
+{# Period selector — toggle active class via JS #}
 <script>
 (function () {
   'use strict';
   var selector = document.getElementById('period-selector');
   if (!selector) return;
 
-  var ACTIVE_STYLE   = 'background-color: var(--bg-card); color: var(--text-primary); box-shadow: var(--shadow-xs);';
-  var INACTIVE_STYLE = 'color: var(--text-muted);';
-
   function activate(activeBtn) {
     selector.querySelectorAll('.period-btn').forEach(function (btn) {
       var on = btn === activeBtn;
-      btn.style.cssText = on ? ACTIVE_STYLE : INACTIVE_STYLE;
+      btn.classList.toggle('period-btn-active', on);
       btn.setAttribute('data-active', on ? 'true' : 'false');
     });
   }
