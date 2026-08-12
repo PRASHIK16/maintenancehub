@@ -36,8 +36,8 @@
   </div>
 
   {# ── CENTRE: Global search ───────────────────────────────────────── #}
-  <div class="flex-1 flex justify-center px-3">
-    <div class="relative w-full max-w-[480px]">
+  <div class="topbar-search-center">
+    <div class="topbar-search-wrap">
       <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none topbar-search-icon"
            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
@@ -127,8 +127,7 @@
     {# User avatar #}
     {% with user=request.user %}
     <a href="{% url 'accounts:profile' %}"
-       class="avatar-emerald avatar-sm flex-shrink-0 select-none"
-       style="text-decoration: none;"
+       class="avatar-emerald avatar-sm flex-shrink-0 select-none no-underline"
        title="{{ user.display_name }}"
        aria-label="Your profile">
       {{ user.initials }}

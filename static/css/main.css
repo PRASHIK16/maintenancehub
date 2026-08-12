@@ -570,6 +570,31 @@ a {
   color: var(--text-secondary);
 }
 
+/* Search centre — constrained, never fills the whole topbar */
+.topbar-search-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+  /* Hard cap so search never stretches past a comfortable reading width */
+  max-width: 560px;
+  /* Centre relative to the flex parent, not just the remaining space */
+  margin: 0 auto;
+}
+
+.topbar-search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* On large screens pull the cap in a touch more for visual balance */
+@media (min-width: 1280px) {
+  .topbar-search-center { max-width: 640px; }
+  .topbar-search-wrap   { max-width: 520px; }
+}
+
 
 /* ─── 06  PAGE STRUCTURE & BREADCRUMBS ───────────────────────────────────────── */
 
