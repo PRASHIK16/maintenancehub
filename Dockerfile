@@ -13,7 +13,7 @@ RUN useradd --create-home --shell /bin/bash appuser
 
 WORKDIR /app
 
-# Install Python dependencies first (for layer caching)
+# Install Python dependencies first (layer caching)
 COPY requirements/ requirements/
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements/production.txt
@@ -21,14 +21,11 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy application code
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput --settings=config.settings.production || true
-
 # Set permissions
 RUN chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8000
 
-# Default: run via Daphne (ASGI) for WebSocket support
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "config.asgi:application"]
+# Use $PORT from Railway (falls back to 8000 locally)
+CMD ["sh", "-c", "daphne -b 0.0.0.0 -p ${PORT:-8000} config.asgi:application"]
