@@ -80,9 +80,19 @@ if SENTRY_DSN:
         ],
     )
 
-# Caching — longer TTLs
-CACHES["default"]["OPTIONS"] = {  # noqa
-    "CLIENT_CLASS": "django_redis.client.DefaultClient",
-    "SOCKET_CONNECT_TIMEOUT": 5,
-    "SOCKET_TIMEOUT": 5,
-}
+# Caching — use REDIS_URL if available, otherwise fall back to local memory
+import os as _os
+_redis_url = _os.environ.get("REDIS_URL") or _os.environ.get("CELERY_BROKER_URL", "")
+if _redis_url:
+    CACHES = {  # noqa
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": _redis_url,
+        }
+    }
+else:
+    CACHES = {  # noqa
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
