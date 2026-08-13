@@ -3,6 +3,6 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "sh -c 'python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py createsuperuser --noinput || true && daphne -b 0.0.0.0 -p $PORT config.asgi:application'"
+startCommand = "sh -c 'python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py createsuperuser --noinput --full_name \"Admin\" || true && daphne -b 0.0.0.0 -p $PORT config.asgi:application'"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
