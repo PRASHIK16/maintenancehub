@@ -4,5 +4,6 @@ dockerfilePath = "Dockerfile"
 
 [deploy]
 startCommand = "sh -c 'daphne -b 0.0.0.0 -p $PORT config.asgi:application'"
+releaseCommand = "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
