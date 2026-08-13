@@ -14,6 +14,7 @@ RUN useradd --create-home --shell /bin/bash appuser
 WORKDIR /app
 
 # Install Python dependencies first (layer caching)
+# cache-bust: v2
 COPY requirements/ requirements/
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements/production.txt
